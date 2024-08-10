@@ -1,0 +1,54 @@
+@bg-color-light: #fbfbfe;
+@bg-color-dark: #000000;
+@text-color-light: #000000;
+@text-color-dark: #fbfbfe;
+
+@cell-size: 2em;
+@cell-border-width: 0.1em;
+
+@grid-bg-color-light: #ffffff;
+@grid-bg-color-dark: #303030;
+
+@mark-border-radius: (@cell-size / 16);
+
+@mark-color-light: #404040;
+@mark-color-dark: #a0a0a0;
+@cross-color-light: orange;
+@cross-color-dark: orange;
+
+@scroll-shadow-alpha: 0.25;
+@scroll-shadow-size: 0.5em;
+
+.theme-color-html(@var, @name) {
+    @{var}: ~"@{@{name}-light}";
+
+    @media (prefers-color-scheme: dark) {
+        @{var}: ~"@{@{name}-dark}";
+    }
+
+    &.light {
+        @{var}: ~"@{@{name}-light}";
+    }
+
+    &.dark {
+        @{var}: ~"@{@{name}-dark}";
+    }
+}
+
+.theme-color(@var, @name, @dark-enabled-class: ~"") {
+    @{var}: ~"@{@{name}-light}";
+
+    @media (prefers-color-scheme: dark) {
+        html@{dark-enabled-class} & {
+            @{var}: ~"@{@{name}-dark}";
+        }
+    }
+
+    html.light & {
+        @{var}: ~"@{@{name}-light}";
+    }
+
+    html.dark@{dark-enabled-class} & {
+        @{var}: ~"@{@{name}-dark}";
+    }
+}

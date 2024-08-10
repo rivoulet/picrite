@@ -1,0 +1,58 @@
+@import "../style.less";
+
+.grid--scrollable {
+    display: inline-flex;
+    flex-direction: column;
+    position: relative;
+    vertical-align: top;
+}
+
+.grid__scroll-container {
+    overflow: auto;
+}
+
+.grid__table {
+    border-collapse: collapse;
+    .theme-color(background-color, grid-bg-color, ~".grid-dark-enabled");
+}
+
+.grid__table__cell {
+    position: relative;
+    min-width: @cell-size;
+    width: @cell-size;
+    height: @cell-size;
+    box-sizing: border-box;
+    border: @cell-border-width solid gray;
+}
+
+.grid__table__cell__contents {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    width: 0;
+    height: 0;
+    background-color: transparent;
+    transition: width 0.1s ease-out, height 0.1s ease-out;
+}
+
+.grid__table__cell__contents--mark {
+    border-radius: @mark-border-radius;
+    .theme-color(background-color, mark-color, ~".grid-dark-enabled");
+
+    &.grid__table__cell__contents--visible {
+        width: 90%;
+        height: 90%;
+    }
+}
+
+.grid__table__cell__contents--cross {
+    .theme-color(fill, cross-color, ~".grid-dark-enabled");
+
+    &.grid__table__cell__contents--visible {
+        width: 80%;
+        height: 80%;
+    }
+}

@@ -1,0 +1,48 @@
+@import "../style.less";
+
+.scroll-shadows {
+    opacity: @scroll-shadow-alpha;
+}
+
+.scroll-shadows__side {
+    position: absolute;
+    opacity: 0;
+}
+
+.scroll-shadows__side--enabled {
+    opacity: 1;
+}
+
+.scroll-shadows__side--top,
+.scroll-shadows__side--bottom {
+    left: 0;
+    right: 0;
+    height: @scroll-shadow-size;
+}
+
+.scroll-shadows__side--left,
+.scroll-shadows__side--right {
+    top: 0;
+    bottom: 0;
+    width: @scroll-shadow-size;
+}
+
+.scroll-shadows__side--top {
+    background-image: linear-gradient(black, transparent);
+    top: 0;
+}
+
+.scroll-shadows__side--bottom {
+    background-image: linear-gradient(0turn, black, transparent);
+    bottom: 0;
+}
+
+.scroll-shadows__side--left {
+    background-image: linear-gradient(0.25turn, black, transparent);
+    left: 0;
+}
+
+.scroll-shadows__side--right {
+    background-image: linear-gradient(0.75turn, black, transparent);
+    right: 0;
+}

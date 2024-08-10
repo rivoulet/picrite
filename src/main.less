@@ -1,4 +1,5 @@
 @import "assets/normalize.css";
+@import "./style.less";
 
 html {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
@@ -11,11 +12,19 @@ html {
     -webkit-overflow-scrolling: auto;
     -webkit-text-size-adjust: none;
     text-size-adjust: none;
+    .theme-color-html(background-color, bg-color);
+    .theme-color-html(color, text-color);
 }
 
 body {
     margin: 0;
     padding: 0;
+}
+
+html, body, #root {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 }
 
 button {
