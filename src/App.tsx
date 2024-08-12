@@ -1,8 +1,8 @@
 import "./App.less";
 
 import { useEffect, useState } from "react";
-import { SelectableGrid } from "./components/grid/Grid";
 import { CellMark } from "./CellMark";
+import { PlayGrid } from "./components/play-grid/PlayGrid";
 
 export function App() {
     const [marks, setMarks] = useState(() => {
@@ -15,7 +15,7 @@ export function App() {
         return marks;
     });
 
-    const [selection, setSelection] = useState<[number, number] | null>([0, 0]);
+    const [selection, setSelection] = useState<[number, number] | null>(null);
 
     // Test animations
     useEffect(() => {
@@ -27,43 +27,18 @@ export function App() {
                 ];
             }
             setMarks(marks);
-
-            setSelection(
-                Math.random() > 0.2
-                    ? [
-                          Math.min(
-                              Math.max(
-                                  (selection
-                                      ? selection[0]
-                                      : Math.floor(Math.random() * 10)) +
-                                      [0, 1, -1][Math.floor(Math.random() * 3)],
-                                  0
-                              ),
-                              9
-                          ),
-                          Math.min(
-                              Math.max(
-                                  (selection
-                                      ? selection[1]
-                                      : Math.floor(Math.random() * 10)) +
-                                      [0, 1, -1][Math.floor(Math.random() * 3)],
-                                  0
-                              ),
-                              9
-                          ),
-                      ]
-                    : null
-            );
-        }, 1000);
+        }, 2000);
         return () => clearInterval(id);
-    });
+    }, []);
 
     return (
-        <SelectableGrid
+        <PlayGrid
             width={10}
             height={10}
             marks={marks}
             selection={selection}
+            setSelection={setSelection}
+            autoFocus={true}
             className="main-grid"
         />
     );

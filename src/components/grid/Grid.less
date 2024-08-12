@@ -1,4 +1,5 @@
 @import "../../style.less";
+@import "../../utils.less";
 
 .grid--scrollable {
     display: inline-flex;
@@ -12,56 +13,10 @@
 }
 
 .grid__table {
+    .no-user-select();
+
     border-collapse: collapse;
     .theme-color(background-color, grid-bg-color, ~".grid-dark-enabled");
-}
-
-.grid__cell {
-    position: relative;
-    min-width: @cell-size;
-    width: @cell-size;
-    height: @cell-size;
-    box-sizing: border-box;
-    border: @cell-border-width solid @cell-border-color;
-
-    &:nth-of-type(5n):not(:last-child) {
-        border-right: (@cell-border-width * 2) solid @cell-border-color;
-    }
-}
-
-tr:nth-of-type(5n):not(:last-child) .grid__cell {
-    border-bottom: (@cell-border-width * 2) solid @cell-border-color;
-}
-
-.grid__cell__contents {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    margin: auto;
-    width: 0;
-    height: 0;
-    transition: width 0.1s ease-out, height 0.1s ease-out;
-}
-
-.grid__cell__contents--mark {
-    border-radius: @mark-border-radius;
-    .theme-color(background-color, mark-color, ~".grid-dark-enabled");
-
-    &.grid__cell__contents--visible {
-        width: @mark-size;
-        height: @mark-size;
-    }
-}
-
-.grid__cell__contents--cross {
-    .theme-color(fill, cross-color, ~".grid-dark-enabled");
-
-    &.grid__cell__contents--visible {
-        width: @cross-size;
-        height: @cross-size;
-    }
 }
 
 .grid__scroll-shadows {

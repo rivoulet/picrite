@@ -1,13 +1,46 @@
-import { CellMark } from "../../CellMark";
 import {
+    Dispatch,
+    KeyboardEvent,
+    MouseEvent,
     MutableRefObject,
     ReactElement,
+    SetStateAction,
     useCallback,
     useMemo,
     useRef,
     useState,
 } from "react";
-import { MemoCell } from "./Grid";
+import { clamp, equal2 } from "../../utils";
+import { CellMark } from "../../CellMark";
+import { MemoCell } from "./Cell";
+
+export function cellSize(element: HTMLElement) {
+    return 2 * parseFloat(getComputedStyle(element).fontSize);
+}
+
+export function clientPosToCellPos(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    table: HTMLElement
+): [number, number] {
+    const rect = table.getBoundingClientRect();
+    const cellSize_ = cellSize(table);
+    const halfBorderWidth = cellSize_ * 0.025;
+    return [
+        clamp(
+            Math.floor((x - halfBorderWidth - rect.left) / cellSize_),
+            0,
+            width - 1
+        ),
+        clamp(
+            Math.floor((y - halfBorderWidth - rect.top) / cellSize_),
+            0,
+            height - 1
+        ),
+    ];
+}
 
 export function useRows(width: number, height: number, marks: CellMark[]) {
     return useMemo(() => {
@@ -31,8 +64,8 @@ export function useSelection(
     const selectionElementRef = useRef<HTMLDivElement | null>(null);
 
     const [prevSelection, setPrevSelection] = useState(selection);
-    const selectionChanged = selection !== prevSelection;
-    if (selectionChanged) {
+    const selectionWasChanged = selection !== prevSelection;
+    if (selectionWasChanged) {
         setPrevSelection(selection);
     }
 
@@ -44,16 +77,15 @@ export function useSelection(
     let adjustedLeft = 0;
 
     if (scrollContainer && selection) {
-        const cellSize =
-            2 * parseFloat(getComputedStyle(scrollContainer).fontSize);
+        const cellSize_ = cellSize(scrollContainer);
 
-        top = cellSize * selection[1];
-        left = cellSize * selection[0];
+        top = cellSize_ * selection[1];
+        left = cellSize_ * selection[0];
         adjustedTop = top - scrollContainer.scrollTop;
         adjustedLeft = left - scrollContainer.scrollLeft;
 
-        if (selectionChanged) {
-            const cellSizePlusTwoBorders = cellSize * 1.05;
+        if (selectionWasChanged) {
+            const cellSizePlusTwoBorders = cellSize_ * 1.05;
 
             const bottom =
                 top - scrollContainer.clientHeight + cellSizePlusTwoBorders;
@@ -108,5 +140,114 @@ export function useSelection(
             }
             // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [top, left]),
+    };
+}
+
+export function useSelectionInput(
+    width: number,
+    height: number,
+    selection: [number, number] | null,
+    setSelection: Dispatch<SetStateAction<[number, number] | null>>,
+    tableRef: MutableRefObject<HTMLElement | null>
+) {
+    const moveSelection = useCallback(
+        (dx: number, dy: number) => {
+            if (!selection) {
+                setSelection([0, 0]);
+                return;
+            }
+            const newSelection: [number, number] = [
+                clamp(selection[0] + dx, 0, width - 1),
+                clamp(selection[1] + dy, 0, height - 1),
+            ];
+            if (!equal2(newSelection, selection)) {
+                setSelection(newSelection);
+            }
+        },
+        [width, height, selection, setSelection]
+    );
+
+    const onKeyDown = useCallback(
+        (e: KeyboardEvent) => {
+            switch (e.key) {
+                case "ArrowUp": {
+                    moveSelection(0, -1);
+                    e.preventDefault();
+                    break;
+                }
+                case "ArrowDown": {
+                    moveSelection(0, 1);
+                    e.preventDefault();
+                    break;
+                }
+                case "ArrowLeft": {
+                    moveSelection(-1, 0);
+                    e.preventDefault();
+                    break;
+                }
+                case "ArrowRight": {
+                    moveSelection(1, 0);
+                    e.preventDefault();
+                    break;
+                }
+                case " ": {
+                    moveSelection(0, 0);
+                    e.preventDefault();
+                    break;
+                }
+            }
+            return;
+        },
+        [moveSelection]
+    );
+
+    const onMouseDown = useCallback(
+        (e: MouseEvent) => {
+            if (!tableRef.current) {
+                return;
+            }
+            const newSelection = clientPosToCellPos(
+                e.clientX,
+                e.clientY,
+                width,
+                height,
+                tableRef.current
+            );
+            setSelection((selection) =>
+                !selection || !equal2(newSelection, selection)
+                    ? newSelection
+                    : selection
+            );
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [width, height, setSelection]
+    );
+
+    const onMouseMove = useCallback(
+        (e: MouseEvent) => {
+            if (!tableRef.current || !e.buttons) {
+                return;
+            }
+            const newSelection = clientPosToCellPos(
+                e.clientX,
+                e.clientY,
+                width,
+                height,
+                tableRef.current
+            );
+            setSelection((selection) =>
+                !selection || !equal2(newSelection, selection)
+                    ? newSelection
+                    : selection
+            );
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [width, height, setSelection]
+    );
+
+    return {
+        onKeyDown,
+        onMouseDown,
+        onMouseMove,
     };
 }
