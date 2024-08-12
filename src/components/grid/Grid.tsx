@@ -1,9 +1,21 @@
 import "./Grid.less";
 
-import { Dispatch, SetStateAction, useCallback, useRef } from "react";
+import {
+    Dispatch,
+    ForwardedRef,
+    MutableRefObject,
+    SetStateAction,
+    useCallback,
+    useRef,
+} from "react";
 import { CellMark } from "../../CellMark";
 import { useScrollShadows } from "../scroll-shadows/useScrollShadows";
-import { useRows, useSelection, useSelectionInput } from "./hooks";
+import {
+    useRows,
+    useSelection,
+    useSelectionInput,
+    useSelectionTouchInput,
+} from "./hooks";
 
 export interface GridProps {
     width: number;
@@ -24,25 +36,70 @@ export function Grid({ width, height, marks, className = "" }: GridProps) {
     );
 }
 
+export interface ScrollableGridProps extends GridProps {
+    onScroll?: (x: number, y: number) => void;
+    scrollContainerRef?: ForwardedRef<HTMLDivElement | null>;
+}
+
+function useScrollContainerRefs(
+    outer: ForwardedRef<HTMLDivElement | null> | undefined,
+    inner: MutableRefObject<HTMLDivElement | null>
+) {
+    return useCallback(
+        (ref: HTMLDivElement | null) => {
+            inner.current = ref;
+            if (outer) {
+                if (typeof outer == "function") {
+                    outer(ref);
+                } else {
+                    outer.current = ref;
+                }
+            }
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [outer]
+    );
+}
+
+function triggerOnScroll(
+    onScroll: ((x: number, y: number) => void) | undefined,
+    scrollContainerRef: MutableRefObject<HTMLDivElement | null>
+) {
+    if (onScroll && scrollContainerRef.current) {
+        onScroll(
+            scrollContainerRef.current.clientLeft,
+            scrollContainerRef.current.clientTop
+        );
+    }
+}
+
 export function ScrollableGrid({
     width,
     height,
     marks,
+    onScroll,
+    scrollContainerRef,
     className = "",
-}: GridProps) {
+}: ScrollableGridProps) {
     const rows = useRows(width, height, marks);
 
-    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const scrollContainerRef_ = useRef<HTMLDivElement | null>(null);
     const { shadows, update: updateShadows } =
-        useScrollShadows(scrollContainerRef);
+        useScrollShadows(scrollContainerRef_);
 
     return (
-        <div className={"grid--scrollable " + className}>
+        <div className={className + " grid--scrollable"}>
             {shadows}
             <div
                 className="grid__scroll-container"
-                ref={scrollContainerRef}
-                onScroll={updateShadows}
+                ref={useScrollContainerRefs(
+                    scrollContainerRef,
+                    scrollContainerRef_
+                )}
+                onScroll={useCallback(() => {
+                    updateShadows();
+                    triggerOnScroll(onScroll, scrollContainerRef_);
+                }, [updateShadows, onScroll])}
             >
                 <table className="grid__table">
                     <tbody>{...rows}</tbody>
@@ -52,7 +109,7 @@ export function ScrollableGrid({
     );
 }
 
-export interface SelectableGridProps extends GridProps {
+export interface SelectableGridProps extends ScrollableGridProps {
     selection: [number, number] | null;
 }
 
@@ -61,33 +118,39 @@ export function SelectableGrid({
     height,
     marks,
     selection,
+    onScroll,
+    scrollContainerRef,
     className = "",
 }: SelectableGridProps) {
     const rows = useRows(width, height, marks);
 
-    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const scrollContainerRef_ = useRef<HTMLDivElement | null>(null);
     const { shadows, update: updateShadows } = useScrollShadows(
-        scrollContainerRef,
+        scrollContainerRef_,
         "grid__scroll-shadows"
     );
 
     const { selectionElement, onScroll: selectionOnScroll } = useSelection(
         width,
         selection,
-        scrollContainerRef
+        scrollContainerRef_
     );
 
     return (
-        <div className={"grid--scrollable " + className}>
+        <div className={className + " grid--scrollable"}>
             {shadows}
             {selectionElement}
             <div
                 className="grid__scroll-container"
-                ref={scrollContainerRef}
+                ref={useScrollContainerRefs(
+                    scrollContainerRef,
+                    scrollContainerRef_
+                )}
                 onScroll={useCallback(() => {
                     updateShadows();
                     selectionOnScroll();
-                }, [updateShadows, selectionOnScroll])}
+                    triggerOnScroll(onScroll, scrollContainerRef_);
+                }, [updateShadows, selectionOnScroll, onScroll])}
             >
                 <table className="grid__table">
                     <tbody>{...rows}</tbody>
@@ -109,22 +172,24 @@ export function SelectableGridWithInput({
     selection,
     setSelection,
     autoFocus = false,
+    onScroll,
+    scrollContainerRef,
     className = "",
 }: SelectableGridWithInputProps) {
     const rows = useRows(width, height, marks);
 
-    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+    const scrollContainerRef_ = useRef<HTMLDivElement | null>(null);
     const tableRef = useRef<HTMLTableElement | null>(null);
 
     const { shadows, update: updateShadows } = useScrollShadows(
-        scrollContainerRef,
+        scrollContainerRef_,
         "grid__scroll-shadows"
     );
 
     const { selectionElement, onScroll: selectionOnScroll } = useSelection(
         width,
         selection,
-        scrollContainerRef
+        scrollContainerRef_
     );
     const {
         onKeyDown: selectionOnKeyDown,
@@ -133,16 +198,20 @@ export function SelectableGridWithInput({
     } = useSelectionInput(width, height, selection, setSelection, tableRef);
 
     return (
-        <div className={"grid--scrollable " + className}>
+        <div className={className + " grid--scrollable"}>
             {shadows}
             {selectionElement}
             <div
                 className="grid__scroll-container"
-                ref={scrollContainerRef}
+                ref={useScrollContainerRefs(
+                    scrollContainerRef,
+                    scrollContainerRef_
+                )}
                 onScroll={useCallback(() => {
                     updateShadows();
                     selectionOnScroll();
-                }, [updateShadows, selectionOnScroll])}
+                    triggerOnScroll(onScroll, scrollContainerRef_);
+                }, [updateShadows, selectionOnScroll, onScroll])}
             >
                 <table
                     className="grid__table"
@@ -151,6 +220,78 @@ export function SelectableGridWithInput({
                     onKeyDown={selectionOnKeyDown}
                     onMouseDown={selectionOnMouseDown}
                     onMouseMove={selectionOnMouseMove}
+                    ref={tableRef}
+                >
+                    <tbody>{...rows}</tbody>
+                </table>
+            </div>
+        </div>
+    );
+}
+
+export function SelectableGridWithTouchInput({
+    width,
+    height,
+    marks,
+    selection,
+    setSelection,
+    autoFocus = false,
+    onScroll,
+    scrollContainerRef,
+    className = "",
+}: SelectableGridWithInputProps) {
+    const rows = useRows(width, height, marks);
+
+    const scrollContainerRef_ = useRef<HTMLDivElement | null>(null);
+    const tableRef = useRef<HTMLTableElement | null>(null);
+
+    const { shadows, update: updateShadows } = useScrollShadows(
+        scrollContainerRef_,
+        "grid__scroll-shadows"
+    );
+
+    const { selectionElement, onScroll: selectionOnScroll } = useSelection(
+        width,
+        selection,
+        scrollContainerRef_
+    );
+    const {
+        onKeyDown: selectionOnKeyDown,
+        onMouseDown: selectionOnMouseDown,
+        onMouseMove: selectionOnMouseMove,
+    } = useSelectionInput(width, height, selection, setSelection, tableRef);
+    const {
+        onTouchStart: selectionOnTouchStart,
+        onTouchMove: selectionOnTouchMove,
+        onTouchEnd: selectionOnTouchEnd,
+    } = useSelectionTouchInput(width, height, setSelection, tableRef);
+
+    return (
+        <div className={className + " grid--scrollable"}>
+            {shadows}
+            {selectionElement}
+            <div
+                className="grid__scroll-container grid__scroll-container--"
+                ref={useScrollContainerRefs(
+                    scrollContainerRef,
+                    scrollContainerRef_
+                )}
+                onScroll={useCallback(() => {
+                    updateShadows();
+                    selectionOnScroll();
+                    triggerOnScroll(onScroll, scrollContainerRef_);
+                }, [updateShadows, selectionOnScroll, onScroll])}
+            >
+                <table
+                    className="grid__table"
+                    tabIndex={0}
+                    autoFocus={autoFocus}
+                    onKeyDown={selectionOnKeyDown}
+                    onMouseDown={selectionOnMouseDown}
+                    onMouseMove={selectionOnMouseMove}
+                    onTouchStart={selectionOnTouchStart}
+                    onTouchMove={selectionOnTouchMove}
+                    onTouchEnd={selectionOnTouchEnd}
                     ref={tableRef}
                 >
                     <tbody>{...rows}</tbody>

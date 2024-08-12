@@ -1,0 +1,92 @@
+@import "../../style.less";
+
+.numbers {
+    overflow: auto;
+
+    &,
+    &__line {
+        display: flex;
+        padding: 0;
+        margin: 0;
+    }
+
+    &--v {
+        margin-left: (@cell-border-width * 0.5);
+    }
+
+    &--h {
+        margin-top: (@cell-border-width * 0.5);
+    }
+
+    &--v,
+    &--h > &__line,
+    &--h > &__line > &__line__number {
+        flex-direction: row;
+    }
+
+    &--h,
+    &--v > &__line,
+    &--v > &__line > &__line__number {
+        flex-direction: column;
+    }
+
+    &__line {
+        box-sizing: border-box;
+        justify-content: end;
+        align-items: center;
+        flex: 0 0 auto;
+        .theme-color(color, numbers-color);
+
+        .numbers--v > & {
+            width: @cell-size;
+
+            &:not(:last-child) {
+                border-right: (@cell-border-width * 0.5) solid
+                    @cell-border-color;
+            }
+            &:not(:first-child) {
+                border-left: (@cell-border-width * 0.5) solid @cell-border-color;
+            }
+
+            &:nth-of-type(5n):not(:last-child) {
+                border-right-width: @cell-border-width;
+            }
+            &:nth-of-type(5n + 1):not(:first-child) {
+                border-left-width: @cell-border-width;
+            }
+        }
+
+        .numbers--h > & {
+            height: @cell-size;
+
+            &:not(:last-child) {
+                border-bottom: (@cell-border-width * 0.5) solid
+                    @cell-border-color;
+            }
+            &:not(:first-child) {
+                border-top: (@cell-border-width * 0.5) solid @cell-border-color;
+            }
+            
+            &:nth-of-type(5n):not(:last-child) {
+                border-bottom-width: @cell-border-width;
+            }
+            &:nth-of-type(5n + 1):not(:first-child) {
+                border-top-width: @cell-border-width;
+            }
+        }
+
+        &__number {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+
+            .numbers--v > .numbers__line > & {
+                height: @cell-size;
+            }
+
+            .numbers--h > .numbers__line > & {
+                width: @cell-size;
+            }
+        }
+    }
+}

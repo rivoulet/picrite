@@ -1,74 +1,59 @@
-import "../grid/Grid.less";
 import "./PlayGrid.less";
 
-import { useCallback, useRef } from "react";
-import { SelectableGridWithInputProps } from "../grid/Grid";
-import { useScrollShadows } from "../scroll-shadows/useScrollShadows";
-import { useRows, useSelection, useSelectionInput } from "../grid/hooks";
-import { useSelectionTouchInput } from "./hooks";
+import { SelectableGridWithTouchInput } from "../grid/Grid";
+import { LevelDimensions, LoadedLevelLines } from "../../Level";
+import { CellMark } from "../../CellMark";
+import { useMemo, useState } from "react";
+import { NumbersMemo } from "../grid/Numbers";
 
-export function PlayGrid({
-    width,
-    height,
-    marks,
-    selection,
-    setSelection,
-    autoFocus = false,
-    className = "",
-}: SelectableGridWithInputProps) {
-    const rows = useRows(width, height, marks);
+export interface PlayGridProps {
+    level: LevelDimensions & LoadedLevelLines;
+    marks: CellMark[];
+    className?: string;
+}
 
-    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-    const tableRef = useRef<HTMLTableElement | null>(null);
+function borderExtLines(size: number) {
+    const lines = new Array(size);
+    for (let i = 0; i < size; i++) {
+        lines[i] = (
+            <div key={i} className="play-grid__numbers-border-ext__line" />
+        );
+    }
+    return lines;
+}
 
-    const { shadows, update: updateShadows } = useScrollShadows(
-        scrollContainerRef,
-        "grid__scroll-shadows"
-    );
-
-    const { selectionElement, onScroll: selectionOnScroll } = useSelection(
-        width,
-        selection,
-        scrollContainerRef
-    );
-    const {
-        onKeyDown: selectionOnKeyDown,
-        onMouseDown: selectionOnMouseDown,
-        onMouseMove: selectionOnMouseMove,
-    } = useSelectionInput(width, height, selection, setSelection, tableRef);
-    const {
-        onTouchStart: selectionOnTouchStart,
-        onTouchMove: selectionOnTouchMove,
-        onTouchEnd: selectionOnTouchEnd,
-    } = useSelectionTouchInput(width, height, setSelection, tableRef);
+export function PlayGrid({ level, marks, className = "" }: PlayGridProps) {
+    const [selection, setSelection] = useState<[number, number] | null>(null);
 
     return (
-        <div className={"grid--scrollable " + className}>
-            {shadows}
-            {selectionElement}
-            <div
-                className="grid__scroll-container grid__scroll-container--"
-                ref={scrollContainerRef}
-                onScroll={useCallback(() => {
-                    updateShadows();
-                    selectionOnScroll();
-                }, [updateShadows, selectionOnScroll])}
-            >
-                <table
-                    className="grid__table"
-                    tabIndex={0}
-                    autoFocus={autoFocus}
-                    onKeyDown={selectionOnKeyDown}
-                    onMouseDown={selectionOnMouseDown}
-                    onMouseMove={selectionOnMouseMove}
-                    onTouchStart={selectionOnTouchStart}
-                    onTouchMove={selectionOnTouchMove}
-                    onTouchEnd={selectionOnTouchEnd}
-                    ref={tableRef}
-                >
-                    <tbody>{...rows}</tbody>
-                </table>
+        <div className={className + " play-grid"}>
+            <div className="play-grid__selection-cover play-grid__selection-cover--left" />
+            <div className="play-grid__selection-cover play-grid__selection-cover--top" />
+            <div className="play-grid__numbers-border-ext play-grid__numbers-border-ext--v">
+                {...useMemo(() => borderExtLines(level.width), [level.width])}
             </div>
+            <div className="play-grid__numbers-border-ext play-grid__numbers-border-ext--h">
+                {...useMemo(() => borderExtLines(level.height), [level.height])}
+            </div>
+            <NumbersMemo
+                isVertical={true}
+                level={level}
+                className="play-grid__numbers play-grid__numbers--v"
+            />
+            <NumbersMemo
+                isVertical={false}
+                level={level}
+                className="play-grid__numbers play-grid__numbers--h"
+            />
+            <SelectableGridWithTouchInput
+                width={level.width}
+                height={level.height}
+                marks={marks}
+                selection={selection}
+                setSelection={setSelection}
+                autoFocus={true}
+                className="play-grid__grid"
+            />
         </div>
     );
 }

@@ -2,21 +2,23 @@ import "./ScrollShadows.less";
 
 import { memo } from "react";
 
+export interface ScrollShadowsProps {
+    top: boolean;
+    bottom: boolean;
+    left: boolean;
+    right: boolean;
+    className: string;
+}
+
 export function ScrollShadows({
     top,
     bottom,
     left,
     right,
     className = "",
-}: {
-    top: boolean;
-    bottom: boolean;
-    left: boolean;
-    right: boolean;
-    className: string;
-}) {
+}: ScrollShadowsProps) {
     return (
-        <div className={"scroll-shadows " + className}>
+        <div className={className + " scroll-shadows"}>
             <div
                 className={
                     "scroll-shadows__side scroll-shadows__side--top" +

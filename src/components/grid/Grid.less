@@ -1,46 +1,53 @@
 @import "../../style.less";
 @import "../../utils.less";
 
-.grid--scrollable {
-    display: inline-flex;
-    flex-direction: column;
-    position: relative;
-    vertical-align: top;
-}
+.grid {
+    &--scrollable {
+        display: inline-flex;
+        flex-direction: column;
+        position: relative;
+        vertical-align: top;
+    }
 
-.grid__scroll-container {
-    overflow: auto;
-}
+    &__scroll-container {
+        overflow: auto;
 
-.grid__table {
-    .no-user-select();
+        &--touch-input {
+            touch-action: none;
+        }
+    }
 
-    border-collapse: collapse;
-    .theme-color(background-color, grid-bg-color, ~".grid-dark-enabled");
-}
+    &__table {
+        .no-user-select();
 
-.grid__scroll-shadows {
-    z-index: 1;
-}
+        border-collapse: collapse;
+        .theme-color(background-color, grid-bg-color, ~".grid-dark-enabled");
+    }
 
-.grid__selection {
-    position: absolute;
-    z-index: 2;
-    display: none;
-    transition: top 0.05s ease-out, left 0.05s ease-out;
-    pointer-events: none;
-}
+    &__scroll-shadows {
+        z-index: 1;
+    }
 
-.grid__selection--active {
-    display: block;
-}
+    &__selection {
+        position: absolute;
+        z-index: 2;
+        display: none;
+        transition: top 0.05s ease-out, left 0.05s ease-out;
+        pointer-events: none;
 
-.grid__selection__shadow {
-    position: absolute;
-    top: -(@cell-border-width * 2);
-    left: -(@cell-border-width * 2);
-    width: (@cell-size - @cell-border-width);
-    height: (@cell-size - @cell-border-width);
-    border: (@cell-border-width * 3) solid @grid-selection-color;
-    box-shadow: 0 0 (@cell-border-width * 4) @grid-selection-color inset;
+        &--active {
+            display: block;
+        }
+
+        &__shadow {
+            position: absolute;
+            top: -@grid-selection-extra-border-width;
+            left: -@grid-selection-extra-border-width;
+            width: (@cell-size - @cell-border-width);
+            height: (@cell-size - @cell-border-width);
+            border: (@cell-border-width + @grid-selection-extra-border-width)
+                solid @grid-selection-color;
+            box-shadow: 0 0 (@cell-border-width * 4) @grid-selection-color inset;
+        }
+    }
 }
