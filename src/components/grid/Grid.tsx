@@ -271,7 +271,7 @@ export function SelectableGridWithTouchInput({
             {shadows}
             {selectionElement}
             <div
-                className="grid__scroll-container grid__scroll-container--"
+                className="grid__scroll-container grid__scroll-container--touch-input"
                 ref={useScrollContainerRefs(
                     scrollContainerRef,
                     scrollContainerRef_

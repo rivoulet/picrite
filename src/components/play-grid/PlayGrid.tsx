@@ -12,11 +12,19 @@ export interface PlayGridProps {
     className?: string;
 }
 
-function borderExtLines(size: number) {
+function borderExtLines(size: number, selection: number) {
     const lines = new Array(size);
     for (let i = 0; i < size; i++) {
         lines[i] = (
-            <div key={i} className="play-grid__numbers-border-ext__line" />
+            <div
+                key={i}
+                className={
+                    "play-grid__numbers-border-ext__line" +
+                    (selection === i
+                        ? " play-grid__numbers-border-ext__line--selected"
+                        : "")
+                }
+            />
         );
     }
     return lines;
@@ -30,19 +38,35 @@ export function PlayGrid({ level, marks, className = "" }: PlayGridProps) {
             <div className="play-grid__selection-cover play-grid__selection-cover--left" />
             <div className="play-grid__selection-cover play-grid__selection-cover--top" />
             <div className="play-grid__numbers-border-ext play-grid__numbers-border-ext--v">
-                {...useMemo(() => borderExtLines(level.width), [level.width])}
+                {...useMemo(
+                    () =>
+                        borderExtLines(
+                            level.width,
+                            selection ? selection[0] : -1
+                        ),
+                    [level.width, selection]
+                )}
             </div>
             <div className="play-grid__numbers-border-ext play-grid__numbers-border-ext--h">
-                {...useMemo(() => borderExtLines(level.height), [level.height])}
+                {...useMemo(
+                    () =>
+                        borderExtLines(
+                            level.height,
+                            selection ? selection[1] : -1
+                        ),
+                    [level.height, selection]
+                )}
             </div>
             <NumbersMemo
                 isVertical={true}
                 level={level}
+                selection={selection ? selection[0] : -1}
                 className="play-grid__numbers play-grid__numbers--v"
             />
             <NumbersMemo
                 isVertical={false}
                 level={level}
+                selection={selection ? selection[1] : -1}
                 className="play-grid__numbers play-grid__numbers--h"
             />
             <SelectableGridWithTouchInput
