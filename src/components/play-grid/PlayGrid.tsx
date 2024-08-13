@@ -6,19 +6,19 @@ import { CellMark } from "../../CellMark";
 import {
     Dispatch,
     MutableRefObject,
-    SetStateAction,
     UIEvent,
     useCallback,
     useMemo,
 } from "react";
 import { NumbersMemo } from "../numbers/Numbers";
 import { useSyncedScroll } from "../../utils";
+import { Selection, SetSelectionAction } from "../grid/Selection";
 
 export interface PlayGridProps {
     level: LevelDimensions & LoadedLevelLines;
     marks: CellMark[];
-    selection: [number, number] | null;
-    setSelection: Dispatch<SetStateAction<[number, number] | null>>;
+    selection: Selection;
+    setSelection: Dispatch<SetSelectionAction>;
     className?: string;
 }
 

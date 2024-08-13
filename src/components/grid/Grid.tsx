@@ -4,9 +4,9 @@ import {
     Dispatch,
     ForwardedRef,
     MutableRefObject,
-    SetStateAction,
     UIEvent,
     useCallback,
+    useEffect,
     useRef,
 } from "react";
 import { CellMark } from "../../CellMark";
@@ -17,6 +17,7 @@ import {
     useSelectionInput,
     useSelectionTouchInput,
 } from "./hooks";
+import { Selection, SetSelectionAction } from "./Selection";
 
 function useScrollContainerRefs(
     outer: ForwardedRef<HTMLDivElement | null> | undefined,
@@ -96,7 +97,7 @@ export function Grid({
 }
 
 export interface SelectableGridProps extends GridProps {
-    selection: [number, number] | null;
+    selection: Selection;
 }
 
 export function SelectableGrid({
@@ -150,7 +151,7 @@ export function SelectableGrid({
 }
 
 export interface SelectableGridWithInputProps extends SelectableGridProps {
-    setSelection: Dispatch<SetStateAction<[number, number] | null>>;
+    setSelection: Dispatch<SetSelectionAction>;
     autoFocus?: boolean;
 }
 
@@ -258,6 +259,15 @@ export function SelectableGridWithTouchInput({
         onTouchEnd: selectionOnTouchEnd,
     } = useSelectionTouchInput(width, height, setSelection, tableRef);
 
+    useEffect(() => {
+        window.addEventListener("touchend", selectionOnTouchEnd);
+        window.addEventListener("touchcancel", selectionOnTouchEnd);
+        return () => {
+            window.removeEventListener("touchend", selectionOnTouchEnd);
+            window.removeEventListener("touchcancel", selectionOnTouchEnd);
+        };
+    }, [selectionOnTouchEnd]);
+
     return (
         <div className={className + " grid--scrollable"}>
             {shadows}
@@ -286,7 +296,6 @@ export function SelectableGridWithTouchInput({
                     onMouseMove={selectionOnMouseMove}
                     onTouchStart={selectionOnTouchStart}
                     onTouchMove={selectionOnTouchMove}
-                    onTouchEnd={selectionOnTouchEnd}
                     ref={tableRef}
                 >
                     <tbody>{...rows}</tbody>

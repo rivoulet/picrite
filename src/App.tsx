@@ -1,58 +1,23 @@
 import "./App.less";
 
-import { useEffect, useState } from "react";
-import { CellMark } from "./CellMark";
+import { useState } from "react";
 import { loadLevel } from "./algorithms/load";
-import { PlayGrid } from "./components/play-grid/PlayGrid";
+import { PlayScreen } from "./screens/play/Play";
 
 export function App() {
-    const width = 20;
-    const height = 20;
-
-    const [marks, setMarks] = useState(() => {
-        const marks = new Array<CellMark>(width * height);
+    const [level, setLevel] = useState(() => {
+        const width = 10;
+        const height = 10;
+        const cells = new Array<boolean>(width * height);
         for (let i = 0; i < width * height; i++) {
-            marks[i] = [CellMark.Empty, CellMark.Mark, CellMark.Cross][
-                Math.floor(Math.random() * 3)
-            ];
+            cells[i] = Math.random() >= 0.5;
         }
-        return marks;
-    });
-    const [level, setLevel] = useState(() =>
-        loadLevel({
+        return loadLevel({
             width,
             height,
-            cells: marks.map((mark) => mark === CellMark.Mark),
-        })
-    );
-    const [selection, setSelection] = useState<[number, number] | null>(null);
+            cells,
+        });
+    });
 
-    // Test animations
-    // useEffect(() => {
-    //     const id = setInterval(() => {
-    //         const marks = new Array<CellMark>(width * height);
-    //         for (let i = 0; i < width * height; i++) {
-    //             marks[i] = [CellMark.Empty, CellMark.Mark, CellMark.Cross][
-    //                 Math.floor(Math.random() * 3)
-    //             ];
-    //         }
-    //         setMarks(marks);
-    //         setLevel(loadLevel({
-    //             width,
-    //             height,
-    //             cells: marks.map((mark) => mark === CellMark.Mark),
-    //         }));
-    //     }, 2000);
-    //     return () => clearInterval(id);
-    // }, []);
-
-    return (
-        <PlayGrid
-            level={level}
-            marks={marks}
-            selection={selection}
-            setSelection={setSelection}
-            className="main-grid"
-        />
-    );
+    return <PlayScreen level={level} />;
 }

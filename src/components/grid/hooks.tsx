@@ -4,8 +4,7 @@ import {
     MouseEvent,
     MutableRefObject,
     ReactElement,
-    SetStateAction,
-    TouchEvent,
+    TouchEvent as ReactTouchEvent,
     useCallback,
     useMemo,
     useRef,
@@ -14,6 +13,11 @@ import {
 import { clamp, equal2 } from "../../utils";
 import { CellMark } from "../../CellMark";
 import { MemoCell } from "./Cell";
+import {
+    Selection,
+    SelectionUpdateKind,
+    SetSelectionAction,
+} from "./Selection";
 
 export function cellSize(element: HTMLElement) {
     return 2 * parseFloat(getComputedStyle(element).fontSize);
@@ -59,7 +63,7 @@ export function useRows(width: number, height: number, marks: CellMark[]) {
 
 export function useSelection(
     width: number,
-    selection: [number, number] | null,
+    selection: Selection,
     scrollContainerRef: MutableRefObject<HTMLElement | null>
 ) {
     const selectionElementRef = useRef<HTMLDivElement | null>(null);
@@ -153,14 +157,17 @@ export function useSelection(
 export function useSelectionInput(
     width: number,
     height: number,
-    selection: [number, number] | null,
-    setSelection: Dispatch<SetStateAction<[number, number] | null>>,
+    selection: Selection,
+    setSelection: Dispatch<SetSelectionAction>,
     tableRef: MutableRefObject<HTMLElement | null>
 ) {
     const moveSelection = useCallback(
         (dx: number, dy: number) => {
             if (!selection) {
-                setSelection([0, 0]);
+                setSelection({
+                    selection: [0, 0],
+                    kind: SelectionUpdateKind.NavMove,
+                });
                 return;
             }
             const newSelection: [number, number] = [
@@ -168,7 +175,10 @@ export function useSelectionInput(
                 clamp(selection[1] + dy, 0, height - 1),
             ];
             if (!equal2(newSelection, selection)) {
-                setSelection(newSelection);
+                setSelection({
+                    selection: newSelection,
+                    kind: SelectionUpdateKind.NavMove,
+                });
             }
         },
         [width, height, selection, setSelection]
@@ -197,11 +207,6 @@ export function useSelectionInput(
                     e.preventDefault();
                     break;
                 }
-                case " ": {
-                    moveSelection(0, 0);
-                    e.preventDefault();
-                    break;
-                }
             }
             return;
         },
@@ -220,11 +225,15 @@ export function useSelectionInput(
                 height,
                 tableRef.current
             );
-            setSelection((selection) =>
-                !selection || !equal2(newSelection, selection)
-                    ? newSelection
-                    : selection
-            );
+            setSelection((selection) => {
+                return {
+                    selection:
+                        !selection || !equal2(newSelection, selection)
+                            ? newSelection
+                            : selection,
+                    kind: SelectionUpdateKind.DragStart,
+                };
+            });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [width, height, setSelection]
@@ -242,11 +251,15 @@ export function useSelectionInput(
                 height,
                 tableRef.current
             );
-            setSelection((selection) =>
-                !selection || !equal2(newSelection, selection)
-                    ? newSelection
-                    : selection
-            );
+            setSelection((selection) => {
+                return {
+                    selection:
+                        !selection || !equal2(newSelection, selection)
+                            ? newSelection
+                            : selection,
+                    kind: SelectionUpdateKind.DragMove,
+                };
+            });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [width, height, setSelection]
@@ -262,13 +275,13 @@ export function useSelectionInput(
 export function useSelectionTouchInput(
     width: number,
     height: number,
-    setSelection: Dispatch<SetStateAction<[number, number] | null>>,
+    setSelection: Dispatch<SetSelectionAction>,
     tableRef: MutableRefObject<HTMLElement | null>
 ) {
     const touchesRef = useRef<number[]>([]);
 
     const onTouchStart = useCallback(
-        (e: TouchEvent) => {
+        (e: ReactTouchEvent) => {
             let touch0;
             for (let i = 0; i < e.changedTouches.length; i++) {
                 const touch = e.changedTouches[i];
@@ -298,18 +311,22 @@ export function useSelectionTouchInput(
                 height,
                 tableRef.current
             );
-            setSelection((selection) =>
-                !selection || !equal2(newSelection, selection)
-                    ? newSelection
-                    : selection
-            );
+            setSelection((selection) => {
+                return {
+                    selection:
+                        !selection || !equal2(newSelection, selection)
+                            ? newSelection
+                            : selection,
+                    kind: SelectionUpdateKind.DragStart,
+                };
+            });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [width, height, setSelection]
     );
 
     const onTouchMove = useCallback(
-        (e: TouchEvent) => {
+        (e: ReactTouchEvent) => {
             let touch0;
             for (let i = 0; i < e.changedTouches.length; i++) {
                 const touch = e.changedTouches[i];
@@ -327,68 +344,30 @@ export function useSelectionTouchInput(
                 height,
                 tableRef.current
             );
-            setSelection((selection) =>
-                !selection || !equal2(newSelection, selection)
-                    ? newSelection
-                    : selection
-            );
+            setSelection((selection) => {
+                return {
+                    selection:
+                        !selection || !equal2(newSelection, selection)
+                            ? newSelection
+                            : selection,
+                    kind: SelectionUpdateKind.DragMove,
+                };
+            });
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [width, height, setSelection]
     );
 
-    const onTouchEnd = useCallback(
-        (e: TouchEvent) => {
-            let touch0WasChanged = false;
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                const touch = e.changedTouches[i];
-                const j = touchesRef.current.indexOf(touch.identifier);
-                switch (j) {
-                    case -1: {
-                        break;
-                    }
-                    case 0: {
-                        touch0WasChanged = true;
-                        touchesRef.current.splice(0, 1);
-                        break;
-                    }
-                    default: {
-                        touchesRef.current.splice(j, 1);
-                        break;
-                    }
-                }
+    const onTouchEnd = useCallback((e: TouchEvent) => {
+        e.preventDefault();
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            const touch = e.changedTouches[i];
+            const j = touchesRef.current.indexOf(touch.identifier);
+            if (j !== -1) {
+                touchesRef.current.splice(j, 1);
             }
-            if (
-                !touch0WasChanged ||
-                !tableRef.current ||
-                touchesRef.current.length === 0
-            ) {
-                return;
-            }
-            let touch0;
-            for (let i = 0; i < e.touches.length; i++) {
-                const touch = e.touches[i];
-                if (touch.identifier === touchesRef.current[0]) {
-                    touch0 = touch;
-                    break;
-                }
-            }
-            const newSelection = clientPosToCellPos(
-                touch0!.clientX,
-                touch0!.clientY,
-                width,
-                height,
-                tableRef.current
-            );
-            setSelection((selection) =>
-                !selection || !equal2(newSelection, selection)
-                    ? newSelection
-                    : selection
-            );
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [width, height, setSelection]
-    );
+        }
+    }, []);
 
     return {
         onTouchStart,
