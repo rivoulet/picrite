@@ -1,11 +1,12 @@
 @import "../../style.less";
 
 .numbers {
+    display: inline-flex;
     overflow: auto;
+    vertical-align: top;
 
     &,
     &__line {
-        display: flex;
         padding: 0;
         margin: 0;
     }
@@ -31,6 +32,7 @@
     }
 
     &__line {
+        display: flex;
         box-sizing: border-box;
         justify-content: end;
         align-items: center;
@@ -70,7 +72,7 @@
             &:not(:first-child) {
                 border-top: (@cell-border-width * 0.5) solid @cell-border-color;
             }
-            
+
             &:nth-of-type(5n):not(:last-child) {
                 border-bottom-width: @cell-border-width;
             }

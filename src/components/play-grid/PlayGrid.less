@@ -4,6 +4,14 @@
     display: inline-grid;
     vertical-align: top;
     grid-template: min-content minmax(0, 1fr) / min-content minmax(0, 1fr);
+    .theme-color(background-color, bg-color);
+
+    &__grid > .grid__scroll-container,
+    &__numbers,
+    &__numbers-border-ext {
+        overscroll-behavior: none;
+        -webkit-overflow-scrolling: auto;
+    }
 
     &__grid {
         grid-column: 2;

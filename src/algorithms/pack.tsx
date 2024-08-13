@@ -3,7 +3,7 @@ import { LevelCells, LevelDimensions, PackedLevelCells } from "../Level";
 export function unpackLevel<T extends LevelDimensions & PackedLevelCells>(
     level: T
 ): T & LevelCells {
-    if (level.cells.length != level.width * level.height) {
+    if (level.cells.length !== level.width * level.height) {
         throw new RangeError("Invalid level cells");
     }
     const cells = Array.from(level.cells, (c) => c !== "0");

@@ -3,10 +3,12 @@
 
 .grid {
     &--scrollable {
+        // Flexbox is used to limit the scroll container's height (height: 100% doesn't work when
+        // the parent's height isn't fixed)
         display: inline-flex;
         flex-direction: column;
-        position: relative;
         vertical-align: top;
+        position: relative;
     }
 
     &__scroll-container {

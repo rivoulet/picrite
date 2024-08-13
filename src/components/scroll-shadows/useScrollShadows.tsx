@@ -11,7 +11,10 @@ export function useScrollShadows(
     const [right, setRight] = useState(false);
 
     const update = useCallback(() => {
-        const e = ref.current!;
+        const e = ref.current;
+        if (!e) {
+            return;
+        }
         setTop(e.scrollTop > 0);
         setBottom(e.scrollTop < e.scrollHeight - e.clientHeight - 1);
         setLeft(e.scrollLeft > 0);

@@ -18,17 +18,19 @@ export function Cell({ mark }: { mark: CellMark }) {
             {hasMarkRef.current ? (
                 <div
                     className={
-                        " grid__cell__contents grid__cell__contents--mark" +
+                        "grid__cell__contents grid__cell__contents--mark" +
                         hasVisibleMarkClassName
                     }
                 />
             ) : (
-                <CrossSign
+                <div
                     className={
-                        " grid__cell__contents grid__cell__contents--cross" +
+                        "grid__cell__contents grid__cell__contents--cross" +
                         hasVisibleMarkClassName
                     }
-                />
+                >
+                    <CrossSign />
+                </div>
             )}
         </td>
     );

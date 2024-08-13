@@ -63,6 +63,10 @@ export function useSelection(
     scrollContainerRef: MutableRefObject<HTMLElement | null>
 ) {
     const selectionElementRef = useRef<HTMLDivElement | null>(null);
+    const posRef = useRef({
+        top: 0,
+        left: 0,
+    });
 
     const [prevSelection, setPrevSelection] = useState(selection);
     const selectionWasChanged = selection !== prevSelection;
@@ -114,6 +118,9 @@ export function useSelection(
         }
     }
 
+    posRef.current.top = top;
+    posRef.current.left = left;
+
     const selectionElement = (
         <div
             className={
@@ -132,15 +139,14 @@ export function useSelection(
 
     return {
         selectionElement,
-        onScroll: useCallback(() => {
-            if (selectionElementRef.current && scrollContainerRef.current) {
+        onScroll: useCallback((e: HTMLElement) => {
+            if (selectionElementRef.current) {
                 selectionElementRef.current.style.top =
-                    top - scrollContainerRef.current.scrollTop + "px";
+                    posRef.current.top - e.scrollTop + "px";
                 selectionElementRef.current.style.left =
-                    left - scrollContainerRef.current.scrollLeft + "px";
+                    posRef.current.left - e.scrollLeft + "px";
             }
-            // eslint-disable-next-line react-hooks/exhaustive-deps
-        }, [top, left]),
+        }, []),
     };
 }
 
@@ -259,19 +265,19 @@ export function useSelectionTouchInput(
     setSelection: Dispatch<SetStateAction<[number, number] | null>>,
     tableRef: MutableRefObject<HTMLElement | null>
 ) {
-    const touches = useRef<number[]>([]);
+    const touchesRef = useRef<number[]>([]);
 
     const onTouchStart = useCallback(
         (e: TouchEvent) => {
             let touch0;
             for (let i = 0; i < e.changedTouches.length; i++) {
                 const touch = e.changedTouches[i];
-                switch (touches.current.indexOf(touch.identifier)) {
+                switch (touchesRef.current.indexOf(touch.identifier)) {
                     case -1: {
-                        if (touches.current.length === 0) {
+                        if (touchesRef.current.length === 0) {
                             touch0 = touch;
                         }
-                        touches.current.push(touch.identifier);
+                        touchesRef.current.push(touch.identifier);
                         break;
                     }
                     case 0: {
@@ -307,7 +313,7 @@ export function useSelectionTouchInput(
             let touch0;
             for (let i = 0; i < e.changedTouches.length; i++) {
                 const touch = e.changedTouches[i];
-                if (touches.current.indexOf(touch.identifier) === 0) {
+                if (touchesRef.current.indexOf(touch.identifier) === 0) {
                     touch0 = touch;
                 }
             }
@@ -336,18 +342,18 @@ export function useSelectionTouchInput(
             let touch0WasChanged = false;
             for (let i = 0; i < e.changedTouches.length; i++) {
                 const touch = e.changedTouches[i];
-                const j = touches.current.indexOf(touch.identifier);
+                const j = touchesRef.current.indexOf(touch.identifier);
                 switch (j) {
                     case -1: {
                         break;
                     }
                     case 0: {
                         touch0WasChanged = true;
-                        touches.current.splice(0, 1);
+                        touchesRef.current.splice(0, 1);
                         break;
                     }
                     default: {
-                        touches.current.splice(j, 1);
+                        touchesRef.current.splice(j, 1);
                         break;
                     }
                 }
@@ -355,14 +361,14 @@ export function useSelectionTouchInput(
             if (
                 !touch0WasChanged ||
                 !tableRef.current ||
-                touches.current.length === 0
+                touchesRef.current.length === 0
             ) {
                 return;
             }
             let touch0;
             for (let i = 0; i < e.touches.length; i++) {
                 const touch = e.touches[i];
-                if (touch.identifier === touches.current[0]) {
+                if (touch.identifier === touchesRef.current[0]) {
                     touch0 = touch;
                     break;
                 }

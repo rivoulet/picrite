@@ -6,7 +6,8 @@ import { loadLevel } from "./algorithms/load";
 import { PlayGrid } from "./components/play-grid/PlayGrid";
 
 export function App() {
-    const width = 10, height = 10;
+    const width = 20;
+    const height = 20;
 
     const [marks, setMarks] = useState(() => {
         const marks = new Array<CellMark>(width * height);
@@ -24,6 +25,7 @@ export function App() {
             cells: marks.map((mark) => mark === CellMark.Mark),
         })
     );
+    const [selection, setSelection] = useState<[number, number] | null>(null);
 
     // Test animations
     // useEffect(() => {
@@ -44,5 +46,13 @@ export function App() {
     //     return () => clearInterval(id);
     // }, []);
 
-    return <PlayGrid level={level} marks={marks} className="main-grid" />;
+    return (
+        <PlayGrid
+            level={level}
+            marks={marks}
+            selection={selection}
+            setSelection={setSelection}
+            className="main-grid"
+        />
+    );
 }
