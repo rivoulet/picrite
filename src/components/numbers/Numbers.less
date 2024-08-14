@@ -39,6 +39,14 @@
         flex: 0 0 auto;
         .theme-color(color, numbers-color);
 
+        &--hinted {
+            .theme-color(color, numbers-hint-color);
+        }
+
+        &--error {
+            .theme-color(color, numbers-error-color);
+        }
+
         &--selected {
             background-color: @numbers-selection-color;
         }
@@ -85,6 +93,14 @@
             display: flex;
             justify-content: center;
             list-style: none;
+
+            &--faded {
+                .theme-color(color, numbers-faded-color);
+
+                .numbers__line--hinted > & {
+                    .theme-color(color, numbers-faded-hint-color);
+                }
+            }
 
             .numbers--v > .numbers__line > & {
                 height: @cell-size;

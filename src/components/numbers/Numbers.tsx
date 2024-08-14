@@ -1,14 +1,14 @@
 import "./Numbers.less";
 
 import { ForwardedRef, memo, UIEvent, useCallback } from "react";
-import { LevelDimensions, LoadedLevelLines } from "../../Level";
+import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { CellMark } from "../../CellMark";
 import { lineMarks } from "../../algorithms/utils";
 import { MemoLine } from "./Line";
 
 export interface NumbersProps {
     isVertical: boolean;
-    level: LoadedLevelLines;
+    level: LoadedLevelNumbers;
     selection: number;
     className?: string;
     onScroll?: (x: number) => void;
@@ -16,7 +16,7 @@ export interface NumbersProps {
 }
 
 export interface NumbersPropsWithMarks extends NumbersProps {
-    level: LoadedLevelLines & LevelDimensions;
+    level: LoadedLevelNumbers & LevelDimensions;
     marks: CellMark[];
 }
 
@@ -28,12 +28,12 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
             ? lineMarks(props.level, props.marks, props.isVertical)
             : undefined;
     const numberLines = (
-        props.isVertical ? props.level.vLines : props.level.hLines
-    ).map((levelLine, i) => {
+        props.isVertical ? props.level.vNumbers : props.level.hNumbers
+    ).map((numbers, i) => {
         return (
             <MemoLine
                 key={i}
-                levelLine={levelLine}
+                numbers={numbers}
                 marks={lineMarks_ ? lineMarks_[i] : undefined}
                 isSelected={props.selection === i}
             />

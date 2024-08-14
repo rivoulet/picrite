@@ -1,17 +1,19 @@
-import { LevelDimensions, LevelCells, LoadedLevelLines } from "../Level";
+import { LevelDimensions, LevelCells, LoadedLevelNumbers } from "../Level";
 
-function generateLines(level: LevelDimensions & LevelCells): LoadedLevelLines {
+function generateNumbers(
+    level: LevelDimensions & LevelCells
+): LoadedLevelNumbers {
     const levelSize = [level.width, level.height];
     const indexScale = [1, level.width];
 
-    function generateHVLines(isVertical: boolean) {
+    function generateHVNumbers(isVertical: boolean) {
         const dirIndex = +isVertical;
         const primarySize = levelSize[dirIndex ^ 1];
         const secondarySize = levelSize[dirIndex];
         const primaryScale = indexScale[dirIndex ^ 1];
         const secondaryScale = indexScale[dirIndex];
 
-        const lines = new Array<number[]>(primarySize);
+        const numbers = new Array<number[]>(primarySize);
         for (
             let i = 0, cellIndexBase = 0;
             i < primarySize;
@@ -36,19 +38,22 @@ function generateLines(level: LevelDimensions & LevelCells): LoadedLevelLines {
             if (cur) {
                 line.push(cur);
             }
-            lines[i] = line;
+            numbers[i] = line;
         }
-        return lines;
+        return numbers;
     }
 
-    return { hLines: generateHVLines(false), vLines: generateHVLines(true) };
+    return {
+        hNumbers: generateHVNumbers(false),
+        vNumbers: generateHVNumbers(true),
+    };
 }
 
 export function loadLevel<T extends LevelDimensions & LevelCells>(
     level: T
-): T & LoadedLevelLines {
+): T & LoadedLevelNumbers {
     return {
         ...level,
-        ...generateLines(level),
+        ...generateNumbers(level),
     };
 }

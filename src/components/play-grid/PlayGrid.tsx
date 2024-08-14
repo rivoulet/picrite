@@ -1,7 +1,7 @@
 import "./PlayGrid.less";
 
 import { SelectableGridWithTouchInput } from "../grid/Grid";
-import { LevelDimensions, LoadedLevelLines } from "../../Level";
+import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { CellMark } from "../../CellMark";
 import {
     Dispatch,
@@ -15,7 +15,7 @@ import { useSyncedScroll } from "../../utils";
 import { Selection, SetSelectionAction } from "../grid/Selection";
 
 export interface PlayGridProps {
-    level: LevelDimensions & LoadedLevelLines;
+    level: LevelDimensions & LoadedLevelNumbers;
     marks: CellMark[];
     selection: Selection;
     setSelection: Dispatch<SetSelectionAction>;
@@ -108,6 +108,7 @@ export function PlayGrid({
             <NumbersMemo
                 isVertical={true}
                 level={level}
+                marks={marks}
                 selection={selection ? selection[0] : -1}
                 className="play-grid__numbers play-grid__numbers--v"
                 onScroll={useCallback(
@@ -127,6 +128,7 @@ export function PlayGrid({
             <NumbersMemo
                 isVertical={false}
                 level={level}
+                marks={marks}
                 selection={selection ? selection[1] : -1}
                 className="play-grid__numbers play-grid__numbers--h"
                 onScroll={useCallback(
