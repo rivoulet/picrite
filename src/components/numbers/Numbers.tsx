@@ -3,7 +3,7 @@ import "./Numbers.less";
 import { ForwardedRef, memo, UIEvent, useCallback } from "react";
 import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { CellMark } from "../../CellMark";
-import { lineMarks } from "../../algorithms/utils";
+import { marksByLine } from "../../algorithms/utils";
 import { MemoLine } from "./Line";
 
 export interface NumbersProps {
@@ -23,9 +23,9 @@ export interface NumbersPropsWithMarks extends NumbersProps {
 export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
     const { isVertical, className = "", onScroll, innerRef } = props;
 
-    const lineMarks_ =
+    const marksByLine_ =
         "marks" in props
-            ? lineMarks(props.level, props.marks, props.isVertical)
+            ? marksByLine(props.level, props.marks, props.isVertical)
             : undefined;
     const numberLines = (
         props.isVertical ? props.level.vNumbers : props.level.hNumbers
@@ -34,7 +34,7 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
             <MemoLine
                 key={i}
                 numbers={numbers}
-                marks={lineMarks_ ? lineMarks_[i] : undefined}
+                marks={marksByLine_ ? marksByLine_[i] : undefined}
                 isSelected={props.selection === i}
             />
         );

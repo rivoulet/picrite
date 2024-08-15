@@ -5,6 +5,7 @@ import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { CellMark } from "../../CellMark";
 import {
     Dispatch,
+    memo,
     MutableRefObject,
     UIEvent,
     useCallback,
@@ -169,3 +170,5 @@ export function PlayGrid({
         </div>
     );
 }
+
+export const MemoPlayGrid = memo(PlayGrid);

@@ -161,6 +161,8 @@ class Input {
 export function useInput(
     marks: CellMark[],
     setMarks: Dispatch<SetStateAction<CellMark[]>>,
+    isCrossing: boolean,
+    setIsCrossing: Dispatch<SetStateAction<boolean>>,
     level: LoadedLevel
 ) {
     const [selection, setSelectionRaw] = useState<Selection>(null);
@@ -169,6 +171,7 @@ export function useInput(
     if (inputRef.current === null) {
         inputRef.current = new Input();
     }
+    inputRef.current.isCrossing = isCrossing;
 
     const setSelection = useCallback(
         (action: SetSelectionAction) => {
@@ -206,6 +209,7 @@ export function useInput(
                 case "x":
                 case "Shift": {
                     inputRef.current.isCrossing = true;
+                    setIsCrossing(true);
                     break;
                 }
 
@@ -216,6 +220,7 @@ export function useInput(
                 }
             }
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [selection, setSelection]
     );
 
@@ -229,9 +234,11 @@ export function useInput(
             case "x":
             case "Shift": {
                 inputRef.current.isCrossing = false;
+                setIsCrossing(false);
                 break;
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onBlur = useCallback(() => {

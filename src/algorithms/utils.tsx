@@ -1,11 +1,11 @@
 import { LevelDimensions } from "../Level";
 import { CellMark } from "../CellMark";
 
-export function lineMarks(
+export function marksByLine(
     level: LevelDimensions,
     marks: CellMark[],
     isVertical: boolean,
-): CellMark[][] {
+) {
     const levelSize = [level.width, level.height];
     const indexScale = [1, level.width];
 
@@ -15,13 +15,13 @@ export function lineMarks(
     const primaryScale = indexScale[dirIndex ^ 1];
     const secondaryScale = indexScale[dirIndex];
     
-    const lines = new Array(primarySize);
+    const lines = new Array<CellMark[]>(primarySize);
     for (
         let i = 0, cellIndexBase = 0;
         i < primarySize;
         i++, cellIndexBase += primaryScale
     ) {
-        const line = new Array(secondarySize);
+        const line = new Array<CellMark>(secondarySize);
         for (
             let j = 0, cellIndex = cellIndexBase;
             j < secondarySize;
