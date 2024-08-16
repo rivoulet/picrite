@@ -14,7 +14,7 @@ export function Line({ numbers, marks, isSelected }: LineProps) {
 
     let knownMarks;
     let hasHint = false;
-    const numbersAreFaded = new Array(numbersOr0.length).fill(false);
+    const numbersAreFaded = new Array<boolean>(numbersOr0.length).fill(false);
 
     if (marks) {
         knownMarks = lineKnownMarks(numbers, marks);

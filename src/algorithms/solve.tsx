@@ -15,9 +15,7 @@ function lineKnownMarksInner(
 ) {
     const memoI = i * marks.length + startX;
     const memoized = memo[memoI];
-    if (typeof memoized !== "undefined") {
-        return memoized;
-    }
+    if (typeof memoized !== "undefined") return memoized;
 
     const result = new Array<SolutionMark>(marks.length);
 
@@ -56,9 +54,7 @@ function lineKnownMarksInner(
                 marks,
                 memo
             );
-            if (!innerResult) {
-                continue;
-            }
+            if (!innerResult) continue;
 
             if (isFirstSolution) {
                 for (let x = nextStartX; x < marks.length; x++) {
@@ -120,9 +116,7 @@ export function lineKnownMarks(numbers: number[], marks: CellMark[]) {
         );
     } else {
         for (let i = 0; i < marks.length; i++) {
-            if (marks[i] === CellMark.Mark) {
-                return null;
-            }
+            if (marks[i] === CellMark.Mark) return null;
         }
         return new Array<SolutionMark>(marks.length).fill({
             mark: CellMark.Cross,
@@ -140,9 +134,7 @@ function lineKnownMarksFastInner(
 ) {
     const memoI = i * marks.length + startX;
     const memoized = memo[memoI];
-    if (typeof memoized !== "undefined") {
-        return memoized;
-    }
+    if (typeof memoized !== "undefined") return memoized;
 
     const result = new Array<CellMark>(marks.length);
 
@@ -181,9 +173,7 @@ function lineKnownMarksFastInner(
                 marks,
                 memo
             );
-            if (!innerResult) {
-                continue;
-            }
+            if (!innerResult) continue;
 
             if (isFirstSolution) {
                 for (let x = nextStartX; x < marks.length; x++) {
@@ -238,9 +228,7 @@ export function lineKnownMarksFast(numbers: number[], marks: CellMark[]) {
         );
     } else {
         for (let i = 0; i < marks.length; i++) {
-            if (marks[i] === CellMark.Mark) {
-                return null;
-            }
+            if (marks[i] === CellMark.Mark) return null;
         }
         return new Array<CellMark>(marks.length).fill(CellMark.Cross);
     }
@@ -278,9 +266,7 @@ export function levelIsSolvable(
             i < primarySize;
             i++, cellIndexBase += primaryScale
         ) {
-            if (!lineMarksWereUpdated[dirIndex][i]) {
-                continue;
-            }
+            if (!lineMarksWereUpdated[dirIndex][i]) continue;
             lineMarksWereUpdated[dirIndex][i] = false;
 
             const lineMarks = new Array<CellMark>(secondarySize);
@@ -302,9 +288,7 @@ export function levelIsSolvable(
                 j < secondarySize;
                 j++, cellIndex += secondaryScale
             ) {
-                if (lineKnownMarks_[j] === lineMarks[j]) {
-                    continue;
-                }
+                if (lineKnownMarks_[j] === lineMarks[j]) continue;
                 marks[cellIndex] = lineKnownMarks_[j];
                 lineMarksWereUpdated[dirIndex ^ 1][j] = true;
                 hasAdvanced = true;
@@ -315,18 +299,14 @@ export function levelIsSolvable(
             iterationsWithoutAdvancement = 0;
         } else {
             iterationsWithoutAdvancement++;
-            if (iterationsWithoutAdvancement === 2) {
-                break;
-            }
+            if (iterationsWithoutAdvancement === 2) break;
         }
 
         dirIndex ^= 1;
     }
 
     for (let i = 0; i < marks.length; i++) {
-        if (marks[i] === CellMark.Empty) {
-            return false;
-        }
+        if (marks[i] === CellMark.Empty) return false;
     }
 
     return true;

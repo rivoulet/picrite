@@ -60,9 +60,7 @@ class Input {
             x0 = newSelection[dir];
         }
         for (let x = x0, j = base + x0 * step; x < x1; x++, j += step) {
-            if (marks[j] !== this.dragPrevMark!) {
-                continue;
-            }
+            if (marks[j] !== this.dragPrevMark!) continue;
             this.toggle(j, setMarks);
         }
     }
@@ -86,13 +84,11 @@ class Input {
             }
 
             case SelectionUpdateKind.NavMove: {
-                if (
+                const shouldIgnore =
                     !this.navIsWriting ||
                     newSelection === prevSelection ||
-                    marks[i] !== this.navPrevMark!
-                ) {
-                    return;
-                }
+                    marks[i] !== this.navPrevMark!;
+                if (shouldIgnore) return;
 
                 this.toggle(i, setMarks);
                 break;
@@ -109,9 +105,7 @@ class Input {
             }
 
             case SelectionUpdateKind.DragMove: {
-                if (newSelection === prevSelection) {
-                    return;
-                }
+                if (newSelection === prevSelection) return;
 
                 const matchesX = newSelection[0] === this.dragStart![0];
                 const matchesY = newSelection[1] === this.dragStart![1];
@@ -178,9 +172,7 @@ export function useInput(
             const { selection: newSelection, kind } =
                 typeof action === "function" ? action(selection) : action;
             setSelectionRaw(newSelection);
-            if (!newSelection) {
-                return;
-            }
+            if (!newSelection) return;
             inputRef.current.handleSelectionUpdate(
                 kind,
                 selection,

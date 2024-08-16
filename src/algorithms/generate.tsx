@@ -13,8 +13,6 @@ export function generateLevel(width: number, height: number): LoadedLevel {
             height,
             cells,
         });
-        if (levelIsSolvable(level)) {
-            return level;
-        }
+        if (levelIsSolvable(level)) return level;
     }
 }

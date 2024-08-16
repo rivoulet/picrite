@@ -7,12 +7,13 @@ import {
     Dispatch,
     memo,
     MutableRefObject,
+    ReactElement,
     UIEvent,
     useCallback,
     useMemo,
 } from "react";
 import { NumbersMemo } from "../numbers/Numbers";
-import { useSyncedScroll } from "../../utils";
+import { useSyncedScroll } from "../../utils/useSyncedScroll";
 import { Selection, SetSelectionAction } from "../grid/Selection";
 
 export interface PlayGridProps {
@@ -24,7 +25,7 @@ export interface PlayGridProps {
 }
 
 function borderExtLines(size: number, selection: number) {
-    const lines = new Array(size);
+    const lines = new Array<ReactElement>(size);
     for (let i = 0; i < size; i++) {
         lines[i] = (
             <div
@@ -112,6 +113,7 @@ export function PlayGrid({
                 marks={marks}
                 selection={selection ? selection[0] : -1}
                 className="play-grid__numbers play-grid__numbers--v"
+                tabIndex={-1}
                 onScroll={useCallback(
                     (x) => {
                         if (wasScrolledByUser(2)) {
@@ -132,6 +134,7 @@ export function PlayGrid({
                 marks={marks}
                 selection={selection ? selection[1] : -1}
                 className="play-grid__numbers play-grid__numbers--h"
+                tabIndex={-1}
                 onScroll={useCallback(
                     (y) => {
                         if (wasScrolledByUser(3)) {
@@ -154,6 +157,7 @@ export function PlayGrid({
                 setSelection={setSelection}
                 autoFocus={true}
                 className="play-grid__grid"
+                tabIndex={0}
                 onScroll={useCallback(
                     (x, y) => {
                         if (wasScrolledByUser(4)) {

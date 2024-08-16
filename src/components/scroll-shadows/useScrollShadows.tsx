@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { MutableRefObject, useCallback, useEffect, useState } from "react";
 import { ScrollShadowsMemo } from "./ScrollShadows";
 
 export function useScrollShadows(
-    ref: React.MutableRefObject<HTMLElement | null>,
+    ref: MutableRefObject<HTMLElement | null>,
     className: string = ""
 ) {
     const [top, setTop] = useState(false);
@@ -12,9 +12,7 @@ export function useScrollShadows(
 
     const update = useCallback(() => {
         const e = ref.current;
-        if (!e) {
-            return;
-        }
+        if (!e) return;
         setTop(e.scrollTop > 0);
         setBottom(e.scrollTop < e.scrollHeight - e.clientHeight - 1);
         setLeft(e.scrollLeft > 0);

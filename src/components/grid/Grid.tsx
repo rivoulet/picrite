@@ -6,7 +6,6 @@ import {
     MutableRefObject,
     UIEvent,
     useCallback,
-    useEffect,
     useRef,
 } from "react";
 import { CellMark } from "../../CellMark";
@@ -53,6 +52,7 @@ export interface GridProps {
     height: number;
     marks: CellMark[];
     className?: string;
+    tabIndex?: number;
     onScroll?: (x: number, y: number) => void;
     scrollContainerRef?: ForwardedRef<HTMLDivElement | null>;
 }
@@ -62,6 +62,7 @@ export function Grid({
     height,
     marks,
     className = "",
+    tabIndex,
     onScroll,
     scrollContainerRef,
 }: GridProps) {
@@ -76,6 +77,7 @@ export function Grid({
             {shadows}
             <div
                 className="grid__scroll-container"
+                tabIndex={tabIndex}
                 ref={useScrollContainerRefs(
                     scrollContainerRef,
                     scrollContainerRef_
@@ -106,6 +108,7 @@ export function SelectableGrid({
     marks,
     selection,
     className = "",
+    tabIndex,
     onScroll,
     scrollContainerRef,
 }: SelectableGridProps) {
@@ -129,6 +132,7 @@ export function SelectableGrid({
             {selectionElement}
             <div
                 className="grid__scroll-container"
+                tabIndex={tabIndex}
                 ref={useScrollContainerRefs(
                     scrollContainerRef,
                     scrollContainerRef_
@@ -163,6 +167,7 @@ export function SelectableGridWithInput({
     setSelection,
     autoFocus = false,
     className = "",
+    tabIndex,
     onScroll,
     scrollContainerRef,
 }: SelectableGridWithInputProps) {
@@ -208,7 +213,7 @@ export function SelectableGridWithInput({
             >
                 <table
                     className="grid__table"
-                    tabIndex={0}
+                    tabIndex={tabIndex}
                     autoFocus={autoFocus}
                     onKeyDown={selectionOnKeyDown}
                     onMouseDown={selectionOnMouseDown}
@@ -230,6 +235,7 @@ export function SelectableGridWithTouchInput({
     setSelection,
     autoFocus = false,
     className = "",
+    tabIndex,
     onScroll,
     scrollContainerRef,
 }: SelectableGridWithInputProps) {
@@ -256,17 +262,7 @@ export function SelectableGridWithTouchInput({
     const {
         onTouchStart: selectionOnTouchStart,
         onTouchMove: selectionOnTouchMove,
-        onTouchEnd: selectionOnTouchEnd,
     } = useSelectionTouchInput(width, height, setSelection, tableRef);
-
-    useEffect(() => {
-        window.addEventListener("touchend", selectionOnTouchEnd);
-        window.addEventListener("touchcancel", selectionOnTouchEnd);
-        return () => {
-            window.removeEventListener("touchend", selectionOnTouchEnd);
-            window.removeEventListener("touchcancel", selectionOnTouchEnd);
-        };
-    }, [selectionOnTouchEnd]);
 
     return (
         <div className={className + " grid--scrollable"}>
@@ -289,7 +285,7 @@ export function SelectableGridWithTouchInput({
             >
                 <table
                     className="grid__table"
-                    tabIndex={0}
+                    tabIndex={tabIndex}
                     autoFocus={autoFocus}
                     onKeyDown={selectionOnKeyDown}
                     onMouseDown={selectionOnMouseDown}

@@ -6,6 +6,7 @@ import {
     ReactElement,
     TouchEvent as ReactTouchEvent,
     useCallback,
+    useEffect,
     useMemo,
     useRef,
     useState,
@@ -19,11 +20,11 @@ import {
     SetSelectionAction,
 } from "./Selection";
 
-export function cellSize(element: HTMLElement) {
+function cellSize(element: HTMLElement) {
     return 2 * parseFloat(getComputedStyle(element).fontSize);
 }
 
-export function clientPosToCellPos(
+function clientPosToCellPos(
     x: number,
     y: number,
     width: number,
@@ -215,9 +216,7 @@ export function useSelectionInput(
 
     const onMouseDown = useCallback(
         (e: MouseEvent) => {
-            if (!tableRef.current) {
-                return;
-            }
+            if (!tableRef.current) return;
             const newSelection = clientPosToCellPos(
                 e.clientX,
                 e.clientY,
@@ -241,9 +240,7 @@ export function useSelectionInput(
 
     const onMouseMove = useCallback(
         (e: MouseEvent) => {
-            if (!tableRef.current || !e.buttons) {
-                return;
-            }
+            if (!tableRef.current || !e.buttons) return;
             const newSelection = clientPosToCellPos(
                 e.clientX,
                 e.clientY,
@@ -301,9 +298,7 @@ export function useSelectionTouchInput(
                         break;
                 }
             }
-            if (!touch0 || !tableRef.current) {
-                return;
-            }
+            if (!touch0 || !tableRef.current) return;
             const newSelection = clientPosToCellPos(
                 touch0.clientX,
                 touch0.clientY,
@@ -334,9 +329,7 @@ export function useSelectionTouchInput(
                     touch0 = touch;
                 }
             }
-            if (!touch0 || !tableRef.current) {
-                return;
-            }
+            if (!touch0 || !tableRef.current) return;
             const newSelection = clientPosToCellPos(
                 touch0.clientX,
                 touch0.clientY,
@@ -369,9 +362,17 @@ export function useSelectionTouchInput(
         }
     }, []);
 
+    useEffect(() => {
+        window.addEventListener("touchend", onTouchEnd);
+        window.addEventListener("touchcancel", onTouchEnd);
+        return () => {
+            window.removeEventListener("touchend", onTouchEnd);
+            window.removeEventListener("touchcancel", onTouchEnd);
+        };
+    }, [onTouchEnd]);
+
     return {
         onTouchStart,
         onTouchMove,
-        onTouchEnd,
     };
 }

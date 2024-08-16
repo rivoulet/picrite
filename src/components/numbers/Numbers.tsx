@@ -11,6 +11,7 @@ export interface NumbersProps {
     level: LoadedLevelNumbers;
     selection: number;
     className?: string;
+    tabIndex?: number;
     onScroll?: (x: number) => void;
     innerRef?: ForwardedRef<HTMLOListElement>;
 }
@@ -21,7 +22,7 @@ export interface NumbersPropsWithMarks extends NumbersProps {
 }
 
 export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
-    const { isVertical, className = "", onScroll, innerRef } = props;
+    const { isVertical, className = "", tabIndex, onScroll, innerRef } = props;
 
     const marksByLine_ =
         "marks" in props
@@ -47,10 +48,11 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
                 " numbers " +
                 (isVertical ? "numbers--v" : "numbers--h")
             }
+            tabIndex={tabIndex}
             onScroll={useCallback(
                 (e: UIEvent) => {
                     if (onScroll) {
-                        const target = e.target as HTMLOListElement;
+                        const target = e.target as HTMLElement;
                         onScroll(
                             isVertical ? target.scrollLeft : target.scrollTop
                         );
@@ -58,7 +60,6 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
                 },
                 [isVertical, onScroll]
             )}
-            tabIndex={-1}
             ref={innerRef}
         >
             {...numberLines}
