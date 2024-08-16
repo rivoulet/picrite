@@ -1,24 +1,38 @@
-import { MutableRefObject, useCallback, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { ScrollShadowsMemo } from "./ScrollShadows";
 
 export function useScrollShadows(
-    ref: MutableRefObject<HTMLElement | null>,
+    ref: RefObject<HTMLElement>,
     className: string = ""
 ) {
-    const [top, setTop] = useState(false);
-    const [bottom, setBottom] = useState(false);
-    const [left, setLeft] = useState(false);
-    const [right, setRight] = useState(false);
+    const [, setCurUpdate] = useState(0);
 
-    const update = useCallback(() => {
+    const visibleDirections = useCallback(() => {
         const e = ref.current;
-        if (!e) return;
-        setTop(e.scrollTop > 0);
-        setBottom(e.scrollTop < e.scrollHeight - e.clientHeight - 1);
-        setLeft(e.scrollLeft > 0);
-        setRight(e.scrollLeft < e.scrollWidth - e.clientWidth - 1);
+        if (!e) return { top: false, bottom: false, left: false, right: false };
+        return {
+            top: e.scrollTop > 0,
+            bottom: e.scrollTop < e.scrollHeight - e.clientHeight - 1,
+            left: e.scrollLeft > 0,
+            right: e.scrollLeft < e.scrollWidth - e.clientWidth - 1,
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const directions = visibleDirections();
+    const directionsRef = useRef(directions);
+    directionsRef.current = directions;
+
+    const update = useCallback(() => {
+        const newDirections = visibleDirections();
+        const directionsAreIdentical =
+            newDirections.top === directionsRef.current.top &&
+            newDirections.bottom === directionsRef.current.bottom &&
+            newDirections.left === directionsRef.current.left &&
+            newDirections.right === directionsRef.current.right;
+        if (directionsAreIdentical) return;
+        setCurUpdate((update) => (update + 1) & 0xff);
+    }, [visibleDirections]);
 
     useEffect(() => {
         window.addEventListener("resize", update);
@@ -28,10 +42,10 @@ export function useScrollShadows(
     return {
         shadows: (
             <ScrollShadowsMemo
-                top={top}
-                bottom={bottom}
-                left={left}
-                right={right}
+                top={directionsRef.current.top}
+                bottom={directionsRef.current.bottom}
+                left={directionsRef.current.left}
+                right={directionsRef.current.right}
                 className={className}
             />
         ),

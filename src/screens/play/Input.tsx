@@ -1,7 +1,9 @@
 import {
     Dispatch,
+    FocusEvent,
     MutableRefObject,
     KeyboardEvent as ReactKeyboardEvent,
+    RefObject,
     SetStateAction,
     useCallback,
     useEffect,
@@ -9,7 +11,7 @@ import {
     useState,
 } from "react";
 import { CellMark } from "../../CellMark";
-import { LoadedLevel } from "../../Level";
+import { LevelDimensions } from "../../Level";
 import {
     Selection,
     SelectionUpdateKind,
@@ -157,7 +159,8 @@ export function useInput(
     setMarks: Dispatch<SetStateAction<CellMark[]>>,
     isCrossing: boolean,
     setIsCrossing: Dispatch<SetStateAction<boolean>>,
-    level: LoadedLevel
+    gridTableRef: RefObject<HTMLTableElement>,
+    level: LevelDimensions
 ) {
     const [selection, setSelectionRaw] = useState<Selection>(null);
 
@@ -190,11 +193,19 @@ export function useInput(
         (e: ReactKeyboardEvent) => {
             switch (e.key) {
                 case " ": {
-                    inputRef.current.navIsWriting = true;
-                    setSelection({
-                        selection,
-                        kind: SelectionUpdateKind.NavStart,
-                    });
+                    if (!e.repeat) {
+                        if (selection) {
+                            inputRef.current.navIsWriting = true;
+                            setSelection({
+                                selection,
+                                kind: SelectionUpdateKind.NavStart,
+                            });
+                        } else {
+                            setSelectionRaw([0, 0]);
+                            gridTableRef.current?.focus();
+                        }
+                    }
+                    e.preventDefault();
                     break;
                 }
 
@@ -233,8 +244,11 @@ export function useInput(
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const onBlur = useCallback(() => {
-        setSelectionRaw(null);
+    const onBlur = useCallback((e: FocusEvent) => {
+        if (e.relatedTarget !== gridTableRef.current) {
+            setSelectionRaw(null);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

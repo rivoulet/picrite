@@ -1,6 +1,6 @@
 import "./Numbers.less";
 
-import { ForwardedRef, memo, UIEvent, useCallback } from "react";
+import { memo, Ref, UIEvent, useCallback } from "react";
 import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { CellMark } from "../../CellMark";
 import { marksByLine } from "../../algorithms/utils";
@@ -10,10 +10,10 @@ export interface NumbersProps {
     isVertical: boolean;
     level: LoadedLevelNumbers;
     selection: number;
-    className?: string;
-    tabIndex?: number;
-    onScroll?: (x: number) => void;
-    innerRef?: ForwardedRef<HTMLOListElement>;
+    className?: string | undefined;
+    tabIndex?: number | undefined;
+    onScroll?: (x: number) => void | undefined;
+    innerRef?: Ref<HTMLOListElement> | undefined;
 }
 
 export interface NumbersPropsWithMarks extends NumbersProps {

@@ -1,4 +1,4 @@
-import { LevelDimensions } from "../Level";
+import { LevelCells, LevelDimensions } from "../Level";
 import { CellMark } from "../CellMark";
 
 export function marksByLine(
@@ -32,4 +32,16 @@ export function marksByLine(
         lines[i] = line;
     }
     return lines;
+}
+
+export function levelIsSolved(
+    level: LevelCells,
+    marks: CellMark[],
+) {
+    for (let i = 0; i < marks.length; i++) {
+        if (level.cells[i] !== (marks[i] === CellMark.Mark)) {
+            return false;
+        }
+    }
+    return true;
 }

@@ -5,9 +5,10 @@ import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { CellMark } from "../../CellMark";
 import {
     Dispatch,
+    Ref,
     memo,
-    MutableRefObject,
     ReactElement,
+    RefObject,
     UIEvent,
     useCallback,
     useMemo,
@@ -21,7 +22,8 @@ export interface PlayGridProps {
     marks: CellMark[];
     selection: Selection;
     setSelection: Dispatch<SetSelectionAction>;
-    className?: string;
+    className?: string | undefined;
+    tableRef?: Ref<HTMLTableElement> | undefined;
 }
 
 function borderExtLines(size: number, selection: number) {
@@ -48,6 +50,7 @@ export function PlayGrid({
     selection,
     setSelection,
     className = "",
+    tableRef,
 }: PlayGridProps) {
     const {
         elementsRef: syncedScrollElementsRef,
@@ -61,6 +64,7 @@ export function PlayGrid({
             <div className="play-grid__selection-cover play-grid__selection-cover--top" />
             <div
                 className="play-grid__numbers-border-ext play-grid__numbers-border-ext--v"
+                tabIndex={-1}
                 onScroll={useCallback(
                     (e: UIEvent) => {
                         if (wasScrolledByUser(0)) {
@@ -85,6 +89,7 @@ export function PlayGrid({
             </div>
             <div
                 className="play-grid__numbers-border-ext play-grid__numbers-border-ext--h"
+                tabIndex={-1}
                 onScroll={useCallback(
                     (e: UIEvent) => {
                         if (wasScrolledByUser(1)) {
@@ -125,7 +130,7 @@ export function PlayGrid({
                 )}
                 innerRef={
                     syncedScrollElementsRef
-                        .current[2] as unknown as MutableRefObject<HTMLOListElement>
+                        .current[2] as unknown as RefObject<HTMLOListElement>
                 }
             />
             <NumbersMemo
@@ -146,7 +151,7 @@ export function PlayGrid({
                 )}
                 innerRef={
                     syncedScrollElementsRef
-                        .current[3] as unknown as MutableRefObject<HTMLOListElement>
+                        .current[3] as unknown as RefObject<HTMLOListElement>
                 }
             />
             <SelectableGridWithTouchInput
@@ -158,6 +163,7 @@ export function PlayGrid({
                 autoFocus={true}
                 className="play-grid__grid"
                 tabIndex={0}
+                scrollContainerTabIndex={-1}
                 onScroll={useCallback(
                     (x, y) => {
                         if (wasScrolledByUser(4)) {
@@ -169,6 +175,7 @@ export function PlayGrid({
                     },
                     [wasScrolledByUser, scroll]
                 )}
+                tableRef={tableRef}
                 scrollContainerRef={syncedScrollElementsRef.current[4]}
             />
         </div>

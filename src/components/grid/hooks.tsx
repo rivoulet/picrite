@@ -2,9 +2,9 @@ import {
     Dispatch,
     KeyboardEvent,
     MouseEvent,
-    MutableRefObject,
     ReactElement,
     TouchEvent as ReactTouchEvent,
+    RefObject,
     useCallback,
     useEffect,
     useMemo,
@@ -65,19 +65,19 @@ export function useRows(width: number, height: number, marks: CellMark[]) {
 export function useSelection(
     width: number,
     selection: Selection,
-    scrollContainerRef: MutableRefObject<HTMLElement | null>
+    scrollContainerRef: RefObject<HTMLElement>
 ) {
-    const selectionElementRef = useRef<HTMLDivElement | null>(null);
-    const posRef = useRef({
-        top: 0,
-        left: 0,
-    });
-
     const [prevSelection, setPrevSelection] = useState(selection);
     const selectionWasChanged = selection !== prevSelection;
     if (selectionWasChanged) {
         setPrevSelection(selection);
     }
+
+    const selectionElementRef = useRef<HTMLDivElement>(null);
+    const posRef = useRef({
+        top: 0,
+        left: 0,
+    });
 
     const scrollContainer = scrollContainerRef.current;
 
@@ -160,7 +160,7 @@ export function useSelectionInput(
     height: number,
     selection: Selection,
     setSelection: Dispatch<SetSelectionAction>,
-    tableRef: MutableRefObject<HTMLElement | null>
+    tableRef: RefObject<HTMLElement>
 ) {
     const moveSelection = useCallback(
         (dx: number, dy: number) => {
@@ -273,7 +273,7 @@ export function useSelectionTouchInput(
     width: number,
     height: number,
     setSelection: Dispatch<SetSelectionAction>,
-    tableRef: MutableRefObject<HTMLElement | null>
+    tableRef: RefObject<HTMLElement>
 ) {
     const touchesRef = useRef<number[]>([]);
 
