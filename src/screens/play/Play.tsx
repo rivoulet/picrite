@@ -1,6 +1,6 @@
 import "./Play.less";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { CellMark } from "../../CellMark";
 import { MemoPlayGrid } from "../../components/play-grid/PlayGrid";
 import { LevelCells, LevelDimensions, LoadedLevelNumbers } from "../../Level";
@@ -19,14 +19,11 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
     );
     const [isCrossing, setIsCrossing] = useState(false);
 
-    const gridTableRef = useRef<HTMLTableElement>(null);
-
-    const { selection, setSelection, onKeyDown, onBlur } = useInput(
+    const { selection, setSelection, onKeyDown } = useInput(
         marks,
         setMarks,
         isCrossing,
         setIsCrossing,
-        gridTableRef,
         level
     );
 
@@ -37,19 +34,13 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
     }, [level, marks, onWin]);
 
     return (
-        <div
-            className="play-screen"
-            onKeyDown={onKeyDown}
-            onBlur={onBlur}
-            tabIndex={-1}
-        >
+        <div className="play-screen" onKeyDown={onKeyDown} tabIndex={-1}>
             <MemoPlayGrid
                 level={level}
                 marks={marks}
                 selection={selection}
                 setSelection={setSelection}
                 className="play-screen__play-grid"
-                tableRef={gridTableRef}
             />
         </div>
     );

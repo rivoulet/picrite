@@ -1,6 +1,5 @@
 import {
     Dispatch,
-    FocusEvent,
     MutableRefObject,
     KeyboardEvent as ReactKeyboardEvent,
     RefObject,
@@ -14,6 +13,7 @@ import { CellMark } from "../../CellMark";
 import { LevelDimensions } from "../../Level";
 import {
     Selection,
+    SelectionOrNull,
     SelectionUpdateKind,
     SetSelectionAction,
 } from "../../components/grid/Selection";
@@ -51,7 +51,7 @@ class Input {
         dir: number,
         base: number,
         step: number,
-        newSelection: [number, number],
+        newSelection: Selection,
         marks: CellMark[],
         setMarks: Dispatch<SetStateAction<CellMark[]>>
     ) {
@@ -69,8 +69,8 @@ class Input {
 
     handleSelectionUpdate(
         kind: SelectionUpdateKind,
-        prevSelection: Selection,
-        newSelection: [number, number],
+        prevSelection: SelectionOrNull,
+        newSelection: Selection,
         marks: CellMark[],
         setMarks: Dispatch<SetStateAction<CellMark[]>>,
         width: number
@@ -78,6 +78,10 @@ class Input {
         const i = newSelection[1] * width + newSelection[0];
 
         switch (kind) {
+            case SelectionUpdateKind.Focus: {
+                break;
+            }
+
             case SelectionUpdateKind.NavStart: {
                 this.navPrevMark = marks[i];
 
@@ -159,10 +163,9 @@ export function useInput(
     setMarks: Dispatch<SetStateAction<CellMark[]>>,
     isCrossing: boolean,
     setIsCrossing: Dispatch<SetStateAction<boolean>>,
-    gridTableRef: RefObject<HTMLTableElement>,
     level: LevelDimensions
 ) {
-    const [selection, setSelectionRaw] = useState<Selection>(null);
+    const [selection, setSelectionRaw] = useState<SelectionOrNull>(null);
 
     const inputRef = useRef<Input | null>(null) as MutableRefObject<Input>;
     if (inputRef.current === null) {
@@ -172,10 +175,14 @@ export function useInput(
 
     const setSelection = useCallback(
         (action: SetSelectionAction) => {
-            const { selection: newSelection, kind } =
+            const update =
                 typeof action === "function" ? action(selection) : action;
+            if (!update) {
+                setSelectionRaw(null);
+                return;
+            }
+            const { selection: newSelection, kind } = update;
             setSelectionRaw(newSelection);
-            if (!newSelection) return;
             inputRef.current.handleSelectionUpdate(
                 kind,
                 selection,
@@ -193,19 +200,14 @@ export function useInput(
         (e: ReactKeyboardEvent) => {
             switch (e.key) {
                 case " ": {
-                    if (!e.repeat) {
-                        if (selection) {
-                            inputRef.current.navIsWriting = true;
-                            setSelection({
-                                selection,
-                                kind: SelectionUpdateKind.NavStart,
-                            });
-                        } else {
-                            setSelectionRaw([0, 0]);
-                            gridTableRef.current?.focus();
-                        }
-                    }
+                    if (!selection) break;
                     e.preventDefault();
+                    if (e.repeat) break;
+                    inputRef.current.navIsWriting = true;
+                    setSelection({
+                        selection,
+                        kind: SelectionUpdateKind.NavStart,
+                    });
                     break;
                 }
 
@@ -218,7 +220,7 @@ export function useInput(
 
                 case "e":
                 case "Escape": {
-                    setSelectionRaw(null);
+                    setSelection(null);
                     break;
                 }
             }
@@ -244,13 +246,6 @@ export function useInput(
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const onBlur = useCallback((e: FocusEvent) => {
-        if (e.relatedTarget !== gridTableRef.current) {
-            setSelectionRaw(null);
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     useEffect(() => {
         window.addEventListener("keyup", onKeyUp);
         return () => window.removeEventListener("keyup", onKeyUp);
@@ -260,6 +255,5 @@ export function useInput(
         selection,
         setSelection,
         onKeyDown,
-        onBlur,
     };
 }

@@ -16,6 +16,7 @@ import { CellMark } from "../../CellMark";
 import { MemoCell } from "./Cell";
 import {
     Selection,
+    SelectionOrNull,
     SelectionUpdateKind,
     SetSelectionAction,
 } from "./Selection";
@@ -64,7 +65,7 @@ export function useRows(width: number, height: number, marks: CellMark[]) {
 
 export function useSelection(
     width: number,
-    selection: Selection,
+    selection: SelectionOrNull,
     scrollContainerRef: RefObject<HTMLElement>
 ) {
     const [prevSelection, setPrevSelection] = useState(selection);
@@ -158,7 +159,7 @@ export function useSelection(
 export function useSelectionInput(
     width: number,
     height: number,
-    selection: Selection,
+    selection: SelectionOrNull,
     setSelection: Dispatch<SetSelectionAction>,
     tableRef: RefObject<HTMLElement>
 ) {
@@ -171,7 +172,7 @@ export function useSelectionInput(
                 });
                 return;
             }
-            const newSelection: [number, number] = [
+            const newSelection: Selection = [
                 clamp(selection[0] + dx, 0, width - 1),
                 clamp(selection[1] + dy, 0, height - 1),
             ];

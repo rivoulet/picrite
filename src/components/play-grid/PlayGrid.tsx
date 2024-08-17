@@ -5,25 +5,25 @@ import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { CellMark } from "../../CellMark";
 import {
     Dispatch,
-    Ref,
     memo,
     ReactElement,
     RefObject,
     UIEvent,
     useCallback,
     useMemo,
+    useRef,
 } from "react";
 import { NumbersMemo } from "../numbers/Numbers";
 import { useSyncedScroll } from "../../utils/useSyncedScroll";
-import { Selection, SetSelectionAction } from "../grid/Selection";
+import { SelectionOrNull, SetSelectionAction } from "../grid/Selection";
+import { useInput } from "./hooks";
 
 export interface PlayGridProps {
     level: LevelDimensions & LoadedLevelNumbers;
     marks: CellMark[];
-    selection: Selection;
+    selection: SelectionOrNull;
     setSelection: Dispatch<SetSelectionAction>;
     className?: string | undefined;
-    tableRef?: Ref<HTMLTableElement> | undefined;
 }
 
 function borderExtLines(size: number, selection: number) {
@@ -50,7 +50,6 @@ export function PlayGrid({
     selection,
     setSelection,
     className = "",
-    tableRef,
 }: PlayGridProps) {
     const {
         elementsRef: syncedScrollElementsRef,
@@ -58,8 +57,16 @@ export function PlayGrid({
         scroll,
     } = useSyncedScroll<HTMLDivElement>(5);
 
+    const tableRef = useRef<HTMLTableElement>(null);
+
+    const { onKeyDown, onBlur } = useInput(selection, setSelection, tableRef);
+
     return (
-        <div className={className + " play-grid"}>
+        <div
+            className={className + " play-grid"}
+            onKeyDown={onKeyDown}
+            onBlur={onBlur}
+        >
             <div className="play-grid__selection-cover play-grid__selection-cover--left" />
             <div className="play-grid__selection-cover play-grid__selection-cover--top" />
             <div

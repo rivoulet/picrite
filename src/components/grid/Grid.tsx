@@ -9,7 +9,7 @@ import {
     useSelectionInput,
     useSelectionTouchInput,
 } from "./hooks";
-import { Selection, SetSelectionAction } from "./Selection";
+import { SelectionOrNull, SetSelectionAction } from "./Selection";
 import { useRefs } from "../../utils/useRefs";
 
 function triggerOnScroll(
@@ -78,7 +78,7 @@ export function Grid({
 }
 
 export interface SelectableGridProps extends GridProps {
-    selection: Selection;
+    selection: SelectionOrNull;
 }
 
 export function SelectableGrid({
