@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { CellMark } from "../../CellMark";
 import { equalArrays } from "../../utils";
 import { lineKnownMarks } from "../../algorithms/solve";
@@ -9,61 +9,70 @@ export interface LineProps {
     isSelected: boolean;
 }
 
+function useNumbersInfo(numbers: number[], marks: CellMark[] | undefined) {
+    return useMemo(() => {
+        let hasHint = false;
+        const numbersAreFaded = new Array<boolean>(
+            Math.max(numbers.length, 1)
+        ).fill(false);
+
+        if (!marks) return { hasError: false, hasHint, numbersAreFaded };
+
+        const knownMarks = lineKnownMarks(numbers, marks);
+        if (!knownMarks) return { hasError: true, hasHint, numbersAreFaded };
+
+        for (let x = 0; x < marks.length; x++) {
+            if (knownMarks[x].mark !== marks[x]) {
+                hasHint = true;
+                break;
+            }
+        }
+
+        if (numbers.length) {
+            let filledAll = true;
+
+            for (let i = 0, x = 0; i < numbers.length; i++) {
+                for (; x < marks.length && knownMarks[x].i < i; x++);
+
+                const start = x;
+
+                let filledMarks = 0;
+                for (; x < marks.length && knownMarks[x].i === i; x++) {
+                    if (knownMarks[x].mark === marks[x]) {
+                        filledMarks++;
+                    }
+                }
+
+                const end = x;
+
+                if (filledMarks === numbers[i]) {
+                    const isDelimited =
+                        (start === 0 || marks[start - 1] === CellMark.Cross) &&
+                        (end === marks.length || marks[end] === CellMark.Cross);
+                    numbersAreFaded[i] = isDelimited;
+                } else {
+                    filledAll = false;
+                }
+            }
+
+            if (filledAll) {
+                numbersAreFaded.fill(true);
+            }
+        } else {
+            numbersAreFaded[0] = !hasHint;
+        }
+
+        return { hasError: false, hasHint, numbersAreFaded };
+    }, [numbers, marks]);
+}
+
 export function Line({ numbers, marks, isSelected }: LineProps) {
     const numbersOr0 = numbers.length ? numbers : [0];
 
-    let knownMarks;
-    let hasHint = false;
-    const numbersAreFaded = new Array<boolean>(numbersOr0.length).fill(false);
-
-    if (marks) {
-        knownMarks = lineKnownMarks(numbers, marks);
-
-        if (knownMarks) {
-            for (let x = 0; x < marks.length; x++) {
-                if (knownMarks[x].mark !== marks[x]) {
-                    hasHint = true;
-                    break;
-                }
-            }
-
-            if (numbers.length) {
-                let filledAll = true;
-
-                for (let i = 0, x = 0; i < numbers.length; i++) {
-                    for (; x < marks.length && knownMarks[x].i < i; x++);
-
-                    const start = x;
-
-                    let filledMarks = 0;
-                    for (; x < marks.length && knownMarks[x].i === i; x++) {
-                        if (knownMarks[x].mark === marks[x]) {
-                            filledMarks++;
-                        }
-                    }
-
-                    const end = x;
-
-                    if (filledMarks === numbers[i]) {
-                        const isDelimited =
-                            (start === 0 ||
-                                marks[start - 1] === CellMark.Cross) &&
-                            (end === marks.length ||
-                                marks[end] === CellMark.Cross);
-                        numbersAreFaded[i] = isDelimited;
-                    } else {
-                        filledAll = false;
-                    }
-                }
-
-                if (filledAll) {
-                    numbersAreFaded.fill(true);
-                }
-            } else {
-                numbersAreFaded[0] = !hasHint;
-            }
-        }
-    }
+    const { hasError, hasHint, numbersAreFaded } = useNumbersInfo(
+        numbers,
+        marks
+    );
 
     return (
         <ol
@@ -71,7 +80,7 @@ export function Line({ numbers, marks, isSelected }: LineProps) {
                 "numbers__line" +
                 (isSelected ? " numbers__line--selected" : "") +
                 (hasHint ? " numbers__line--hinted" : "") +
-                (knownMarks ? "" : " numbers__line--error")
+                (hasError ? " numbers__line--error" : "")
             }
         >
             {...numbersOr0.map((n, i) => {
@@ -93,7 +102,7 @@ export function Line({ numbers, marks, isSelected }: LineProps) {
     );
 }
 
-export const MemoLine = memo(
+export const LineMemo = memo(
     Line,
     (prevProps, nextProps) =>
         equalArrays(prevProps.numbers, nextProps.numbers) &&

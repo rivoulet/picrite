@@ -1,10 +1,10 @@
 import "./Numbers.less";
 
-import { memo, Ref, UIEvent, useCallback } from "react";
+import { memo, Ref } from "react";
 import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { CellMark } from "../../CellMark";
 import { marksByLine } from "../../algorithms/utils";
-import { MemoLine } from "./Line";
+import { LineMemo } from "./Line";
 
 export interface NumbersProps {
     isVertical: boolean;
@@ -32,7 +32,7 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
         props.isVertical ? props.level.vNumbers : props.level.hNumbers
     ).map((numbers, i) => {
         return (
-            <MemoLine
+            <LineMemo
                 key={i}
                 numbers={numbers}
                 marks={marksByLine_ ? marksByLine_[i] : undefined}
@@ -49,17 +49,12 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
                 (isVertical ? "numbers--v" : "numbers--h")
             }
             tabIndex={tabIndex}
-            onScroll={useCallback(
-                (e: UIEvent) => {
-                    if (onScroll) {
-                        const target = e.target as HTMLElement;
-                        onScroll(
-                            isVertical ? target.scrollLeft : target.scrollTop
-                        );
-                    }
-                },
-                [isVertical, onScroll]
-            )}
+            onScroll={(e) => {
+                if (onScroll) {
+                    const target = e.target as HTMLElement;
+                    onScroll(isVertical ? target.scrollLeft : target.scrollTop);
+                }
+            }}
             ref={innerRef}
         >
             {...numberLines}

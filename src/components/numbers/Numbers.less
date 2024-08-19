@@ -48,7 +48,21 @@
         }
 
         &--selected {
-            background-color: @numbers-selection-color;
+            .numbers--v > & {
+                background-image: linear-gradient(
+                    to top,
+                    @numbers-selection-color 50%,
+                    fadeout(@numbers-selection-color, 90%, relative)
+                );
+            }
+
+            .numbers--h > & {
+                background-image: linear-gradient(
+                    to left,
+                    @numbers-selection-color 50%,
+                    fadeout(@numbers-selection-color, 90%, relative)
+                );
+            }
         }
 
         .numbers--v > & {

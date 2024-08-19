@@ -8,7 +8,7 @@ import {
     memo,
     ReactElement,
     RefObject,
-    UIEvent,
+
     useCallback,
     useMemo,
     useRef,
@@ -72,17 +72,14 @@ export function PlayGrid({
             <div
                 className="play-grid__numbers-border-ext play-grid__numbers-border-ext--v"
                 tabIndex={-1}
-                onScroll={useCallback(
-                    (e: UIEvent) => {
-                        if (wasScrolledByUser(0)) {
-                            const target = e.target as HTMLElement;
-                            const x = target.scrollLeft;
-                            scroll(2, x, false);
-                            scroll(4, x, false);
-                        }
-                    },
-                    [wasScrolledByUser, scroll]
-                )}
+                onScroll={(e) => {
+                    if (wasScrolledByUser(0)) {
+                        const target = e.target as HTMLElement;
+                        const x = target.scrollLeft;
+                        scroll(2, x, false);
+                        scroll(4, x, false);
+                    }
+                }}
                 ref={syncedScrollElementsRef.current[0]}
             >
                 {...useMemo(
@@ -97,17 +94,14 @@ export function PlayGrid({
             <div
                 className="play-grid__numbers-border-ext play-grid__numbers-border-ext--h"
                 tabIndex={-1}
-                onScroll={useCallback(
-                    (e: UIEvent) => {
-                        if (wasScrolledByUser(1)) {
-                            const target = e.target as HTMLElement;
-                            const y = target.scrollTop;
-                            scroll(3, y, true);
-                            scroll(4, y, true);
-                        }
-                    },
-                    [wasScrolledByUser, scroll]
-                )}
+                onScroll={(e) => {
+                    if (wasScrolledByUser(1)) {
+                        const target = e.target as HTMLElement;
+                        const y = target.scrollTop;
+                        scroll(3, y, true);
+                        scroll(4, y, true);
+                    }
+                }}
                 ref={syncedScrollElementsRef.current[1]}
             >
                 {...useMemo(
@@ -189,4 +183,4 @@ export function PlayGrid({
     );
 }
 
-export const MemoPlayGrid = memo(PlayGrid);
+export const PlayGridMemo = memo(PlayGrid);

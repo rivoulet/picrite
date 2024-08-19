@@ -2,7 +2,7 @@ import "./Play.less";
 
 import { KeyboardEvent, useCallback, useMemo, useState } from "react";
 import { CellMark } from "../../CellMark";
-import { MemoPlayGrid } from "../../components/play-grid/PlayGrid";
+import { PlayGridMemo } from "../../components/play-grid/PlayGrid";
 import { LevelCells, LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { useInput } from "./Input";
 import { levelIsSolved } from "../../algorithms/utils";
@@ -35,11 +35,11 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
                     ? [i % level.width, Math.floor(i / level.width)]
                     : selection
             );
-        setMarks((marks) => {
-            const newMarks = marks.slice();
-            newMarks[i] = mark;
-            return newMarks;
-        });
+            setMarks((marks) => {
+                const newMarks = marks.slice();
+                newMarks[i] = mark;
+                return newMarks;
+            });
         },
         [level.width]
     );
@@ -100,7 +100,7 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
             <style>
                 {".play-screen__play-grid { font-size: " + scale + "em; }"}
             </style>
-            <MemoPlayGrid
+            <PlayGridMemo
                 level={level}
                 marks={marks}
                 selection={selection}

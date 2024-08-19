@@ -35,6 +35,7 @@ export function useScrollShadows(
     }, [visibleDirections]);
 
     useEffect(() => {
+        update();
         window.addEventListener("resize", update);
         return () => window.removeEventListener("resize", update);
     }, [update]);

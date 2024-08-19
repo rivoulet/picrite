@@ -36,4 +36,4 @@ export function Cell({ mark }: { mark: CellMark }) {
     );
 }
 
-export const MemoCell = memo(Cell);
+export const CellMemo = memo(Cell);

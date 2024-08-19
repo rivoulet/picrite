@@ -13,7 +13,7 @@ import {
 } from "react";
 import { clamp, equal2 } from "../../utils";
 import { CellMark } from "../../CellMark";
-import { MemoCell } from "./Cell";
+import { CellMemo } from "./Cell";
 import {
     Selection,
     SelectionOrNull,
@@ -55,7 +55,7 @@ export function useRows(width: number, height: number, marks: CellMark[]) {
         for (let y = 0; y < height; y++) {
             const row = new Array<ReactElement>(width);
             for (let x = 0; x < width; x++) {
-                row[x] = <MemoCell key={x} mark={marks[y * width + x]} />;
+                row[x] = <CellMemo key={x} mark={marks[y * width + x]} />;
             }
             rows[y] = <tr key={y}>{...row}</tr>;
         }
@@ -357,7 +357,7 @@ export function useSelectionTouchInput(
             e.target instanceof HTMLElement &&
             tableRef.current?.contains(e.target)
         ) {
-        e.preventDefault();
+            e.preventDefault();
         }
         for (let i = 0; i < e.changedTouches.length; i++) {
             const touch = e.changedTouches[i];
