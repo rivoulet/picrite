@@ -2,12 +2,10 @@ import {
     Dispatch,
     MutableRefObject,
     KeyboardEvent as ReactKeyboardEvent,
-    RefObject,
     SetStateAction,
     useCallback,
     useEffect,
     useRef,
-    useState,
 } from "react";
 import { CellMark } from "../../CellMark";
 import { LevelDimensions } from "../../Level";
@@ -34,17 +32,19 @@ class Input {
     dragDir: DragDir | null = null;
     dragPrevMark: CellMark | null = null;
 
-    toggle(i: number, setMarks: Dispatch<SetStateAction<CellMark[]>>) {
-        setMarks((marks) => {
-            const newMarks = marks.slice();
-            newMarks[i] =
-                newMarks[i] === CellMark.Empty
-                    ? this.isCrossing
-                        ? CellMark.Cross
-                        : CellMark.Mark
-                    : CellMark.Empty;
-            return newMarks;
-        });
+    toggle(
+        i: number,
+        marks: CellMark[],
+        setMark: (i: number, mark: CellMark) => void
+    ) {
+        setMark(
+            i,
+            marks[i] === CellMark.Empty
+                ? this.isCrossing
+                    ? CellMark.Cross
+                    : CellMark.Mark
+                : CellMark.Empty
+        );
     }
 
     dragFill(
@@ -53,7 +53,7 @@ class Input {
         step: number,
         newSelection: Selection,
         marks: CellMark[],
-        setMarks: Dispatch<SetStateAction<CellMark[]>>
+        setMark: (i: number, mark: CellMark) => void
     ) {
         let x0 = this.dragLastPos![dir] + 1;
         let x1 = newSelection[dir] + 1;
@@ -63,7 +63,7 @@ class Input {
         }
         for (let x = x0, j = base + x0 * step; x < x1; x++, j += step) {
             if (marks[j] !== this.dragPrevMark!) continue;
-            this.toggle(j, setMarks);
+            this.toggle(j, marks, setMark);
         }
     }
 
@@ -72,7 +72,7 @@ class Input {
         prevSelection: SelectionOrNull,
         newSelection: Selection,
         marks: CellMark[],
-        setMarks: Dispatch<SetStateAction<CellMark[]>>,
+        setMark: (i: number, mark: CellMark) => void,
         width: number
     ) {
         const i = newSelection[1] * width + newSelection[0];
@@ -83,9 +83,10 @@ class Input {
             }
 
             case SelectionUpdateKind.NavStart: {
+                this.navIsWriting = true;
                 this.navPrevMark = marks[i];
 
-                this.toggle(i, setMarks);
+                this.toggle(i, marks, setMark);
                 break;
             }
 
@@ -96,7 +97,12 @@ class Input {
                     marks[i] !== this.navPrevMark!;
                 if (shouldIgnore) return;
 
-                this.toggle(i, setMarks);
+                this.toggle(i, marks, setMark);
+                break;
+            }
+
+            case SelectionUpdateKind.NavEnd: {
+                this.navIsWriting = false;
                 break;
             }
 
@@ -106,7 +112,7 @@ class Input {
                 this.dragDir = null;
                 this.dragPrevMark = marks[i];
 
-                this.toggle(i, setMarks);
+                this.toggle(i, marks, setMark);
                 break;
             }
 
@@ -134,7 +140,7 @@ class Input {
                             1,
                             newSelection,
                             marks,
-                            setMarks
+                            setMark
                         );
                     } else {
                         this.dragFill(
@@ -143,11 +149,11 @@ class Input {
                             width,
                             newSelection,
                             marks,
-                            setMarks
+                            setMark
                         );
                     }
                 } else if (marks[i] === this.dragPrevMark!) {
-                    this.toggle(i, setMarks);
+                    this.toggle(i, marks, setMark);
                 }
 
                 this.dragLastPos = newSelection;
@@ -160,13 +166,13 @@ class Input {
 
 export function useInput(
     marks: CellMark[],
-    setMarks: Dispatch<SetStateAction<CellMark[]>>,
+    setMark: (i: number, mark: CellMark) => void,
+    selection: SelectionOrNull,
+    setSelectionRaw: Dispatch<SetStateAction<SelectionOrNull>>,
     isCrossing: boolean,
     setIsCrossing: Dispatch<SetStateAction<boolean>>,
     level: LevelDimensions
 ) {
-    const [selection, setSelectionRaw] = useState<SelectionOrNull>(null);
-
     const inputRef = useRef<Input | null>(null) as MutableRefObject<Input>;
     if (inputRef.current === null) {
         inputRef.current = new Input();
@@ -188,32 +194,19 @@ export function useInput(
                 selection,
                 newSelection,
                 marks,
-                setMarks,
+                setMark,
                 level.width
             );
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selection, level.width, marks]
+        [selection, level.width, marks, setMark]
     );
 
     const onKeyDown = useCallback(
         (e: ReactKeyboardEvent) => {
             switch (e.key) {
-                case " ": {
-                    if (!selection) break;
-                    e.preventDefault();
-                    if (e.repeat) break;
-                    inputRef.current.navIsWriting = true;
-                    setSelection({
-                        selection,
-                        kind: SelectionUpdateKind.NavStart,
-                    });
-                    break;
-                }
-
                 case "x":
                 case "Shift": {
-                    inputRef.current.isCrossing = true;
                     setIsCrossing(true);
                     break;
                 }
@@ -231,11 +224,6 @@ export function useInput(
 
     const onKeyUp = useCallback((e: KeyboardEvent) => {
         switch (e.key) {
-            case " ": {
-                inputRef.current.navIsWriting = false;
-                break;
-            }
-
             case "x":
             case "Shift": {
                 inputRef.current.isCrossing = false;
@@ -252,7 +240,6 @@ export function useInput(
     }, [onKeyUp]);
 
     return {
-        selection,
         setSelection,
         onKeyDown,
     };

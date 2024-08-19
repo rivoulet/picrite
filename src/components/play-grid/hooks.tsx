@@ -1,9 +1,10 @@
 import {
     Dispatch,
     FocusEvent,
-    KeyboardEvent,
+    KeyboardEvent as ReactKeyboardEvent,
     RefObject,
     useCallback,
+    useEffect,
 } from "react";
 import {
     SelectionOrNull,
@@ -17,11 +18,16 @@ export function useInput(
     tableRef: RefObject<HTMLTableElement>
 ) {
     const onKeyDown = useCallback(
-        (e: KeyboardEvent) => {
-            if (e.key === " ") {
-                if (selection) return;
-                e.preventDefault();
-                if (e.repeat) return;
+        (e: ReactKeyboardEvent) => {
+            if (e.key !== " ") return;
+            e.preventDefault();
+            if (e.repeat) return;
+            if (selection) {
+                setSelection({
+                    selection,
+                    kind: SelectionUpdateKind.NavStart,
+                });
+            } else {
                 setSelection({
                     selection: [0, 0],
                     kind: SelectionUpdateKind.Focus,
@@ -32,6 +38,26 @@ export function useInput(
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [selection, setSelection]
     );
+
+    const onKeyUp = useCallback(
+        (e: KeyboardEvent) => {
+            if (e.key !== " ") return;
+            setSelection((selection) => {
+                return selection
+                    ? {
+                          selection,
+                          kind: SelectionUpdateKind.NavEnd,
+                      }
+                    : null;
+            });
+        },
+        [setSelection]
+    );
+
+    useEffect(() => {
+        window.addEventListener("keyup", onKeyUp);
+        return () => window.removeEventListener("keyup", onKeyUp);
+    }, [onKeyUp]);
 
     const onBlur = useCallback(
         (e: FocusEvent) => {

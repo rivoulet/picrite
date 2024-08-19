@@ -353,7 +353,12 @@ export function useSelectionTouchInput(
     );
 
     const onTouchEnd = useCallback((e: TouchEvent) => {
+        if (
+            e.target instanceof HTMLElement &&
+            tableRef.current?.contains(e.target)
+        ) {
         e.preventDefault();
+        }
         for (let i = 0; i < e.changedTouches.length; i++) {
             const touch = e.changedTouches[i];
             const j = touchesRef.current.indexOf(touch.identifier);
@@ -361,6 +366,7 @@ export function useSelectionTouchInput(
                 touchesRef.current.splice(j, 1);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

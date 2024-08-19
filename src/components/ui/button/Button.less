@@ -1,0 +1,49 @@
+@import "../../../style.less";
+@import "../../../utils.less";
+
+.button-outer() {
+    .no-user-select();
+    height: @button-height;
+    border-radius: @button-border-radius;
+}
+
+.button-inner() {
+    padding: 0 (0.5 * @button-height);
+    transition: background-color 0.1s linear;
+    .theme-color(color, button-color);
+    .theme-color(background-color, button-bg-color);
+
+    &:disabled {
+        .theme-color(color, button-disabled-color);
+    }
+
+    &:not(:disabled) {
+        cursor: pointer;
+        &:hover,
+        &:focus {
+            .theme-color(background-color, button-hover-bg-color);
+            outline: none;
+        }
+    }
+}
+
+.button {
+    .button-outer();
+    .button-inner();
+}
+
+.button--destructive {
+    .theme-color(color, button-destructive-color);
+    .theme-color(background-color, button-destructive-bg-color);
+
+    &:disabled {
+        .theme-color(color, button-destructive-disabled-color);
+    }
+
+    &:not(:disabled) {
+        &:hover,
+        &:focus {
+            .theme-color(background-color, button-destructive-hover-bg-color);
+        }
+    }
+}

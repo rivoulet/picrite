@@ -5,7 +5,7 @@ import { PlayScreen } from "./screens/play/Play";
 import { generateLevel } from "./algorithms/generate";
 
 export function App() {
-    const [level, setLevel] = useState(() => generateLevel(25, 25));
+    const [level, setLevel] = useState(() => generateLevel(10, 10));
 
     return (
         <PlayScreen

@@ -1,12 +1,13 @@
-@bg-color-light: #fbfbfe;
-@bg-color-dark: #000000;
-@text-color-light: #000000;
-@text-color-dark: #fbfbfe;
+@bg-color-light: white;
+@bg-color-dark: black;
+@text-color-light: black;
+@text-color-dark: white;
 
-@grid-bg-color-light: #ffffff;
+// Grid
+
+@grid-bg-color-light: white;
 @grid-bg-color-dark: #303030;
 
-@numbers-selection-color: #87ceeb40;
 @grid-selection-color: #87ceeb;
 @grid-selection-extra-border-width: @cell-border-width * 2;
 
@@ -23,19 +24,73 @@
 @cross-color-dark: orange;
 @cross-size: 80%;
 
-@numbers-color-light: #000000;
-@numbers-hint-color-light: #00d0ff;
+// Numbers
+
+@numbers-color-light: black;
+@numbers-color-dark: white;
 @numbers-error-color-light: #ff0000;
-@numbers-faded-color-light: #c0c0c0;
-@numbers-faded-hint-color-light: #a3eeff;
-@numbers-color-dark: #ffffff;
-@numbers-hint-color-dark: #84e8ff;
 @numbers-error-color-dark: #ff4040;
+@numbers-hint-color-light: #00d0ff;
+@numbers-hint-color-dark: #84e8ff;
+@numbers-faded-color-light: #c0c0c0;
 @numbers-faded-color-dark: #808080;
+@numbers-faded-hint-color-light: #a3eeff;
 @numbers-faded-hint-color-dark: #0080a0;
+
+@numbers-selection-color: #87ceeb40;
+
+// Scroll shadows
 
 @scroll-shadow-alpha: 0.25;
 @scroll-shadow-size: 0.5em;
+
+// Buttons
+
+@button-border-radius: 1.25em;
+@button-height: 2.5em;
+
+@button-color-light: black;
+@button-color-dark: white;
+@button-disabled-color-light: #b0b0b0;
+@button-disabled-color-dark: #a0a0a0;
+@button-bg-color-light: #e0e0e0;
+@button-bg-color-dark: #808080;
+@button-hover-bg-color-light: #c0c0c0;
+@button-hover-bg-color-dark: #606060;
+
+@button-destructive-color-light: #ff0000;
+@button-destructive-color-dark: #ff8080;
+@button-destructive-disabled-color-light: #ff0000;
+@button-destructive-disabled-color-dark: #ff8080;
+@button-destructive-bg-color-light: mix(#e0e0e0, red, 90%);
+@button-destructive-bg-color-dark: mix(#808080, red, 90%);
+@button-destructive-hover-bg-color-light: mix(#c0c0c0, red, 90%);
+@button-destructive-hover-bg-color-dark: mix(#606060, red, 90%);
+
+@button-group-separator-margin: 0.2em;
+@button-group-separator-width: 0.05em;
+@button-group-separator-color-light: #808080;
+@button-group-separator-color-dark: #606060;
+
+@radio-button-bg-color-light: #e0e0e0;
+@radio-button-bg-color-dark: #808080;
+@radio-button-hover-bg-color-light: #d0d0d0;
+@radio-button-hover-bg-color-dark: #707070;
+@radio-button-highlight-margin: 0.1em;
+@radio-button-highlight-color-light: #b8b8b8;
+@radio-button-highlight-color-dark: #585858;
+@radio-button-highlight-transition: left 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+
+// Play screen
+
+@mark-button-color-light: black;
+@mark-button-color-dark: white;
+@mark-button-selected-color-light: white;
+@mark-button-selected-color-dark: black;
+@cross-button-color-light: black;
+@cross-button-color-dark: white;
+@cross-button-selected-color-light: black;
+@cross-button-selected-color-dark: black;
 
 .theme-color-html(@var, @name) {
     @{var}: ~"@{@{name}-light}";

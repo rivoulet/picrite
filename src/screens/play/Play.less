@@ -1,9 +1,60 @@
-.play-screen {
-    width: 100%;
-    height: 100%;
-}
+@import "../../style.less";
 
-.play-screen__play-grid {
-    max-width: 100%;
-    max-height: 100%;
+.play-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+
+    &__play-grid {
+        flex: 0 1 auto;
+        min-height: 0;
+        margin: 1em;
+        margin-bottom: 0;
+    }
+
+    &__controls {
+        display: flex;
+        flex: none;
+        min-width: 80%;
+        padding: 0.5em;
+        flex-wrap: wrap;
+        justify-content: center;
+
+        & > * {
+            margin: 0.5em;
+        }
+
+        &__mark-cross {
+            flex: auto;
+
+            & > .radio-buttons__highlight {
+                transition: @radio-button-highlight-transition,
+                    background-color 0.1s linear;
+            }
+
+            &--marking > .radio-buttons__highlight {
+                .theme-color(background-color, mark-color);
+            }
+
+            &--crossing > .radio-buttons__highlight {
+                .theme-color(background-color, cross-color);
+            }
+
+            &__mark {
+                .theme-color(color, mark-button-color);
+                .play-screen__controls__mark-cross--marking & {
+                    .theme-color(color, mark-button-selected-color);
+                }
+            }
+
+            &__cross {
+                .theme-color(color, cross-button-color);
+                .play-screen__controls__mark-cross--crossing & {
+                    .theme-color(color, cross-button-selected-color);
+                }
+            }
+        }
+    }
 }

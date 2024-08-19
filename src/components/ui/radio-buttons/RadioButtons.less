@@ -1,0 +1,63 @@
+@import "../button/Button.less";
+
+.radio-buttons {
+    .button-outer();
+    position: relative;
+    display: inline-flex;
+    overflow: hidden;
+
+    &__highlight {
+        position: absolute;
+        top: @radio-button-highlight-margin;
+        bottom: @radio-button-highlight-margin;
+        left: calc(
+            @radio-button-highlight-margin + 100% / var(--radio-buttons-count) *
+                var(--radio-buttons-selected)
+        );
+        width: calc(
+            100% / var(--radio-buttons-count) - 2 *
+                @radio-button-highlight-margin
+        );
+        border-radius: inherit;
+        pointer-events: none;
+        transition: @radio-button-highlight-transition;
+        .theme-color(background-color, radio-button-highlight-color);
+    }
+
+    &__button {
+        width: calc(100% / var(--radio-buttons-count));
+        transition: background-color 0.1s linear;
+        .theme-color(background-color, radio-button-bg-color);
+
+        &:not(&--disabled):hover,
+        &:not(&--disabled):focus-within,
+        .radio-buttons:focus-within > & {
+            .theme-color(background-color, radio-button-hover-bg-color);
+        }
+
+        &:not(&--disabled) {
+            cursor: pointer;
+        }
+
+        &__input {
+            position: fixed;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        &__content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 0 (0.5 * @button-height);
+            position: relative;
+            z-index: 1;
+            .theme-color(color, button-color);
+
+            .radio-buttons__button--disabled > & {
+                .theme-color(color, button-disabled-color);
+            }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+@import "../button/Button.less";
+
+.button-group {
+    .button-outer();
+    display: inline-flex;
+    overflow: hidden;
+    .theme-color(background-color, button-bg-color);
+}
+
+.button-group__separator {
+    flex: none;
+    margin: @button-group-separator-margin 0;
+    height: (@button-height - 2 * @button-group-separator-margin);
+    width: @button-group-separator-width;
+    .theme-color(background-color, button-group-separator-color);
+}
+
+.button-group__button {
+    .button-inner();
+    flex: auto;
+}

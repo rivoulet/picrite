@@ -5,6 +5,7 @@ export const enum SelectionUpdateKind {
     Focus,
     NavStart,
     NavMove,
+    NavEnd,
     DragStart,
     DragMove,
 }
