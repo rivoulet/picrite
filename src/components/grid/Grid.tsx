@@ -233,11 +233,13 @@ export function SelectableGridWithTouchInput({
         onKeyDown: selectionOnKeyDown,
         onMouseDown: selectionOnMouseDown,
         onMouseMove: selectionOnMouseMove,
+        onPointerDown,
+        onPointerDrag,
     } = useSelectionInput(width, height, selection, setSelection, tableRef_);
     const {
         onTouchStart: selectionOnTouchStart,
         onTouchMove: selectionOnTouchMove,
-    } = useSelectionTouchInput(width, height, setSelection, tableRef_);
+    } = useSelectionTouchInput(onPointerDown, onPointerDrag, tableRef_);
 
     return (
         <div className={className + " grid--scrollable"}>

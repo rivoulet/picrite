@@ -1,12 +1,9 @@
 import {
     Dispatch,
     KeyboardEvent,
-    MouseEvent,
     ReactElement,
-    TouchEvent as ReactTouchEvent,
     RefObject,
     useCallback,
-    useEffect,
     useMemo,
     useRef,
     useState,
@@ -20,32 +17,24 @@ import {
     SelectionUpdateKind,
     SetSelectionAction,
 } from "./Selection";
+import { useMousePointer, useTouchPointer } from "../../utils/usePointer";
 
 function cellSize(element: HTMLElement) {
     return 2 * parseFloat(getComputedStyle(element).fontSize);
 }
 
-function clientPosToCellPos(
+function offsetPosToCellPos(
     x: number,
     y: number,
     width: number,
     height: number,
     table: HTMLElement
 ): [number, number] {
-    const rect = table.getBoundingClientRect();
     const cellSize_ = cellSize(table);
     const halfBorderWidth = cellSize_ * 0.025;
     return [
-        clamp(
-            Math.floor((x - halfBorderWidth - rect.left) / cellSize_),
-            0,
-            width - 1
-        ),
-        clamp(
-            Math.floor((y - halfBorderWidth - rect.top) / cellSize_),
-            0,
-            height - 1
-        ),
+        clamp(Math.floor((x - halfBorderWidth) / cellSize_), 0, width - 1),
+        clamp(Math.floor((y - halfBorderWidth) / cellSize_), 0, height - 1),
     ];
 }
 
@@ -215,15 +204,14 @@ export function useSelectionInput(
         [moveSelection]
     );
 
-    const onMouseDown = useCallback(
-        (e: MouseEvent) => {
-            if (!tableRef.current) return;
-            const newSelection = clientPosToCellPos(
-                e.clientX,
-                e.clientY,
+    const onPointerDown = useCallback(
+        (x: number, y: number) => {
+            const newSelection = offsetPosToCellPos(
+                x,
+                y,
                 width,
                 height,
-                tableRef.current
+                tableRef.current!
             );
             setSelection((selection) => {
                 return {
@@ -239,15 +227,14 @@ export function useSelectionInput(
         [width, height, setSelection]
     );
 
-    const onMouseMove = useCallback(
-        (e: MouseEvent) => {
-            if (!tableRef.current || !e.buttons) return;
-            const newSelection = clientPosToCellPos(
-                e.clientX,
-                e.clientY,
+    const onPointerDrag = useCallback(
+        (x: number, y: number) => {
+            const newSelection = offsetPosToCellPos(
+                x,
+                y,
                 width,
                 height,
-                tableRef.current
+                tableRef.current!
             );
             setSelection((selection) => {
                 return {
@@ -265,121 +252,16 @@ export function useSelectionInput(
 
     return {
         onKeyDown,
-        onMouseDown,
-        onMouseMove,
+        onPointerDown,
+        onPointerDrag,
+        ...useMousePointer(onPointerDown, onPointerDrag, tableRef),
     };
 }
 
 export function useSelectionTouchInput(
-    width: number,
-    height: number,
-    setSelection: Dispatch<SetSelectionAction>,
+    onPointerDown: (offsetX: number, offsetY: number) => void,
+    onPointerDrag: (offsetX: number, offsetY: number) => void,
     tableRef: RefObject<HTMLElement>
 ) {
-    const touchesRef = useRef<number[]>([]);
-
-    const onTouchStart = useCallback(
-        (e: ReactTouchEvent) => {
-            let touch0;
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                const touch = e.changedTouches[i];
-                switch (touchesRef.current.indexOf(touch.identifier)) {
-                    case -1: {
-                        if (touchesRef.current.length === 0) {
-                            touch0 = touch;
-                        }
-                        touchesRef.current.push(touch.identifier);
-                        break;
-                    }
-                    case 0: {
-                        touch0 = touch;
-                        break;
-                    }
-                    default:
-                        break;
-                }
-            }
-            if (!touch0 || !tableRef.current) return;
-            const newSelection = clientPosToCellPos(
-                touch0.clientX,
-                touch0.clientY,
-                width,
-                height,
-                tableRef.current
-            );
-            setSelection((selection) => {
-                return {
-                    selection:
-                        !selection || !equal2(newSelection, selection)
-                            ? newSelection
-                            : selection,
-                    kind: SelectionUpdateKind.DragStart,
-                };
-            });
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [width, height, setSelection]
-    );
-
-    const onTouchMove = useCallback(
-        (e: ReactTouchEvent) => {
-            let touch0;
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                const touch = e.changedTouches[i];
-                if (touchesRef.current.indexOf(touch.identifier) === 0) {
-                    touch0 = touch;
-                }
-            }
-            if (!touch0 || !tableRef.current) return;
-            const newSelection = clientPosToCellPos(
-                touch0.clientX,
-                touch0.clientY,
-                width,
-                height,
-                tableRef.current
-            );
-            setSelection((selection) => {
-                return {
-                    selection:
-                        !selection || !equal2(newSelection, selection)
-                            ? newSelection
-                            : selection,
-                    kind: SelectionUpdateKind.DragMove,
-                };
-            });
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [width, height, setSelection]
-    );
-
-    const onTouchEnd = useCallback((e: TouchEvent) => {
-        if (
-            e.target instanceof HTMLElement &&
-            tableRef.current?.contains(e.target)
-        ) {
-            e.preventDefault();
-        }
-        for (let i = 0; i < e.changedTouches.length; i++) {
-            const touch = e.changedTouches[i];
-            const j = touchesRef.current.indexOf(touch.identifier);
-            if (j !== -1) {
-                touchesRef.current.splice(j, 1);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        window.addEventListener("touchend", onTouchEnd);
-        window.addEventListener("touchcancel", onTouchEnd);
-        return () => {
-            window.removeEventListener("touchend", onTouchEnd);
-            window.removeEventListener("touchcancel", onTouchEnd);
-        };
-    }, [onTouchEnd]);
-
-    return {
-        onTouchStart,
-        onTouchMove,
-    };
+    return useTouchPointer(onPointerDown, onPointerDrag, tableRef);
 }

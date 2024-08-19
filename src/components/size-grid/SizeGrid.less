@@ -1,0 +1,42 @@
+@import "../../style.less";
+
+.size-grid {
+    border-radius: @size-grid-border-radius;
+    cursor: pointer;
+    border-spacing: @size-grid-border-width;
+    .theme-color(background-color, size-grid-border-color);
+
+    &__cell {
+        width: (@size-grid-cell-width - @size-grid-border-width);
+        height: (@size-grid-cell-width - @size-grid-border-width);
+        .theme-color(background-color, size-grid-bg-color);
+
+        &--active {
+            .theme-color(background-color, size-grid-active-color);
+        }
+
+        tr:first-child > &:first-child {
+            border-top-left-radius: (
+                @size-grid-border-radius - @size-grid-border-width
+            );
+        }
+
+        tr:first-child > &:last-child {
+            border-top-right-radius: (
+                @size-grid-border-radius - @size-grid-border-width
+            );
+        }
+
+        tr:last-child > &:first-child {
+            border-bottom-left-radius: (
+                @size-grid-border-radius - @size-grid-border-width
+            );
+        }
+
+        tr:last-child > &:last-child {
+            border-bottom-right-radius: (
+                @size-grid-border-radius - @size-grid-border-width
+            );
+        }
+    }
+}
