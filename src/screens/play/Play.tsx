@@ -6,10 +6,6 @@ import { PlayGridMemo } from "../../components/play-grid/PlayGrid";
 import { LevelCells, LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { useInput } from "./Input";
 import { levelIsSolved } from "../../algorithms/utils";
-import {
-    ButtonGroup,
-    ButtonGroupButton,
-} from "../../components/ui/button-group/ButtonGroup";
 import { Button } from "../../components/ui/button/Button";
 import {
     useHistory,
@@ -18,6 +14,7 @@ import {
 import { RadioButtons } from "../../components/ui/radio-buttons/RadioButtons";
 import { SelectionOrNull } from "../../components/grid/Selection";
 import { HistoryButtons } from "../../components/history/HistoryButtons";
+import { ZoomButtons } from "../../components/zoom-buttons/ZoomButtons";
 
 export interface PlayScreenProps {
     level: LevelDimensions & LevelCells & LoadedLevelNumbers;
@@ -52,8 +49,7 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
         [level.width]
     );
 
-    const history = useHistory(marks, setMarkRaw);
-    const { setCell: setMark } = history;
+    const { setCell: setMark, ...history } = useHistory(marks, setMarkRaw);
 
     const { setSelection, onKeyDown: inputOnKeyDown } = useInput(
         marks,
@@ -83,7 +79,7 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
             tabIndex={-1}
         >
             <style>
-                {".play-screen__play-grid { font-size: " + scale + "em; }"}
+                {".play-screen__grid { font-size: " + scale + "em; }"}
             </style>
             <PlayGridMemo
                 level={level}
@@ -117,31 +113,7 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
                     ]}
                     hasKeyboardControls={false}
                 />
-                <ButtonGroup>
-                    <ButtonGroupButton
-                        title="Zoom in"
-                        disabled={scale >= 1.5 * 1.5 * 1.5}
-                        onClick={useCallback(
-                            () => setScale((scale) => Math.min(scale * 1.5, 4)),
-                            []
-                        )}
-                    >
-                        <i className="fas fa-plus" />
-                    </ButtonGroupButton>
-                    <ButtonGroupButton
-                        title="Zoom out"
-                        disabled={scale <= 1 / (1.5 * 1.5 * 1.5)}
-                        onClick={useCallback(
-                            () =>
-                                setScale((scale) =>
-                                    Math.max(scale / 1.5, 1 / 4)
-                                ),
-                            []
-                        )}
-                    >
-                        <i className="fas fa-minus" />
-                    </ButtonGroupButton>
-                </ButtonGroup>
+                <ZoomButtons scale={scale} setScale={setScale} />
                 <HistoryButtons history={history} />
                 <Button
                     title="Pause"

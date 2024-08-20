@@ -97,7 +97,7 @@ export function SizeGrid({
             onTouchMove={onTouchMove}
             ref={tableRef}
         >
-            {...rows}
+            <tbody>{...rows}</tbody>
         </table>
     );
 }
