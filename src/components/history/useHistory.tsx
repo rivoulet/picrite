@@ -1,20 +1,20 @@
 import { KeyboardEvent, useCallback, useState } from "react";
-import { CellMark } from "../../CellMark";
+import { CellValue } from "../../CellValue";
 import { Change, History, HistoryActions } from "./History";
 
 // TODO: Make configurable
 const MAX_LENGTH = 128;
 
-export function useHistory(
-    marks: CellMark[],
-    setMark: (i: number, mark: CellMark) => void
-): History & HistoryActions {
+export function useHistory<V extends CellValue>(
+    cells: V[],
+    setCell: (i: number, value: V) => void
+): History & HistoryActions<V> {
     const [history, setHistory] = useState({
-        changes: [] as Change[],
+        changes: [] as Change<V>[],
         pos: 0,
     });
 
-    const add = useCallback((change: Change) => {
+    const add = useCallback((change: Change<V>) => {
         setHistory((history) => {
             const endIndex = history.changes.length - history.pos;
             return {
@@ -35,38 +35,38 @@ export function useHistory(
         undo: useCallback(() => {
             const change =
                 history.changes[history.changes.length - 1 - history.pos];
-            setMark(change.i, change.prev);
+            setCell(change.i, change.prev);
             setHistory({
                 ...history,
                 pos: history.pos + 1,
             });
-        }, [history, setMark]),
+        }, [history, setCell]),
         hasRedo: history.pos > 0,
         redo: useCallback(() => {
             const change =
                 history.changes[history.changes.length - history.pos];
-            setMark(change.i, change.next);
+            setCell(change.i, change.next);
             setHistory({
                 ...history,
                 pos: history.pos - 1,
             });
-        }, [history, setMark]),
+        }, [history, setCell]),
         clear: useCallback(() => {
             setHistory({
-                changes: [] as Change[],
+                changes: [] as Change<V>[],
                 pos: 0,
             });
         }, []),
-        setMark: useCallback(
-            (i: number, mark: CellMark) => {
+        setCell: useCallback(
+            (i: number, value: V) => {
                 add({
                     i,
-                    prev: marks[i],
-                    next: mark,
+                    prev: cells[i],
+                    next: value,
                 });
-                setMark(i, mark);
+                setCell(i, value);
             },
-            [marks, setMark, add]
+            [cells, setCell, add]
         ),
     };
 }

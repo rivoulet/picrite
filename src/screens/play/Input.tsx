@@ -7,7 +7,7 @@ import {
     useEffect,
     useRef,
 } from "react";
-import { CellMark } from "../../CellMark";
+import { CellMark } from "../../CellValue";
 import { LevelDimensions } from "../../Level";
 import {
     Selection,

@@ -3,3 +3,5 @@ export const enum CellMark {
     Mark,
     Cross,
 }
+
+export type CellValue = CellMark | boolean;

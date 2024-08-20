@@ -1,7 +1,7 @@
 import "./Play.less";
 
 import { useCallback, useMemo, useState } from "react";
-import { CellMark } from "../../CellMark";
+import { CellMark } from "../../CellValue";
 import { PlayGridMemo } from "../../components/play-grid/PlayGrid";
 import { LevelCells, LevelDimensions, LoadedLevelNumbers } from "../../Level";
 import { useInput } from "./Input";
@@ -26,11 +26,15 @@ export interface PlayScreenProps {
 
 export function PlayScreen({ level, onWin }: PlayScreenProps) {
     // NOTE: level is assumed not to change
+
     const [marks, setMarks] = useState(() =>
         new Array<CellMark>(level.width * level.height).fill(CellMark.Empty)
     );
 
     const [selection, setSelectionRaw] = useState<SelectionOrNull>(null);
+
+    const [isCrossing, setIsCrossing] = useState(false);
+    const [scale, setScale] = useState(1);
 
     const setMarkRaw = useCallback(
         (i: number, mark: CellMark) => {
@@ -49,10 +53,7 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
     );
 
     const history = useHistory(marks, setMarkRaw);
-    const { setMark } = history;
-
-    const [isCrossing, setIsCrossing] = useState(false);
-    const [scale, setScale] = useState(1);
+    const { setCell: setMark } = history;
 
     const { setSelection, onKeyDown: inputOnKeyDown } = useInput(
         marks,

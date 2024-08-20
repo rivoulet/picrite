@@ -1,5 +1,5 @@
 import { memo, useMemo } from "react";
-import { CellMark } from "../../CellMark";
+import { CellMark } from "../../CellValue";
 import { equalArrays } from "../../utils";
 import { lineKnownMarks } from "../../algorithms/solve";
 

@@ -1,7 +1,7 @@
 import "./Grid.less";
 
 import { Dispatch, Ref, useRef } from "react";
-import { CellMark } from "../../CellMark";
+import { CellValue } from "../../CellValue";
 import { useScrollShadows } from "../scroll-shadows/useScrollShadows";
 import {
     useRows,
@@ -24,7 +24,7 @@ function triggerOnScroll(
 export interface GridProps {
     width: number;
     height: number;
-    marks: CellMark[];
+    cells: CellValue[];
     className?: string | undefined;
     tabIndex?: number | undefined;
     scrollContainerTabIndex?: number | undefined;
@@ -36,7 +36,7 @@ export interface GridProps {
 export function Grid({
     width,
     height,
-    marks,
+    cells,
     className = "",
     tabIndex,
     scrollContainerTabIndex,
@@ -44,7 +44,7 @@ export function Grid({
     tableRef,
     scrollContainerRef,
 }: GridProps) {
-    const rows = useRows(width, height, marks);
+    const rows = useRows(width, height, cells);
 
     const scrollContainerRef_ = useRef<HTMLDivElement>(null);
     const { shadows, update: updateShadows } =
@@ -81,7 +81,7 @@ export interface SelectableGridProps extends GridProps {
 export function SelectableGrid({
     width,
     height,
-    marks,
+    cells,
     selection,
     className = "",
     tabIndex,
@@ -90,7 +90,7 @@ export function SelectableGrid({
     tableRef,
     scrollContainerRef,
 }: SelectableGridProps) {
-    const rows = useRows(width, height, marks);
+    const rows = useRows(width, height, cells);
 
     const scrollContainerRef_ = useRef<HTMLDivElement>(null);
     const { shadows, update: updateShadows } = useScrollShadows(
@@ -138,7 +138,7 @@ export interface SelectableGridWithInputProps extends SelectableGridProps {
 export function SelectableGridWithInput({
     width,
     height,
-    marks,
+    cells,
     selection,
     setSelection,
     autoFocus = false,
@@ -149,7 +149,7 @@ export function SelectableGridWithInput({
     tableRef,
     scrollContainerRef,
 }: SelectableGridWithInputProps) {
-    const rows = useRows(width, height, marks);
+    const rows = useRows(width, height, cells);
 
     const scrollContainerRef_ = useRef<HTMLDivElement>(null);
     const tableRef_ = useRef<HTMLTableElement>(null);
@@ -203,7 +203,7 @@ export function SelectableGridWithInput({
 export function SelectableGridWithTouchInput({
     width,
     height,
-    marks,
+    cells,
     selection,
     setSelection,
     autoFocus = false,
@@ -214,7 +214,7 @@ export function SelectableGridWithTouchInput({
     tableRef,
     scrollContainerRef,
 }: SelectableGridWithInputProps) {
-    const rows = useRows(width, height, marks);
+    const rows = useRows(width, height, cells);
 
     const scrollContainerRef_ = useRef<HTMLDivElement>(null);
     const tableRef_ = useRef<HTMLTableElement>(null);

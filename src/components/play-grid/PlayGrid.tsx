@@ -2,7 +2,7 @@ import "./PlayGrid.less";
 
 import { SelectableGridWithTouchInput } from "../grid/Grid";
 import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
-import { CellMark } from "../../CellMark";
+import { CellMark } from "../../CellValue";
 import {
     Dispatch,
     memo,
@@ -158,7 +158,7 @@ export function PlayGrid({
             <SelectableGridWithTouchInput
                 width={level.width}
                 height={level.height}
-                marks={marks}
+                cells={marks}
                 selection={selection}
                 setSelection={setSelection}
                 autoFocus={true}

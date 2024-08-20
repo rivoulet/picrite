@@ -9,7 +9,7 @@ import {
     useState,
 } from "react";
 import { clamp, equal2 } from "../../utils";
-import { CellMark } from "../../CellMark";
+import { CellValue } from "../../CellValue";
 import { CellMemo } from "./Cell";
 import {
     Selection,
@@ -38,18 +38,18 @@ function offsetPosToCellPos(
     ];
 }
 
-export function useRows(width: number, height: number, marks: CellMark[]) {
+export function useRows(width: number, height: number, cells: CellValue[]) {
     return useMemo(() => {
         const rows = new Array<ReactElement>(height);
         for (let y = 0; y < height; y++) {
             const row = new Array<ReactElement>(width);
             for (let x = 0; x < width; x++) {
-                row[x] = <CellMemo key={x} mark={marks[y * width + x]} />;
+                row[x] = <CellMemo key={x} value={cells[y * width + x]} />;
             }
             rows[y] = <tr key={y}>{...row}</tr>;
         }
         return rows;
-    }, [width, height, marks]);
+    }, [width, height, cells]);
 }
 
 export function useSelection(

@@ -1,8 +1,6 @@
 import { LevelDimensions, LevelCells, LoadedLevelNumbers } from "../Level";
 
-function levelNumbers(
-    level: LevelDimensions & LevelCells
-): LoadedLevelNumbers {
+function levelNumbers(level: LevelDimensions & LevelCells): LoadedLevelNumbers {
     const levelSize = [level.width, level.height];
     const indexScale = [1, level.width];
 

@@ -1,14 +1,18 @@
 import "./Cell.less";
 
 import { memo, useRef } from "react";
-import { CellMark } from "../../CellMark";
+import { CellMark, CellValue } from "../../CellValue";
 import CrossSign from "../../assets/cross.svg?react";
 
-export function Cell({ mark }: { mark: CellMark }) {
+export interface CellProps {
+    value: CellValue;
+}
+
+export function Cell({ value }: CellProps) {
     const hasMarkRef = useRef(true);
-    const hasVisibleMark = mark !== CellMark.Empty;
+    const hasVisibleMark = !!value; // true or not CellMark.Empty
     if (hasVisibleMark) {
-        hasMarkRef.current = mark === CellMark.Mark;
+        hasMarkRef.current = value !== CellMark.Cross;
     }
     const hasVisibleMarkClassName = hasVisibleMark
         ? " grid__cell__contents--visible"

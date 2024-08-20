@@ -1,9 +1,9 @@
-import { CellMark } from "../../CellMark";
+import { CellValue } from "../../CellValue";
 
-export interface Change {
+export interface Change<V extends CellValue> {
     i: number;
-    prev: CellMark;
-    next: CellMark;
+    prev: V;
+    next: V;
 }
 
 export interface History {
@@ -13,7 +13,7 @@ export interface History {
     redo(): void;
 }
 
-export interface HistoryActions {
+export interface HistoryActions<V extends CellValue> {
     clear(): void;
-    setMark(i: number, mark: CellMark): void;
+    setCell(i: number, value: V): void;
 }

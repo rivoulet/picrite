@@ -2,8 +2,8 @@ import "./Numbers.less";
 
 import { memo, Ref } from "react";
 import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
-import { CellMark } from "../../CellMark";
-import { marksByLine } from "../../algorithms/utils";
+import { CellMark } from "../../CellValue";
+import { cellValuesByLine } from "../../algorithms/utils";
 import { LineMemo } from "./Line";
 
 export interface NumbersProps {
@@ -26,7 +26,7 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
 
     const marksByLine_ =
         "marks" in props
-            ? marksByLine(props.level, props.marks, props.isVertical)
+            ? cellValuesByLine(props.level, props.marks, props.isVertical)
             : undefined;
     const numberLines = (
         props.isVertical ? props.level.vNumbers : props.level.hNumbers

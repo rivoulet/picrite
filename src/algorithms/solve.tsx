@@ -1,4 +1,4 @@
-import { CellMark } from "../CellMark";
+import { CellMark } from "../CellValue";
 import { LevelCells, LevelDimensions, LoadedLevelNumbers } from "../Level";
 
 export interface SolutionMark {
