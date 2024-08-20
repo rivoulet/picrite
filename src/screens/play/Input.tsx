@@ -226,7 +226,6 @@ export function useInput(
         switch (e.key) {
             case "x":
             case "Shift": {
-                inputRef.current.isCrossing = false;
                 setIsCrossing(false);
                 break;
             }

@@ -1,6 +1,6 @@
 import "./Play.less";
 
-import { KeyboardEvent, useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { CellMark } from "../../CellMark";
 import { PlayGridMemo } from "../../components/play-grid/PlayGrid";
 import { LevelCells, LevelDimensions, LoadedLevelNumbers } from "../../Level";
@@ -11,9 +11,13 @@ import {
     ButtonGroupButton,
 } from "../../components/ui/button-group/ButtonGroup";
 import { Button } from "../../components/ui/button/Button";
-import { useHistory } from "./History";
+import {
+    useHistory,
+    useHistoryInput,
+} from "../../components/history/useHistory";
 import { RadioButtons } from "../../components/ui/radio-buttons/RadioButtons";
 import { SelectionOrNull } from "../../components/grid/Selection";
+import { HistoryButtons } from "../../components/history/HistoryButtons";
 
 export interface PlayScreenProps {
     level: LevelDimensions & LevelCells & LoadedLevelNumbers;
@@ -44,23 +48,11 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
         [level.width]
     );
 
-    const history = useHistory(level, setMarkRaw);
-    const { undo: undoHistory, redo: redoHistory, add: addHistory } = history;
+    const history = useHistory(marks, setMarkRaw);
+    const { setMark } = history;
 
     const [isCrossing, setIsCrossing] = useState(false);
     const [scale, setScale] = useState(1);
-
-    const setMark = useCallback(
-        (i: number, mark: CellMark) => {
-            addHistory({
-                i,
-                prev: marks[i],
-                next: mark,
-            });
-            setMarkRaw(i, mark);
-        },
-        [marks, setMarkRaw, addHistory]
-    );
 
     const { setSelection, onKeyDown: inputOnKeyDown } = useInput(
         marks,
@@ -72,22 +64,7 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
         level
     );
 
-    const onKeyDown = (e: KeyboardEvent) => {
-        inputOnKeyDown(e);
-        switch (e.key) {
-            case "z": {
-                if (!(e.metaKey || e.ctrlKey)) break;
-                if (e.shiftKey) {
-                    if (history.hasRedo) {
-                        history.redo();
-                    }
-                } else if (history.hasUndo) {
-                    history.undo();
-                }
-                break;
-            }
-        }
-    };
+    const { onKeyDown: historyOnKeyDown } = useHistoryInput(history);
 
     useMemo(() => {
         if (levelIsSolved(level, marks)) {
@@ -96,7 +73,14 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
     }, [level, marks, onWin]);
 
     return (
-        <div className="play-screen" onKeyDown={onKeyDown} tabIndex={-1}>
+        <div
+            className="play-screen"
+            onKeyDown={(e) => {
+                inputOnKeyDown(e);
+                historyOnKeyDown(e);
+            }}
+            tabIndex={-1}
+        >
             <style>
                 {".play-screen__play-grid { font-size: " + scale + "em; }"}
             </style>
@@ -105,7 +89,7 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
                 marks={marks}
                 selection={selection}
                 setSelection={setSelection}
-                className="play-screen__play-grid"
+                className="play-screen__grid"
             />
             <div className="play-screen__controls">
                 <RadioButtons
@@ -132,7 +116,7 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
                     ]}
                     hasKeyboardControls={false}
                 />
-                <ButtonGroup className="play-screen__controls__group">
+                <ButtonGroup>
                     <ButtonGroupButton
                         title="Zoom in"
                         disabled={scale >= 1.5 * 1.5 * 1.5}
@@ -157,26 +141,7 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
                         <i className="fas fa-minus" />
                     </ButtonGroupButton>
                 </ButtonGroup>
-                <ButtonGroup className="play-screen__controls__group">
-                    <ButtonGroupButton
-                        title="Undo"
-                        disabled={!history.hasUndo}
-                        onClick={useCallback(() => {
-                            undoHistory();
-                        }, [undoHistory])}
-                    >
-                        <i className="fas fa-rotate-left" />
-                    </ButtonGroupButton>
-                    <ButtonGroupButton
-                        title="Redo"
-                        disabled={!history.hasRedo}
-                        onClick={useCallback(() => {
-                            redoHistory();
-                        }, [redoHistory])}
-                    >
-                        <i className="fas fa-rotate-right" />
-                    </ButtonGroupButton>
-                </ButtonGroup>
+                <HistoryButtons history={history} />
                 <Button
                     title="Pause"
                     onClick={useCallback(() => {
