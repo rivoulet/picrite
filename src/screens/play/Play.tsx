@@ -76,7 +76,6 @@ export function PlayScreen({ level, onWin }: PlayScreenProps) {
                 inputOnKeyDown(e);
                 historyOnKeyDown(e);
             }}
-            tabIndex={-1}
         >
             <style>
                 {".play-screen__grid { font-size: " + scale + "em; }"}

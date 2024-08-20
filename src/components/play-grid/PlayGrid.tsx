@@ -8,7 +8,6 @@ import {
     memo,
     ReactElement,
     RefObject,
-
     useCallback,
     useMemo,
     useRef,
@@ -16,7 +15,7 @@ import {
 import { NumbersMemo } from "../numbers/Numbers";
 import { useSyncedScroll } from "../../utils/useSyncedScroll";
 import { SelectionOrNull, SetSelectionAction } from "../grid/Selection";
-import { useInput } from "./hooks";
+import { useOuterInput } from "../grid/hooks";
 
 export interface PlayGridProps {
     level: LevelDimensions & LoadedLevelNumbers;
@@ -59,7 +58,11 @@ export function PlayGrid({
 
     const tableRef = useRef<HTMLTableElement>(null);
 
-    const { onKeyDown, onBlur } = useInput(selection, setSelection, tableRef);
+    const { onKeyDown, onBlur } = useOuterInput(
+        selection,
+        setSelection,
+        tableRef
+    );
 
     return (
         <div
