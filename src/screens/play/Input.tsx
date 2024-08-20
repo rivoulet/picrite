@@ -15,6 +15,7 @@ import {
     SelectionUpdateKind,
     SetSelectionAction,
 } from "../../components/grid/Selection";
+import { drawLine } from "../../utils/drawLine";
 
 const enum DragDir {
     X,
@@ -45,26 +46,6 @@ class Input {
                     : CellMark.Mark
                 : CellMark.Empty
         );
-    }
-
-    dragFill(
-        dir: number,
-        base: number,
-        step: number,
-        newSelection: Selection,
-        marks: CellMark[],
-        setMark: (i: number, mark: CellMark) => void
-    ) {
-        let x0 = this.dragLastPos![dir] + 1;
-        let x1 = newSelection[dir] + 1;
-        if (x0 > x1) {
-            x1 = x0 - 1;
-            x0 = newSelection[dir];
-        }
-        for (let x = x0, j = base + x0 * step; x < x1; x++, j += step) {
-            if (marks[j] !== this.dragPrevMark!) continue;
-            this.toggle(j, marks, setMark);
-        }
     }
 
     handleSelectionUpdate(
@@ -133,25 +114,11 @@ class Input {
                 }
 
                 if (this.dragLastPos) {
-                    if (this.dragDir === DragDir.X) {
-                        this.dragFill(
-                            0,
-                            newSelection[1] * width,
-                            1,
-                            newSelection,
-                            marks,
-                            setMark
-                        );
-                    } else {
-                        this.dragFill(
-                            1,
-                            newSelection[0],
-                            width,
-                            newSelection,
-                            marks,
-                            setMark
-                        );
-                    }
+                    drawLine(newSelection, this.dragLastPos, (x, y) => {
+                        const j = y * width + x;
+                        if (marks[j] !== this.dragPrevMark!) return;
+                        this.toggle(j, marks, setMark);
+                    });
                 } else if (marks[i] === this.dragPrevMark!) {
                     this.toggle(i, marks, setMark);
                 }
