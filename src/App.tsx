@@ -1,21 +1,28 @@
 import "./App.less";
 
 import { useState } from "react";
-import { PlayScreen } from "./screens/play/Play";
 import { LoadedLevel } from "./Level";
 import { LevelSelect } from "./screens/level-select/LevelSelect";
+import { PlayScreen } from "./screens/play/Play";
+import { SwitchTransition } from "react-transition-group";
+import { Slide } from "./components/transitions/Slide";
 
 export function App() {
     const [level, setLevel] = useState<LoadedLevel | null>(null);
 
-    return level ? (
+    const screen = level ? (
         <PlayScreen
+            key="play"
             level={level}
-            onWin={() => {
-                console.log("Won!");
-            }}
+            onWin={() => console.log("Won!")}
         />
     ) : (
-        <LevelSelect setLevel={setLevel} />
+        <LevelSelect key="level-select" setLevel={setLevel} />
+    );
+
+    return (
+        <SwitchTransition>
+            <Slide key={screen.key!}>{screen}</Slide>
+        </SwitchTransition>
     );
 }
