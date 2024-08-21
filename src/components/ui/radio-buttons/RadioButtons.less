@@ -27,12 +27,17 @@
     &__button {
         width: calc(100% / var(--radio-buttons-count));
         transition: background-color 0.1s linear;
+        .theme-color(color, button-color);
         .theme-color(background-color, radio-button-bg-color);
 
         &:not(&--disabled):hover,
         &:not(&--disabled):focus-within,
         .radio-buttons:focus-within > & {
             .theme-color(background-color, radio-button-hover-bg-color);
+        }
+
+        &--disabled {
+            .theme-color(color, button-disabled-color);
         }
 
         &:not(&--disabled) {
@@ -53,11 +58,6 @@
             padding: 0 (0.5 * @button-height);
             position: relative;
             z-index: 1;
-            .theme-color(color, button-color);
-
-            .radio-buttons__button--disabled > & {
-                .theme-color(color, button-disabled-color);
-            }
         }
     }
 }
