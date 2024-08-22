@@ -1,6 +1,6 @@
-import { LevelDimensions, LevelCells, LoadedLevelNumbers } from "../Level";
+import { LevelDimensions, LevelCells, LevelNumbers } from "../Level";
 
-function levelNumbers(level: LevelDimensions & LevelCells): LoadedLevelNumbers {
+export function levelNumbers(level: LevelDimensions & LevelCells): LevelNumbers {
     const levelSize = [level.width, level.height];
     const indexScale = [1, level.width];
 
@@ -44,14 +44,5 @@ function levelNumbers(level: LevelDimensions & LevelCells): LoadedLevelNumbers {
     return {
         hNumbers: generateHVNumbers(false),
         vNumbers: generateHVNumbers(true),
-    };
-}
-
-export function loadLevel<T extends LevelDimensions & LevelCells>(
-    level: T
-): T & LoadedLevelNumbers {
-    return {
-        ...level,
-        ...levelNumbers(level),
     };
 }

@@ -83,7 +83,7 @@ export function Line({ numbers, marks, isSelected }: LineProps) {
                 (hasError ? " numbers__line--error" : "")
             }
         >
-            {...numbersOr0.map((n, i) => {
+            {numbersOr0.map((n, i) => {
                 return (
                     <li
                         key={i}

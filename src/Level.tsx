@@ -1,3 +1,7 @@
+export interface PackedLevel {
+    cells: string;
+}
+
 export interface LevelDimensions {
     width: number;
     height: number;
@@ -7,11 +11,7 @@ export interface LevelCells {
     cells: boolean[];
 }
 
-export interface LoadedLevelNumbers {
+export interface LevelNumbers {
     hNumbers: number[][];
     vNumbers: number[][];
 }
-
-export interface Level extends LevelDimensions, LevelCells {}
-
-export interface LoadedLevel extends Level, LoadedLevelNumbers {}

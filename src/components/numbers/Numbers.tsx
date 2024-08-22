@@ -1,14 +1,14 @@
 import "./Numbers.less";
 
 import { memo, Ref } from "react";
-import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
+import { LevelDimensions, LevelNumbers } from "../../Level";
 import { CellMark } from "../../CellValue";
 import { cellValuesByLine } from "../../algorithms/utils";
 import { LineMemo } from "./Line";
 
 export interface NumbersProps {
     isVertical: boolean;
-    level: LoadedLevelNumbers;
+    level: LevelNumbers;
     selection: number;
     className?: string | undefined;
     tabIndex?: number | undefined;
@@ -17,7 +17,7 @@ export interface NumbersProps {
 }
 
 export interface NumbersPropsWithMarks extends NumbersProps {
-    level: LoadedLevelNumbers & LevelDimensions;
+    level: LevelNumbers & LevelDimensions;
     marks: CellMark[];
 }
 
@@ -57,7 +57,7 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
             }}
             ref={innerRef}
         >
-            {...numberLines}
+            {numberLines}
         </ol>
     );
 }

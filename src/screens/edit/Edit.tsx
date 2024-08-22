@@ -19,7 +19,7 @@ import { useInput } from "./Input";
 import { Button } from "../../components/ui/button/Button";
 import { HistoryButtons } from "../../components/history/HistoryButtons";
 import { levelIsSolvable } from "../../algorithms/solve";
-import { loadLevel } from "../../algorithms/load";
+import { levelNumbers } from "../../algorithms/numbers";
 import { ZoomButtons } from "../../components/zoom-buttons/ZoomButtons";
 import { useOuterInput } from "../../components/grid/hooks";
 import { equalArrays } from "../../utils";
@@ -43,16 +43,16 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
 
         const gridTableRef = useRef<HTMLTableElement>(null);
 
-        const isSolvable = useMemo(
-            () =>
-                levelIsSolvable(
-                    loadLevel({
-                        ...level,
-                        cells,
-                    })
-                ),
-            [level, cells]
-        );
+        const isSolvable = useMemo(() => {
+            const level_ = {
+                ...level,
+                cells,
+            };
+            return levelIsSolvable({
+                ...level_,
+                ...levelNumbers(level_),
+            });
+        }, [level, cells]);
 
         const isUnchanged = useMemo(
             () => equalArrays(level.cells, cells),

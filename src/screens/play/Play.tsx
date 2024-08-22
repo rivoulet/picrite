@@ -3,7 +3,7 @@ import "./Play.less";
 import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import { CellMark } from "../../CellValue";
 import { PlayGridMemo } from "../../components/play-grid/PlayGrid";
-import { LevelCells, LevelDimensions, LoadedLevelNumbers } from "../../Level";
+import { LevelCells, LevelDimensions, LevelNumbers } from "../../Level";
 import { useInput } from "./Input";
 import { levelIsSolved } from "../../algorithms/utils";
 import { Button } from "../../components/ui/button/Button";
@@ -26,7 +26,7 @@ function clearMarks(level: LevelDimensions) {
 }
 
 export interface PlayScreenProps {
-    level: LevelDimensions & LevelCells & LoadedLevelNumbers;
+    level: LevelDimensions & LevelCells & LevelNumbers;
     quit: (winTime?: number) => void;
     className?: string | undefined;
 }

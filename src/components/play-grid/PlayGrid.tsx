@@ -1,7 +1,7 @@
 import "./PlayGrid.less";
 
 import { SelectableGridWithTouchInput } from "../grid/Grid";
-import { LevelDimensions, LoadedLevelNumbers } from "../../Level";
+import { LevelDimensions, LevelNumbers } from "../../Level";
 import { CellMark } from "../../CellValue";
 import {
     Dispatch,
@@ -18,7 +18,7 @@ import { SelectionOrNull, SetSelectionAction } from "../grid/Selection";
 import { useOuterInput } from "../grid/hooks";
 
 export interface PlayGridProps {
-    level: LevelDimensions & LoadedLevelNumbers;
+    level: LevelDimensions & LevelNumbers;
     marks: CellMark[];
     selection: SelectionOrNull;
     setSelection: Dispatch<SetSelectionAction>;

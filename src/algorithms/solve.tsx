@@ -1,5 +1,5 @@
 import { CellMark } from "../CellValue";
-import { LevelCells, LevelDimensions, LoadedLevelNumbers } from "../Level";
+import { LevelCells, LevelDimensions, LevelNumbers } from "../Level";
 
 export interface SolutionMark {
     mark: CellMark;
@@ -235,7 +235,7 @@ export function lineKnownMarksFast(numbers: number[], marks: CellMark[]) {
 }
 
 export function levelIsSolvable(
-    level: LevelDimensions & LevelCells & LoadedLevelNumbers
+    level: LevelDimensions & LevelCells & LevelNumbers
 ) {
     const marks = new Array<CellMark>(level.width * level.height).fill(
         CellMark.Empty
