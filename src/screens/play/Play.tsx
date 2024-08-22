@@ -1,6 +1,6 @@
 import "./Play.less";
 
-import { forwardRef, useCallback, useMemo, useState } from "react";
+import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import { CellMark } from "../../CellValue";
 import { PlayGridMemo } from "../../components/play-grid/PlayGrid";
 import { LevelCells, LevelDimensions, LoadedLevelNumbers } from "../../Level";
@@ -17,6 +17,8 @@ import { HistoryButtons } from "../../components/history/HistoryButtons";
 import { ZoomButtons } from "../../components/zoom-buttons/ZoomButtons";
 import { Custom } from "../../components/transitions/Custom";
 import { PauseScreen } from "./Pause";
+import { Timer } from "../../components/timer/Timer";
+import { useTimer } from "../../utils/useTimer";
 
 function clearMarks(level: LevelDimensions) {
     return new Array<CellMark>(level.width * level.height).fill(CellMark.Empty);
@@ -24,7 +26,7 @@ function clearMarks(level: LevelDimensions) {
 
 export interface PlayScreenProps {
     level: LevelDimensions & LevelCells & LoadedLevelNumbers;
-    onWin: () => void;
+    onWin: (elapsed: number) => void;
     quit: () => void;
     className?: string | undefined;
 }
@@ -33,14 +35,26 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
     ({ level, onWin, quit, className }, ref) => {
         // NOTE: level is assumed not to change
 
-        const [isPaused, setIsPaused] = useState(false);
-
         const [marks, setMarks] = useState(() => clearMarks(level));
+
+        const hasWonRef = useRef(false);
+        const prevHasWon = hasWonRef.current;
+        hasWonRef.current = useMemo(
+            () => levelIsSolved(level, marks),
+            [level, marks]
+        ) || prevHasWon;
 
         const [selection, setSelectionRaw] = useState<SelectionOrNull>(null);
 
         const [isCrossing, setIsCrossing] = useState(false);
         const [scale, setScale] = useState(1);
+
+        const [isPaused, setIsPaused] = useState(false);
+        const elapsed = useTimer(hasWonRef.current || isPaused);
+
+        if (!prevHasWon && hasWonRef.current) {
+            onWin(elapsed);
+        }
 
         const setMarkRaw = useCallback(
             (i: number, mark: CellMark) => {
@@ -73,12 +87,6 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
 
         const { onKeyDown: historyOnKeyDown } = useHistoryInput(history);
 
-        useMemo(() => {
-            if (levelIsSolved(level, marks)) {
-                onWin();
-            }
-        }, [level, marks, onWin]);
-
         return (
             <div className={className + " play-screen"} ref={ref}>
                 <Custom
@@ -98,6 +106,10 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                                 scale +
                                 "em; }"}
                         </style>
+                        <Timer
+                            elapsed={elapsed}
+                            className="play-screen__timer"
+                        />
                         <PlayGridMemo
                             level={level}
                             marks={marks}
