@@ -15,9 +15,15 @@ export function App() {
             key="play"
             level={level}
             onWin={() => console.log("Won!")}
+            quit={() => setLevel(null)}
+            className="screen"
         />
     ) : (
-        <LevelSelect key="level-select" setLevel={setLevel} />
+        <LevelSelect
+            key="level-select"
+            setLevel={setLevel}
+            className="screen"
+        />
     );
 
     return (

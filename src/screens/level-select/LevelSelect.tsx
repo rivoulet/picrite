@@ -8,14 +8,15 @@ import { SizeGrid } from "../../components/size-grid/SizeGrid";
 
 export interface LevelSelectProps {
     setLevel: (level: LoadedLevel) => void;
+    className?: string | undefined;
 }
 
 export const LevelSelect = forwardRef<HTMLDivElement, LevelSelectProps>(
-    ({ setLevel }, ref) => {
+    ({ setLevel, className }, ref) => {
         const [width, setWidth] = useState(10);
         const [height, setHeight] = useState(10);
         return (
-            <div className="level-select-screen" ref={ref}>
+            <div className={className + " level-select-screen"} ref={ref}>
                 <SizeGrid
                     maxWidth={5}
                     width={width / 5}

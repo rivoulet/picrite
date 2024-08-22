@@ -105,6 +105,11 @@
 @cross-button-selected-color-light: black;
 @cross-button-selected-color-dark: black;
 
+@pause-screen-bg-color-light: #80808060;
+@pause-screen-bg-color-dark: #40404080;
+@pause-screen-info-color-light: fadeout(@text-color-light, 50%);
+@pause-screen-info-color-dark: fadeout(@text-color-dark, 50%);
+
 .theme-color-html(@var, @name) {
     @{var}: ~"@{@{name}-light}";
 

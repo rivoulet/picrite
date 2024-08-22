@@ -1,11 +1,89 @@
 @import "../../style.less";
 
 .play-screen {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+    &__inner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+
+        &--pause-enter,
+        &--pause-enter-active,
+        &--pause-enter-done {
+            pointer-events: none;
+        }
+
+        &--pause-enter,
+        &&--pause-exit-active {
+            opacity: 1;
+            filter: blur(0);
+            transform: scale(1);
+        }
+
+        &--pause-exit,
+        &&--pause-enter-active,
+        &--pause-enter-done {
+            opacity: 0.5;
+            filter: blur(5px);
+            transform: scale(0.9);
+        }
+
+        &--pause-enter-active,
+        &--pause-exit-active {
+            transition: opacity 0.1s linear, filter 0.1s linear,
+                transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+    }
+
+    &__pause {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        z-index: 1;
+        opacity: 0;
+        pointer-events: none;
+
+        &--pause-enter,
+        &--pause-enter-active,
+        &--pause-enter-done {
+            pointer-events: unset;
+        }
+
+        &--pause-enter,
+        &&--pause-exit-active {
+            opacity: 0;
+        }
+
+        &--pause-exit,
+        &&--pause-enter-active,
+        &--pause-enter-done {
+            opacity: 1;
+        }
+
+        &--pause-enter-active,
+        &--pause-exit-active {
+            transition: opacity 0.1s linear;
+        }
+
+        &__bg {
+            // Hack to make the background bigger so that it shows while sliding
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            bottom: -100%;
+            right: -100%;
+            .theme-color(background-color, pause-screen-bg-color);
+        }
+
+        &__inner {
+            position: relative;
+            height: 100%;
+            z-index: 1;
+        }
+    }
 
     &__grid {
         flex: 0 1 auto;
