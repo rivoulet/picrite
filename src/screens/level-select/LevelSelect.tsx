@@ -1,18 +1,24 @@
 import "./LevelSelect.less";
 
-import { forwardRef, useCallback, useState } from "react";
+import {
+    Dispatch,
+    forwardRef,
+    SetStateAction,
+    useCallback,
+    useState,
+} from "react";
 import { generateLevel } from "../../algorithms/generate";
 import { Button } from "../../components/ui/button/Button";
-import { LoadedLevel } from "../../Level";
 import { SizeGrid } from "../../components/size-grid/SizeGrid";
+import { AppState } from "../../AppState";
 
 export interface LevelSelectProps {
-    setLevel: (level: LoadedLevel) => void;
+    setState: Dispatch<SetStateAction<AppState>>;
     className?: string | undefined;
 }
 
 export const LevelSelect = forwardRef<HTMLDivElement, LevelSelectProps>(
-    ({ setLevel, className }, ref) => {
+    ({ setState, className }, ref) => {
         const [width, setWidth] = useState(10);
         const [height, setHeight] = useState(10);
         return (
@@ -33,7 +39,10 @@ export const LevelSelect = forwardRef<HTMLDivElement, LevelSelectProps>(
                 </p>
                 <Button
                     onClick={() => {
-                        setLevel(generateLevel(width, height));
+                        setState({
+                            level: generateLevel(width, height),
+                            isEditing: false,
+                        });
                     }}
                 >
                     Generate
