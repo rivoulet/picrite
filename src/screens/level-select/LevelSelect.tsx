@@ -1,15 +1,9 @@
 import "./LevelSelect.less";
 
-import {
-    Dispatch,
-    forwardRef,
-    SetStateAction,
-    useCallback,
-    useState,
-} from "react";
+import { Dispatch, forwardRef, SetStateAction, useState } from "react";
 import { generateLevel } from "../../algorithms/generate";
 import { Button } from "../../components/ui/button/Button";
-import { SizeGrid } from "../../components/size-grid/SizeGrid";
+import { SizeGridWithSize } from "../../components/size-grid/SizeGrid";
 import { AppState } from "../../AppState";
 
 export interface LevelSelectProps {
@@ -23,20 +17,15 @@ export const LevelSelect = forwardRef<HTMLDivElement, LevelSelectProps>(
         const [height, setHeight] = useState(10);
         return (
             <div className={className + " level-select-screen"} ref={ref}>
-                <SizeGrid
-                    maxWidth={5}
-                    width={width / 5}
-                    setWidth={useCallback((width) => setWidth(width * 5), [])}
-                    maxHeight={5}
-                    height={height / 5}
-                    setHeight={useCallback(
-                        (height) => setHeight(height * 5),
-                        []
-                    )}
+                <SizeGridWithSize
+                    maxWidth={25}
+                    width={width}
+                    setWidth={setWidth}
+                    maxHeight={25}
+                    height={height}
+                    setHeight={setHeight}
+                    scale={5}
                 />
-                <p>
-                    {width} x {height}
-                </p>
                 <Button
                     onClick={() => {
                         setState({

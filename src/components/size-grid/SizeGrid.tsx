@@ -4,15 +4,6 @@ import { Dispatch, ReactElement, useCallback, useRef } from "react";
 import { clamp } from "../../utils";
 import { useMousePointer, useTouchPointer } from "../../utils/usePointer";
 
-export interface SizeGridProps {
-    maxWidth: number;
-    width: number;
-    setWidth: Dispatch<number>;
-    maxHeight: number;
-    height: number;
-    setHeight: Dispatch<number>;
-}
-
 function cellSize(element: HTMLElement) {
     return 2 * parseFloat(getComputedStyle(element).fontSize);
 }
@@ -32,6 +23,17 @@ function offsetPosToCellPos(
     ];
 }
 
+export interface SizeGridProps {
+    maxWidth: number;
+    width: number;
+    setWidth: Dispatch<number>;
+    maxHeight: number;
+    height: number;
+    setHeight: Dispatch<number>;
+    scale?: number | undefined;
+    className?: string | undefined;
+}
+
 export function SizeGrid({
     maxWidth,
     width,
@@ -39,7 +41,14 @@ export function SizeGrid({
     maxHeight,
     height,
     setHeight,
+    scale = 1,
+    className = "",
 }: SizeGridProps) {
+    width /= scale;
+    height /= scale;
+    maxWidth /= scale;
+    maxHeight /= scale;
+
     const tableRef = useRef<HTMLTableElement>(null);
 
     const rows = new Array<ReactElement>(maxHeight);
@@ -71,10 +80,10 @@ export function SizeGrid({
                 maxHeight,
                 tableRef.current
             );
-            setWidth(width);
-            setHeight(height);
+            setWidth(width * scale);
+            setHeight(height * scale);
         },
-        [maxWidth, setWidth, maxHeight, setHeight]
+        [maxWidth, setWidth, maxHeight, setHeight, scale]
     );
 
     const { onMouseDown, onMouseMove } = useMousePointer(
@@ -90,7 +99,7 @@ export function SizeGrid({
 
     return (
         <table
-            className="size-grid"
+            className={className + " size-grid"}
             onMouseDown={onMouseDown}
             onMouseMove={onMouseMove}
             onTouchStart={onTouchStart}
@@ -99,5 +108,16 @@ export function SizeGrid({
         >
             <tbody>{...rows}</tbody>
         </table>
+    );
+}
+
+export function SizeGridWithSize({ className, ...props }: SizeGridProps) {
+    return (
+        <div className={className + " size-grid-with-size"}>
+            <SizeGrid {...props} />
+            <div className="size-grid-with-size__size">
+                {props.width} x {props.height}
+            </div>
+        </div>
     );
 }
