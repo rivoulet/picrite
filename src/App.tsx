@@ -14,10 +14,7 @@ export function App() {
         <PlayScreen
             key="play"
             level={level}
-            onWin={(elapsed) =>
-                console.log("Won! Took " + elapsed + " seconds")
-            }
-            quit={() => setLevel(null)}
+            quit={(_winTime) => setLevel(null)}
             className="screen"
         />
     ) : (

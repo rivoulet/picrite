@@ -1,0 +1,23 @@
+@import "../../style.less";
+
+.win-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0.5em;
+
+    & > * {
+        margin: 0.5em;
+    }
+
+    &__message,
+    &__time {
+        font-size: 2em;
+        margin: 0.25em;
+    }
+
+    &__message {
+        font-weight: bold;
+    }
+}

@@ -15,10 +15,11 @@ import { RadioButtons } from "../../components/ui/radio-buttons/RadioButtons";
 import { SelectionOrNull } from "../../components/grid/Selection";
 import { HistoryButtons } from "../../components/history/HistoryButtons";
 import { ZoomButtons } from "../../components/zoom-buttons/ZoomButtons";
-import { Custom } from "../../components/transitions/Custom";
 import { PauseScreen } from "./Pause";
-import { Timer } from "../../components/timer/Timer";
+import { Time } from "../../components/time/Time";
 import { useTimer } from "../../utils/useTimer";
+import { WinScreen } from "./Win";
+import { Modal, ModalTarget } from "../../components/modal/Modal";
 
 function clearMarks(level: LevelDimensions) {
     return new Array<CellMark>(level.width * level.height).fill(CellMark.Empty);
@@ -26,23 +27,22 @@ function clearMarks(level: LevelDimensions) {
 
 export interface PlayScreenProps {
     level: LevelDimensions & LevelCells & LoadedLevelNumbers;
-    onWin: (elapsed: number) => void;
-    quit: () => void;
+    quit: (winTime?: number) => void;
     className?: string | undefined;
 }
 
 export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
-    ({ level, onWin, quit, className }, ref) => {
+    ({ level, quit, className }, ref) => {
         // NOTE: level is assumed not to change
 
         const [marks, setMarks] = useState(() => clearMarks(level));
 
         const hasWonRef = useRef(false);
         const prevHasWon = hasWonRef.current;
-        hasWonRef.current = useMemo(
-            () => levelIsSolved(level, marks),
-            [level, marks]
-        ) || prevHasWon;
+        const hasWon =
+            useMemo(() => levelIsSolved(level, marks), [level, marks]) ||
+            prevHasWon;
+        hasWonRef.current = hasWon;
 
         const [selection, setSelectionRaw] = useState<SelectionOrNull>(null);
 
@@ -50,11 +50,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
         const [scale, setScale] = useState(1);
 
         const [isPaused, setIsPaused] = useState(false);
-        const elapsed = useTimer(hasWonRef.current || isPaused);
-
-        if (!prevHasWon && hasWonRef.current) {
-            onWin(elapsed);
-        }
+        const elapsed = useTimer(isPaused || hasWon);
 
         const setMarkRaw = useCallback(
             (i: number, mark: CellMark) => {
@@ -89,11 +85,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
 
         return (
             <div className={className + " play-screen"} ref={ref}>
-                <Custom
-                    classNames="play-screen__inner--pause"
-                    in={isPaused}
-                    timeout={1000}
-                >
+                <ModalTarget in={isPaused || hasWon}>
                     <div
                         className="play-screen__inner"
                         onKeyDown={(e) => {
@@ -106,10 +98,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                                 scale +
                                 "em; }"}
                         </style>
-                        <Timer
-                            elapsed={elapsed}
-                            className="play-screen__timer"
-                        />
+                        <Time seconds={elapsed} className="play-screen__time" />
                         <PlayGridMemo
                             level={level}
                             marks={marks}
@@ -156,29 +145,28 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                             </Button>
                         </div>
                     </div>
-                </Custom>
-                <Custom
-                    classNames="play-screen__pause--pause"
-                    in={isPaused}
-                    mountOnEnter={true}
-                    unmountOnExit={true}
-                >
-                    <div className="play-screen__pause">
-                        <div className="play-screen__pause__bg" />
-                        <PauseScreen
-                            clear={useCallback(() => {
-                                setMarks(clearMarks(level));
-                                history.clear();
-                                setIsPaused(false);
-                            }, [level, history])}
-                            quit={quit}
-                            resume={useCallback(() => {
-                                setIsPaused(false);
-                            }, [])}
-                            className="play-screen__pause__inner"
-                        />
-                    </div>
-                </Custom>
+                </ModalTarget>
+                <Modal in={isPaused}>
+                    <PauseScreen
+                        clear={useCallback(() => {
+                            setMarks(clearMarks(level));
+                            history.clear();
+                            setIsPaused(false);
+                        }, [level, history])}
+                        quit={quit}
+                        resume={useCallback(() => {
+                            setIsPaused(false);
+                        }, [])}
+                        className="play-screen__modal__inner"
+                    />
+                </Modal>
+                <Modal in={hasWon}>
+                    <WinScreen
+                        elapsed={elapsed}
+                        quit={quit}
+                        className="play-screen__modal__inner"
+                    />
+                </Modal>
             </div>
         );
     }

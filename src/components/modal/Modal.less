@@ -1,0 +1,82 @@
+@import "../../style.less";
+
+.modal-target {
+    &--appear,
+    &--appear-active,
+    &--enter,
+    &--enter-active,
+    &--enter-done {
+        pointer-events: none;
+    }
+
+    &--appear,
+    &--enter,
+    &--exit-active&--exit-active {
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1);
+    }
+
+    &--exit,
+    &--appear-active&--appear-active,
+    &--enter-active&--enter-active,
+    &--enter-done {
+        opacity: 0.5;
+        filter: blur(5px);
+        transform: scale(0.9);
+    }
+
+    &--appear-active,
+    &--enter-active,
+    &--exit-active {
+        transition: opacity 0.1s linear, filter 0.1s linear,
+            transform 1s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+}
+
+.modal {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+
+    &--appear,
+    &--appear-active,
+    &--enter,
+    &--enter-active,
+    &--enter-done {
+        pointer-events: unset;
+    }
+
+    &--appear,
+    &--enter,
+    &--exit-active&--exit-active {
+        opacity: 0;
+    }
+
+    &--exit,
+    &--appear-active&--appear-active,
+    &--enter-active&--enter-active,
+    &--enter-done {
+        opacity: 1;
+    }
+
+    &--appear-active,
+    &--enter-active,
+    &--exit-active {
+        transition: opacity 0.1s linear;
+    }
+
+    &__bg {
+        // Hack to make the background bigger so that it shows while sliding
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        bottom: -100%;
+        right: -100%;
+        z-index: -1;
+        .theme-color(background-color, modal-bg-color);
+    }
+}
