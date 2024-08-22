@@ -1,11 +1,13 @@
 import { CSSProperties, ReactNode } from "react";
 import "./RadioButtons.less";
 
-export interface RadioButton {
+export interface RadioButtonDetailed {
     content: ReactNode;
     className?: string;
     isDisabled?: boolean;
 }
+
+export type RadioButton = string | RadioButtonDetailed;
 
 export interface RadioButtonsProps {
     selected: number;
@@ -35,7 +37,12 @@ export function RadioButtons({
             }
         >
             <div className="radio-buttons__highlight" />
-            {...buttons.map(({ content, className = "", isDisabled }, i) => {
+            {...buttons.map((button, i) => {
+                const {
+                    content,
+                    className = "",
+                    isDisabled = false,
+                } = typeof button === "string" ? { content: button } : button;
                 const className_ =
                     className +
                     " radio-buttons__button" +
