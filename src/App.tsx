@@ -6,6 +6,7 @@ import { LevelSelect } from "./screens/level-select/LevelSelect";
 import { PlayScreen } from "./screens/play/Play";
 import { SwitchTransition } from "react-transition-group";
 import { Slide } from "./components/transitions/Slide";
+import { SlideDir } from "./components/transitions/SlideDir";
 
 export function App() {
     const [level, setLevel] = useState<LoadedLevel | null>(null);
@@ -27,7 +28,9 @@ export function App() {
 
     return (
         <SwitchTransition>
-            <Slide key={screen.key!}>{screen}</Slide>
+            <Slide key={screen.key!} dir={SlideDir.Down}>
+                {screen}
+            </Slide>
         </SwitchTransition>
     );
 }
