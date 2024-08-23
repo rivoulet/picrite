@@ -1,7 +1,7 @@
 import "./Numbers.less";
 
 import { memo, Ref } from "react";
-import { LevelDimensions, LevelNumbers } from "../../Level";
+import { LevelSize, LevelNumbers } from "../../Level";
 import { CellMark } from "../../CellValue";
 import { cellValuesByLine } from "../../algorithms/utils";
 import { LineMemo } from "./Line";
@@ -17,7 +17,7 @@ export interface NumbersProps {
 }
 
 export interface NumbersPropsWithMarks extends NumbersProps {
-    level: LevelNumbers & LevelDimensions;
+    level: LevelSize & LevelNumbers;
     marks: CellMark[];
 }
 

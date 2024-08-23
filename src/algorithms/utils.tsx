@@ -1,8 +1,8 @@
-import { LevelCells, LevelDimensions } from "../Level";
+import { LevelCells, LevelSize } from "../Level";
 import { CellMark, CellValue } from "../CellValue";
 
 export function cellValuesByLine<V extends CellValue>(
-    level: LevelDimensions,
+    level: LevelSize,
     cells: V[],
     isVertical: boolean
 ) {

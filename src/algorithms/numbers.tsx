@@ -1,6 +1,6 @@
-import { LevelDimensions, LevelCells, LevelNumbers } from "../Level";
+import { LevelCells, LevelNumbers } from "../Level";
 
-export function levelNumbers(level: LevelDimensions & LevelCells): LevelNumbers {
+export function levelNumbers(level: LevelCells): LevelNumbers {
     const levelSize = [level.width, level.height];
     const indexScale = [1, level.width];
 

@@ -8,7 +8,7 @@ import {
     useRef,
     useState,
 } from "react";
-import { LevelCells, LevelDimensions } from "../../Level";
+import { LevelCells } from "../../Level";
 import { SelectableGridWithInput } from "../../components/grid/Grid";
 import { SelectionOrNull } from "../../components/grid/Selection";
 import {
@@ -25,7 +25,7 @@ import { useOuterInput } from "../../components/grid/hooks";
 import { equalArrays } from "../../utils";
 
 export interface EditScreenProps {
-    level: LevelDimensions & LevelCells;
+    level: LevelCells;
     saveLevel: Dispatch<boolean[]>;
     close: () => void;
     className?: string | undefined;

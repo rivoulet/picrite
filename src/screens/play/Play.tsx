@@ -3,7 +3,7 @@ import "./Play.less";
 import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import { CellMark } from "../../CellValue";
 import { PlayGridMemo } from "../../components/play-grid/PlayGrid";
-import { LevelCells, LevelDimensions, LevelNumbers } from "../../Level";
+import { LevelCells, LevelSize, LevelNumbers } from "../../Level";
 import { useInput } from "./Input";
 import { levelIsSolved } from "../../algorithms/utils";
 import { Button } from "../../components/ui/button/Button";
@@ -21,12 +21,12 @@ import { useTimer } from "../../utils/useTimer";
 import { WinScreen } from "./Win";
 import { Modal, ModalTarget } from "../../components/modal/Modal";
 
-function clearMarks(level: LevelDimensions) {
+function clearMarks(level: LevelSize) {
     return new Array<CellMark>(level.width * level.height).fill(CellMark.Empty);
 }
 
 export interface PlayScreenProps {
-    level: LevelDimensions & LevelCells & LevelNumbers;
+    level: LevelCells & LevelNumbers;
     quit: (winTime?: number) => void;
     className?: string | undefined;
 }

@@ -6,7 +6,7 @@ import {
     useCallback,
     useRef,
 } from "react";
-import { LevelDimensions } from "../../Level";
+import { LevelSize } from "../../Level";
 import {
     Selection,
     SelectionOrNull,
@@ -105,7 +105,7 @@ export function useInput(
     setCell: (i: number, mark: boolean) => void,
     selection: SelectionOrNull,
     setSelectionRaw: Dispatch<SetStateAction<SelectionOrNull>>,
-    level: LevelDimensions
+    level: LevelSize
 ) {
     const inputRef = useRef<Input | null>(null) as MutableRefObject<Input>;
     if (inputRef.current === null) {

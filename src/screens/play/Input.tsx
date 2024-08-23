@@ -8,7 +8,7 @@ import {
     useRef,
 } from "react";
 import { CellMark } from "../../CellValue";
-import { LevelDimensions } from "../../Level";
+import { LevelSize } from "../../Level";
 import {
     Selection,
     SelectionOrNull,
@@ -138,7 +138,7 @@ export function useInput(
     setSelectionRaw: Dispatch<SetStateAction<SelectionOrNull>>,
     isCrossing: boolean,
     setIsCrossing: Dispatch<SetStateAction<boolean>>,
-    level: LevelDimensions
+    level: LevelSize
 ) {
     const inputRef = useRef<Input | null>(null) as MutableRefObject<Input>;
     if (inputRef.current === null) {

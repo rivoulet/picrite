@@ -1,13 +1,13 @@
-export interface PackedLevel {
-    cells: string;
+export interface LevelInfo {
+    name: string;
 }
 
-export interface LevelDimensions {
+export interface LevelSize {
     width: number;
     height: number;
 }
 
-export interface LevelCells {
+export interface LevelCells extends LevelSize {
     cells: boolean[];
 }
 

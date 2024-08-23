@@ -1,4 +1,4 @@
-import { LevelCells, LevelDimensions, LevelNumbers } from "./Level";
+import { LevelCells, LevelNumbers } from "./Level";
 
 export interface LevelSelectState {
     level: null;
@@ -6,12 +6,12 @@ export interface LevelSelectState {
 
 export interface PlayState {
     isEditing: false;
-    level: LevelDimensions & LevelCells & LevelNumbers;
+    level: LevelCells & LevelNumbers;
 }
 
 export interface EditState {
     isEditing: true;
-    level: LevelDimensions & LevelCells;
+    level: LevelCells;
     saveLevel: (cells: boolean[]) => void;
 }
 
