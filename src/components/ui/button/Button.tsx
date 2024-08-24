@@ -1,7 +1,8 @@
-import { ShowTitlesContext } from "../show-titles/ShowTitles";
 import "./Button.less";
 
 import { ButtonHTMLAttributes, useContext } from "react";
+
+import { ShowTitlesContext } from "src/components/ui/show-titles/ShowTitles";
 
 export interface BaseButtonProps
     extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "title"> {

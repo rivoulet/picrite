@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import { ButtonGroup } from "../ui/button-group/ButtonGroup";
-import { Button } from "../ui/button/Button";
+
+import { ButtonGroup } from "src/components/ui/button-group/ButtonGroup";
+import { Button } from "src/components/ui/button/Button";
 
 export interface ZoomButtonsProps {
     scale: number;

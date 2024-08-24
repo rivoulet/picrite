@@ -1,9 +1,11 @@
 import "./Numbers.less";
 
-import { memo, Ref } from "react";
-import { LevelSize, LevelNumbers } from "../../Level";
-import { CellMark } from "../../CellValue";
-import { cellValuesByLine } from "../../algorithms/utils";
+import { Ref, memo } from "react";
+
+import { CellMark } from "src/CellValue";
+import { LevelNumbers, LevelSize } from "src/Level";
+import { cellValuesByLine } from "src/algorithms/utils";
+
 import { Line } from "./Line";
 
 export interface NumbersProps {

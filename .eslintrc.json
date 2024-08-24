@@ -31,18 +31,14 @@
         ],
         "quotes": [
             "error",
-            "double"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "quotes": [
-            "error",
             "double",
             {
                 "avoidEscape": true
             }
+        ],
+        "semi": [
+            "error",
+            "always"
         ]
     }
 }

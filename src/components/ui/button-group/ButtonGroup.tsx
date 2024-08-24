@@ -1,7 +1,8 @@
-import { ButtonProps } from "../button/Button";
 import "./ButtonGroup.less";
 
 import { FunctionComponentElement, HTMLAttributes } from "react";
+
+import { ButtonProps } from "src/components/ui/button/Button";
 
 interface ButtonGroupProps extends HTMLAttributes<HTMLDivElement> {
     children: Iterable<FunctionComponentElement<ButtonProps>>;

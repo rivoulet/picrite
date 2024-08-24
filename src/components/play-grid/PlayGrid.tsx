@@ -1,21 +1,25 @@
 import "./PlayGrid.less";
 
-import { SelectableGridWithTouchInput } from "../grid/Grid";
-import { LevelSize, LevelNumbers } from "../../Level";
-import { CellMark } from "../../CellValue";
 import {
     Dispatch,
-    memo,
     ReactElement,
     RefObject,
+    memo,
     useCallback,
     useMemo,
     useRef,
 } from "react";
-import { Numbers } from "../numbers/Numbers";
-import { useSyncedScroll } from "../../utils/useSyncedScroll";
-import { SelectionOrNull, SetSelectionAction } from "../grid/Selection";
-import { useOuterInput } from "../grid/hooks";
+
+import { CellMark } from "src/CellValue";
+import { LevelNumbers, LevelSize } from "src/Level";
+import { SelectableGridWithTouchInput } from "src/components/grid/Grid";
+import {
+    SelectionOrNull,
+    SetSelectionAction,
+} from "src/components/grid/Selection";
+import { useOuterInput } from "src/components/grid/hooks";
+import { Numbers } from "src/components/numbers/Numbers";
+import { useSyncedScroll } from "src/utils/useSyncedScroll";
 
 export interface PlayGridProps {
     level: LevelSize & LevelNumbers;
@@ -62,7 +66,7 @@ export const PlayGrid = memo(
         const { onKeyDown, onBlur } = useOuterInput(
             selection,
             setSelection,
-            tableRef
+            tableRef,
         );
 
         return (
@@ -90,9 +94,9 @@ export const PlayGrid = memo(
                         () =>
                             borderExtLines(
                                 level.width,
-                                selection ? selection[0] : -1
+                                selection ? selection[0] : -1,
                             ),
-                        [level.width, selection]
+                        [level.width, selection],
                     )}
                 </div>
                 <div
@@ -112,9 +116,9 @@ export const PlayGrid = memo(
                         () =>
                             borderExtLines(
                                 level.height,
-                                selection ? selection[1] : -1
+                                selection ? selection[1] : -1,
                             ),
-                        [level.height, selection]
+                        [level.height, selection],
                     )}
                 </div>
                 <Numbers
@@ -131,7 +135,7 @@ export const PlayGrid = memo(
                                 scroll(4, x, false);
                             }
                         },
-                        [wasScrolledByUser, scroll]
+                        [wasScrolledByUser, scroll],
                     )}
                     innerRef={
                         syncedScrollElementsRef
@@ -152,7 +156,7 @@ export const PlayGrid = memo(
                                 scroll(4, y, true);
                             }
                         },
-                        [wasScrolledByUser, scroll]
+                        [wasScrolledByUser, scroll],
                     )}
                     innerRef={
                         syncedScrollElementsRef
@@ -178,12 +182,12 @@ export const PlayGrid = memo(
                                 scroll(3, y, true);
                             }
                         },
-                        [wasScrolledByUser, scroll]
+                        [wasScrolledByUser, scroll],
                     )}
                     tableRef={tableRef}
                     scrollContainerRef={syncedScrollElementsRef.current[4]}
                 />
             </div>
         );
-    }
+    },
 );

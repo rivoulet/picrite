@@ -1,5 +1,5 @@
-import { CellMark } from "../CellValue";
-import { LevelSize, LevelNumbers } from "../Level";
+import { CellMark } from "src/CellValue";
+import { LevelNumbers, LevelSize } from "src/Level";
 
 export interface SolutionMark {
     mark: CellMark;
@@ -11,7 +11,7 @@ function lineKnownMarksInner(
     startX: number,
     numbers: number[],
     marks: CellMark[],
-    memo: (SolutionMark[] | null)[]
+    memo: (SolutionMark[] | null)[],
 ) {
     const memoI = i * marks.length + startX;
     const memoized = memo[memoI];
@@ -52,7 +52,7 @@ function lineKnownMarksInner(
                 nextStartX,
                 numbers,
                 marks,
-                memo
+                memo,
             );
             if (!innerResult) continue;
 
@@ -112,7 +112,7 @@ export function lineKnownMarks(numbers: number[], marks: CellMark[]) {
             0,
             numbers,
             marks,
-            new Array<SolutionMark[] | null>(numbers.length * marks.length)
+            new Array<SolutionMark[] | null>(numbers.length * marks.length),
         );
     } else {
         for (let i = 0; i < marks.length; i++) {
@@ -130,7 +130,7 @@ function lineKnownMarksFastInner(
     startX: number,
     numbers: number[],
     marks: CellMark[],
-    memo: (CellMark[] | null)[]
+    memo: (CellMark[] | null)[],
 ) {
     const memoI = i * marks.length + startX;
     const memoized = memo[memoI];
@@ -171,7 +171,7 @@ function lineKnownMarksFastInner(
                 nextStartX,
                 numbers,
                 marks,
-                memo
+                memo,
             );
             if (!innerResult) continue;
 
@@ -224,7 +224,7 @@ export function lineKnownMarksFast(numbers: number[], marks: CellMark[]) {
             0,
             numbers,
             marks,
-            new Array<CellMark[] | null>(numbers.length * marks.length)
+            new Array<CellMark[] | null>(numbers.length * marks.length),
         );
     } else {
         for (let i = 0; i < marks.length; i++) {
@@ -236,7 +236,7 @@ export function lineKnownMarksFast(numbers: number[], marks: CellMark[]) {
 
 export function levelIsSolvable(level: LevelSize & LevelNumbers) {
     const marks = new Array<CellMark>(level.width * level.height).fill(
-        CellMark.Empty
+        CellMark.Empty,
     );
 
     const levelSize = [level.width, level.height];
@@ -278,7 +278,7 @@ export function levelIsSolvable(level: LevelSize & LevelNumbers) {
 
             const lineKnownMarks_ = lineKnownMarksFast(
                 numbers[dirIndex][i],
-                lineMarks
+                lineMarks,
             )!;
 
             for (

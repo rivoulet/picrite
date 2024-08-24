@@ -1,6 +1,7 @@
-import { Button } from "../../components/ui/button/Button";
 import "./Win.less";
-import { Time } from "../../components/time/Time";
+
+import { Time } from "src/components/time/Time";
+import { Button } from "src/components/ui/button/Button";
 
 export interface WinScreenProps {
     elapsed: number;

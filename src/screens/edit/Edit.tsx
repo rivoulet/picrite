@@ -8,21 +8,20 @@ import {
     useRef,
     useState,
 } from "react";
-import { LevelCells } from "../../Level";
-import { SelectableGridWithInput } from "../../components/grid/Grid";
-import { SelectionOrNull } from "../../components/grid/Selection";
-import {
-    useHistory,
-    useHistoryInput,
-} from "../../components/history/useHistory";
+
+import { LevelCells } from "src/Level";
+import { levelNumbers } from "src/algorithms/numbers";
+import { levelIsSolvable } from "src/algorithms/solve";
+import { SelectableGridWithInput } from "src/components/grid/Grid";
+import { SelectionOrNull } from "src/components/grid/Selection";
+import { useOuterInput } from "src/components/grid/hooks";
+import { HistoryButtons } from "src/components/history/HistoryButtons";
+import { useHistory, useHistoryInput } from "src/components/history/useHistory";
+import { Button } from "src/components/ui/button/Button";
+import { ZoomButtons } from "src/components/zoom-buttons/ZoomButtons";
+import { equalArrays } from "src/utils";
+
 import { useInput } from "./Input";
-import { Button } from "../../components/ui/button/Button";
-import { HistoryButtons } from "../../components/history/HistoryButtons";
-import { levelIsSolvable } from "../../algorithms/solve";
-import { levelNumbers } from "../../algorithms/numbers";
-import { ZoomButtons } from "../../components/zoom-buttons/ZoomButtons";
-import { useOuterInput } from "../../components/grid/hooks";
-import { equalArrays } from "../../utils";
 
 export interface EditScreenProps {
     level: LevelCells;
@@ -57,7 +56,7 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
 
         const isUnchanged = useMemo(
             () => equalArrays(savedCells, cells),
-            [savedCells, cells]
+            [savedCells, cells],
         );
 
         const setCellRaw = useCallback(
@@ -66,7 +65,7 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                     !selection ||
                     i !== selection[1] * level.width + selection[0]
                         ? [i % level.width, Math.floor(i / level.width)]
-                        : selection
+                        : selection,
                 );
                 setCells((cells) => {
                     const newCells = cells.slice();
@@ -74,7 +73,7 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                     return newCells;
                 });
             },
-            [level.width]
+            [level.width],
         );
 
         const { setCell, ...history } = useHistory(cells, setCellRaw);
@@ -84,7 +83,7 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
             setCell,
             selection,
             setSelectionRaw,
-            level
+            level,
         );
 
         const { onKeyDown: historyOnKeyDown } = useHistoryInput(history);
@@ -92,7 +91,7 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
         const { onKeyDown: gridOnKeyDown, onBlur: gridOnBlur } = useOuterInput(
             selection,
             setSelection,
-            gridTableRef
+            gridTableRef,
         );
 
         return (
@@ -148,7 +147,7 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                             if (
                                 isUnchanged ||
                                 confirm(
-                                    "You have unsaved changes. Do you want to close this level?"
+                                    "You have unsaved changes. Do you want to close this level?",
                                 )
                             ) {
                                 close();
@@ -158,5 +157,5 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                 </div>
             </div>
         );
-    }
+    },
 );

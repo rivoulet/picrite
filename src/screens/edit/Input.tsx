@@ -6,14 +6,15 @@ import {
     useCallback,
     useRef,
 } from "react";
-import { LevelSize } from "../../Level";
+
+import { LevelSize } from "src/Level";
 import {
     Selection,
     SelectionOrNull,
     SelectionUpdateKind,
     SetSelectionAction,
-} from "../../components/grid/Selection";
-import { drawLine } from "../../utils/drawLine";
+} from "src/components/grid/Selection";
+import { drawLine } from "src/utils/drawLine";
 
 class Input {
     navIsWriting: boolean = false;
@@ -26,7 +27,7 @@ class Input {
     toggle(
         i: number,
         cells: boolean[],
-        setCell: (i: number, mark: boolean) => void
+        setCell: (i: number, mark: boolean) => void,
     ) {
         setCell(i, !cells[i]);
     }
@@ -37,7 +38,7 @@ class Input {
         newSelection: Selection,
         cells: boolean[],
         setCell: (i: number, mark: boolean) => void,
-        width: number
+        width: number,
     ) {
         const i = newSelection[1] * width + newSelection[0];
 
@@ -105,7 +106,7 @@ export function useInput(
     setCell: (i: number, mark: boolean) => void,
     selection: SelectionOrNull,
     setSelectionRaw: Dispatch<SetStateAction<SelectionOrNull>>,
-    level: LevelSize
+    level: LevelSize,
 ) {
     const inputRef = useRef<Input | null>(null) as MutableRefObject<Input>;
     if (inputRef.current === null) {
@@ -128,11 +129,11 @@ export function useInput(
                 newSelection,
                 cells,
                 setCell,
-                level.width
+                level.width,
             );
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selection, level.width, cells, setCell]
+        [selection, level.width, cells, setCell],
     );
 
     const onKeyDown = (e: ReactKeyboardEvent) => {

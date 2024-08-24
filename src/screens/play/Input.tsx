@@ -7,15 +7,16 @@ import {
     useEffect,
     useRef,
 } from "react";
-import { CellMark } from "../../CellValue";
-import { LevelSize } from "../../Level";
+
+import { CellMark } from "src/CellValue";
+import { LevelSize } from "src/Level";
 import {
     Selection,
     SelectionOrNull,
     SelectionUpdateKind,
     SetSelectionAction,
-} from "../../components/grid/Selection";
-import { drawLine } from "../../utils/drawLine";
+} from "src/components/grid/Selection";
+import { drawLine } from "src/utils/drawLine";
 
 const enum DragDir {
     X,
@@ -36,7 +37,7 @@ class Input {
     toggle(
         i: number,
         marks: CellMark[],
-        setMark: (i: number, mark: CellMark) => void
+        setMark: (i: number, mark: CellMark) => void,
     ) {
         setMark(
             i,
@@ -44,7 +45,7 @@ class Input {
                 ? this.isCrossing
                     ? CellMark.Cross
                     : CellMark.Mark
-                : CellMark.Empty
+                : CellMark.Empty,
         );
     }
 
@@ -54,7 +55,7 @@ class Input {
         newSelection: Selection,
         marks: CellMark[],
         setMark: (i: number, mark: CellMark) => void,
-        width: number
+        width: number,
     ) {
         const i = newSelection[1] * width + newSelection[0];
 
@@ -138,7 +139,7 @@ export function useInput(
     setSelectionRaw: Dispatch<SetStateAction<SelectionOrNull>>,
     isCrossing: boolean,
     setIsCrossing: Dispatch<SetStateAction<boolean>>,
-    level: LevelSize
+    level: LevelSize,
 ) {
     const inputRef = useRef<Input | null>(null) as MutableRefObject<Input>;
     if (inputRef.current === null) {
@@ -162,11 +163,11 @@ export function useInput(
                 newSelection,
                 marks,
                 setMark,
-                level.width
+                level.width,
             );
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selection, level.width, marks, setMark]
+        [selection, level.width, marks, setMark],
     );
 
     const onKeyDown = (e: ReactKeyboardEvent) => {

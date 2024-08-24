@@ -1,20 +1,22 @@
 import "./Grid.less";
 
 import { Dispatch, Ref, useRef } from "react";
-import { CellValue } from "../../CellValue";
-import { useScrollShadows } from "../scroll-shadows/useScrollShadows";
+
+import { CellValue } from "src/CellValue";
+import { useScrollShadows } from "src/components/scroll-shadows/useScrollShadows";
+import { useRefs } from "src/utils/useRefs";
+
+import { SelectionOrNull, SetSelectionAction } from "./Selection";
 import {
     useRows,
     useSelection,
     useSelectionInput,
     useSelectionTouchInput,
 } from "./hooks";
-import { SelectionOrNull, SetSelectionAction } from "./Selection";
-import { useRefs } from "../../utils/useRefs";
 
 function triggerOnScroll(
     onScroll: ((x: number, y: number) => void) | undefined,
-    e: HTMLElement
+    e: HTMLElement,
 ) {
     if (onScroll) {
         onScroll(e.scrollLeft, e.scrollTop);
@@ -95,13 +97,13 @@ export function SelectableGrid({
     const scrollContainerRef_ = useRef<HTMLDivElement>(null);
     const { shadows, update: updateShadows } = useScrollShadows(
         scrollContainerRef_,
-        "grid__scroll-shadows"
+        "grid__scroll-shadows",
     );
 
     const { selectionElement, onScroll: selectionOnScroll } = useSelection(
         width,
         selection,
-        scrollContainerRef_
+        scrollContainerRef_,
     );
 
     return (
@@ -156,13 +158,13 @@ export function SelectableGridWithInput({
 
     const { shadows, update: updateShadows } = useScrollShadows(
         scrollContainerRef_,
-        "grid__scroll-shadows"
+        "grid__scroll-shadows",
     );
 
     const { selectionElement, onScroll: selectionOnScroll } = useSelection(
         width,
         selection,
-        scrollContainerRef_
+        scrollContainerRef_,
     );
     const {
         onKeyDown: selectionOnKeyDown,
@@ -221,13 +223,13 @@ export function SelectableGridWithTouchInput({
 
     const { shadows, update: updateShadows } = useScrollShadows(
         scrollContainerRef_,
-        "grid__scroll-shadows"
+        "grid__scroll-shadows",
     );
 
     const { selectionElement, onScroll: selectionOnScroll } = useSelection(
         width,
         selection,
-        scrollContainerRef_
+        scrollContainerRef_,
     );
     const {
         onKeyDown: selectionOnKeyDown,

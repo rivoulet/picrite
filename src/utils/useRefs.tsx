@@ -26,6 +26,6 @@ export function useMemoRefs<T>(outer: Ref<T> | undefined, inner: RefObject<T>) {
             }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [outer]
+        [outer],
     );
 }

@@ -40,5 +40,5 @@ export const ScrollShadows = memo(
                 />
             </div>
         );
-    }
+    },
 );

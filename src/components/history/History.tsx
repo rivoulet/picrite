@@ -1,4 +1,4 @@
-import { CellValue } from "../../CellValue";
+import { CellValue } from "src/CellValue";
 
 export interface History {
     hasUndo: boolean;

@@ -1,6 +1,6 @@
 import "./Pause.less";
 
-import { Button } from "../../components/ui/button/Button";
+import { Button } from "src/components/ui/button/Button";
 
 export interface PauseScreenProps {
     hasClear: boolean;
@@ -26,7 +26,7 @@ export function PauseScreen({
                     onClick={() => {
                         if (
                             !confirm(
-                                "Do you want to clear the board? Your progress will be lost."
+                                "Do you want to clear the board? Your progress will be lost.",
                             )
                         )
                             return;
@@ -44,7 +44,7 @@ export function PauseScreen({
                     onClick={() => {
                         if (
                             !confirm(
-                                "Do you want to quit? Your progress will be lost."
+                                "Do you want to quit? Your progress will be lost.",
                             )
                         )
                             return;

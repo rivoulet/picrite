@@ -1,4 +1,5 @@
-import { LevelCells, LevelNumbers } from "../Level";
+import { LevelCells, LevelNumbers } from "src/Level";
+
 import { levelNumbers } from "./numbers";
 import { levelIsSolvable } from "./solve";
 
@@ -16,7 +17,7 @@ export function generateBlankLevel(width: number, height: number): LevelCells {
 
 export function generateLevel(
     width: number,
-    height: number
+    height: number,
 ): LevelCells & LevelNumbers {
     for (;;) {
         const cells = new Array<boolean>(width * height);

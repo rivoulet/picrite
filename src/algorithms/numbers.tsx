@@ -1,4 +1,4 @@
-import { LevelCells, LevelNumbers } from "../Level";
+import { LevelCells, LevelNumbers } from "src/Level";
 
 export function levelNumbers(level: LevelCells): LevelNumbers {
     const levelSize = [level.width, level.height];

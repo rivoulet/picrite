@@ -1,8 +1,9 @@
 import "./SizeGrid.less";
 
 import { Dispatch, ReactElement, useRef } from "react";
-import { clamp } from "../../utils";
-import { useMousePointer, useTouchPointer } from "../../utils/usePointer";
+
+import { clamp } from "src/utils";
+import { useMousePointer, useTouchPointer } from "src/utils/usePointer";
 
 function cellSize(element: HTMLElement) {
     return 2 * parseFloat(getComputedStyle(element).fontSize);
@@ -13,7 +14,7 @@ function offsetPosToCellPos(
     y: number,
     maxWidth: number,
     maxHeight: number,
-    table: HTMLElement
+    table: HTMLElement,
 ): [number, number] {
     const cellSize_ = cellSize(table);
     const halfBorderWidth = cellSize_ * 0.025;
@@ -77,7 +78,7 @@ export function SizeGrid({
             y,
             maxWidth,
             maxHeight,
-            tableRef.current
+            tableRef.current,
         );
         setWidth(width * scale);
         setHeight(height * scale);
@@ -86,12 +87,12 @@ export function SizeGrid({
     const { onMouseDown, onMouseMove } = useMousePointer(
         onPointer,
         onPointer,
-        tableRef
+        tableRef,
     );
     const { onTouchStart, onTouchMove } = useTouchPointer(
         onPointer,
         onPointer,
-        tableRef
+        tableRef,
     );
 
     return (

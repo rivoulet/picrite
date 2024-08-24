@@ -1,17 +1,20 @@
 import {
     Dispatch,
-    KeyboardEvent as ReactKeyboardEvent,
+    FocusEvent,
     ReactElement,
+    KeyboardEvent as ReactKeyboardEvent,
     RefObject,
     useCallback,
+    useEffect,
     useMemo,
     useRef,
     useState,
-    useEffect,
-    FocusEvent,
 } from "react";
-import { clamp, equal2 } from "../../utils";
-import { CellValue } from "../../CellValue";
+
+import { CellValue } from "src/CellValue";
+import { clamp, equal2 } from "src/utils";
+import { useMousePointer, useTouchPointer } from "src/utils/usePointer";
+
 import { Cell } from "./Cell";
 import {
     Selection,
@@ -19,7 +22,6 @@ import {
     SelectionUpdateKind,
     SetSelectionAction,
 } from "./Selection";
-import { useMousePointer, useTouchPointer } from "../../utils/usePointer";
 
 function cellSize(element: HTMLElement) {
     return 2 * parseFloat(getComputedStyle(element).fontSize);
@@ -30,7 +32,7 @@ function offsetPosToCellPos(
     y: number,
     width: number,
     height: number,
-    table: HTMLElement
+    table: HTMLElement,
 ): [number, number] {
     const cellSize_ = cellSize(table);
     const halfBorderWidth = cellSize_ * 0.025;
@@ -57,7 +59,7 @@ export function useRows(width: number, height: number, cells: CellValue[]) {
 export function useSelection(
     width: number,
     selection: SelectionOrNull,
-    scrollContainerRef: RefObject<HTMLElement>
+    scrollContainerRef: RefObject<HTMLElement>,
 ) {
     const [prevSelection, setPrevSelection] = useState(selection);
     const selectionWasChanged = selection !== prevSelection;
@@ -152,7 +154,7 @@ export function useSelectionInput(
     height: number,
     selection: SelectionOrNull,
     setSelection: Dispatch<SetSelectionAction>,
-    tableRef: RefObject<HTMLElement>
+    tableRef: RefObject<HTMLElement>,
 ) {
     const moveSelection = (dx: number, dy: number) => {
         if (!selection) {
@@ -206,7 +208,7 @@ export function useSelectionInput(
             y,
             width,
             height,
-            tableRef.current!
+            tableRef.current!,
         );
         setSelection((selection) => {
             return {
@@ -225,7 +227,7 @@ export function useSelectionInput(
             y,
             width,
             height,
-            tableRef.current!
+            tableRef.current!,
         );
         setSelection((selection) => {
             return {
@@ -249,7 +251,7 @@ export function useSelectionInput(
 export function useSelectionTouchInput(
     onPointerDown: (offsetX: number, offsetY: number) => void,
     onPointerDrag: (offsetX: number, offsetY: number) => void,
-    tableRef: RefObject<HTMLElement>
+    tableRef: RefObject<HTMLElement>,
 ) {
     return useTouchPointer(onPointerDown, onPointerDrag, tableRef);
 }
@@ -257,7 +259,7 @@ export function useSelectionTouchInput(
 export function useOuterInput(
     selection: SelectionOrNull,
     setSelection: Dispatch<SetSelectionAction>,
-    tableRef: RefObject<HTMLTableElement>
+    tableRef: RefObject<HTMLTableElement>,
 ) {
     const onKeyDown = (e: ReactKeyboardEvent) => {
         if (e.key !== " ") return;
@@ -289,7 +291,7 @@ export function useOuterInput(
                     : null;
             });
         },
-        [setSelection]
+        [setSelection],
     );
 
     useEffect(() => {

@@ -26,7 +26,7 @@ export function useTimer(isPaused: boolean) {
                 const now = Date.now();
                 setElapsed(
                     state.current.baseElapsed +
-                        (now - state.current.baseTime) / 1000
+                        (now - state.current.baseTime) / 1000,
                 );
             }
             if (update.shouldStop) return;

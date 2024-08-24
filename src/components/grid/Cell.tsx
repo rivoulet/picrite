@@ -1,8 +1,9 @@
 import "./Cell.less";
 
 import { memo, useRef } from "react";
-import { CellMark, CellValue } from "../../CellValue";
-import CrossSign from "../../assets/cross.svg?react";
+
+import { CellMark, CellValue } from "src/CellValue";
+import CrossSign from "src/assets/cross.svg?react";
 
 export interface CellProps {
     value: CellValue;

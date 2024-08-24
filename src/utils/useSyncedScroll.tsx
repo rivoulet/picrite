@@ -8,7 +8,7 @@ interface SyncedScrollElement<T> {
 // The length must be constant
 export function useSyncedScroll<T extends HTMLElement>(length: number) {
     const elementsRef = useRef<SyncedScrollElement<T>[] | null>(
-        null
+        null,
     ) as MutableRefObject<SyncedScrollElement<T>[]>;
     if (elementsRef.current === null) {
         const elements = new Array<SyncedScrollElement<T>>(length);

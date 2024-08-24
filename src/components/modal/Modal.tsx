@@ -1,6 +1,8 @@
-import { ForwardedRef, FunctionComponentElement, ReactNode } from "react";
-import { Custom } from "../transitions/Custom";
 import "./Modal.less";
+
+import { ForwardedRef, FunctionComponentElement, ReactNode } from "react";
+
+import { Custom } from "src/components/transitions/Custom";
 
 export interface ModalTargetProps {
     in: boolean;
@@ -11,7 +13,12 @@ export interface ModalTargetProps {
 
 export function ModalTarget({ in: in_, children }: ModalTargetProps) {
     return (
-        <Custom classNames="modal-target-" in={in_} appear={true} timeout={1000}>
+        <Custom
+            classNames="modal-target-"
+            in={in_}
+            appear={true}
+            timeout={1000}
+        >
             {children}
         </Custom>
     );

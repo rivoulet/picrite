@@ -1,10 +1,10 @@
-import { LevelCells, LevelSize } from "../Level";
-import { CellMark, CellValue } from "../CellValue";
+import { CellMark, CellValue } from "src/CellValue";
+import { LevelCells, LevelSize } from "src/Level";
 
 export function cellValuesByLine<V extends CellValue>(
     level: LevelSize,
     cells: V[],
-    isVertical: boolean
+    isVertical: boolean,
 ) {
     const levelSize = [level.width, level.height];
     const indexScale = [1, level.width];

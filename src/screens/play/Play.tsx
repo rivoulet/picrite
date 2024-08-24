@@ -1,26 +1,25 @@
 import "./Play.less";
 
 import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
-import { CellMark } from "../../CellValue";
-import { PlayGrid } from "../../components/play-grid/PlayGrid";
-import { LevelCells, LevelSize, LevelNumbers } from "../../Level";
+
+import { CellMark } from "src/CellValue";
+import { LevelCells, LevelNumbers, LevelSize } from "src/Level";
+import { levelIsSolved } from "src/algorithms/utils";
+import { SelectionOrNull } from "src/components/grid/Selection";
+import { HistoryButtons } from "src/components/history/HistoryButtons";
+import { useHistory, useHistoryInput } from "src/components/history/useHistory";
+import { Modal, ModalTarget } from "src/components/modal/Modal";
+import { PlayGrid } from "src/components/play-grid/PlayGrid";
+import { Time } from "src/components/time/Time";
+import { Button } from "src/components/ui/button/Button";
+import { RadioButtons } from "src/components/ui/radio-buttons/RadioButtons";
+import { ZoomButtons } from "src/components/zoom-buttons/ZoomButtons";
+import { equalArrays } from "src/utils";
+import { useTimer } from "src/utils/useTimer";
+
 import { useInput } from "./Input";
-import { levelIsSolved } from "../../algorithms/utils";
-import { Button } from "../../components/ui/button/Button";
-import {
-    useHistory,
-    useHistoryInput,
-} from "../../components/history/useHistory";
-import { RadioButtons } from "../../components/ui/radio-buttons/RadioButtons";
-import { SelectionOrNull } from "../../components/grid/Selection";
-import { HistoryButtons } from "../../components/history/HistoryButtons";
-import { ZoomButtons } from "../../components/zoom-buttons/ZoomButtons";
 import { PauseScreen } from "./Pause";
-import { Time } from "../../components/time/Time";
-import { useTimer } from "../../utils/useTimer";
 import { WinScreen } from "./Win";
-import { Modal, ModalTarget } from "../../components/modal/Modal";
-import { equalArrays } from "../../utils";
 
 function clearMarks(level: LevelSize) {
     return new Array<CellMark>(level.width * level.height).fill(CellMark.Empty);
@@ -40,7 +39,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
 
         const marksAreClear = useMemo(
             () => equalArrays(marks, clearMarks(level)),
-            [marks, level]
+            [marks, level],
         );
 
         const hasWonRef = useRef(false);
@@ -64,7 +63,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                     !selection ||
                     i !== selection[1] * level.width + selection[0]
                         ? [i % level.width, Math.floor(i / level.width)]
-                        : selection
+                        : selection,
                 );
                 setMarks((marks) => {
                     const newMarks = marks.slice();
@@ -72,7 +71,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                     return newMarks;
                 });
             },
-            [level.width]
+            [level.width],
         );
 
         const {
@@ -88,7 +87,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
             setSelectionRaw,
             isCrossing,
             setIsCrossing,
-            level
+            level,
         );
 
         const { onKeyDown: historyOnKeyDown } = useHistoryInput(history);
@@ -173,5 +172,5 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                 </Modal>
             </div>
         );
-    }
+    },
 );

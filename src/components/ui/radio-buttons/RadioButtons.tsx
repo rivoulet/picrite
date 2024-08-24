@@ -1,5 +1,6 @@
-import { CSSProperties, ReactNode } from "react";
 import "./RadioButtons.less";
+
+import { CSSProperties, ReactNode } from "react";
 
 export interface RadioButtonDetailed {
     content: ReactNode;

@@ -1,7 +1,8 @@
 import { memo } from "react";
-import { CellMark } from "../../CellValue";
-import { equalArrays } from "../../utils";
-import { lineKnownMarks } from "../../algorithms/solve";
+
+import { CellMark } from "src/CellValue";
+import { lineKnownMarks } from "src/algorithms/solve";
+import { equalArrays } from "src/utils";
 
 export interface LineProps {
     numbers: number[];
@@ -12,7 +13,7 @@ export interface LineProps {
 function numbersInfo(numbers: number[], marks: CellMark[] | undefined) {
     let hasHint = false;
     const numbersAreFaded = new Array<boolean>(
-        Math.max(numbers.length, 1)
+        Math.max(numbers.length, 1),
     ).fill(false);
 
     if (!marks) return { hasError: false, hasHint, numbersAreFaded };
@@ -68,7 +69,7 @@ export const Line = memo(
     ({ numbers, marks, isSelected }: LineProps) => {
         const { hasError, hasHint, numbersAreFaded } = numbersInfo(
             numbers,
-            marks
+            marks,
         );
 
         const numbersOr0 = numbers.length ? numbers : [0];
@@ -105,5 +106,5 @@ export const Line = memo(
         (prevProps.marks
             ? !!nextProps.marks && equalArrays(prevProps.marks, nextProps.marks)
             : !nextProps.marks) &&
-        prevProps.isSelected === nextProps.isSelected
+        prevProps.isSelected === nextProps.isSelected,
 );

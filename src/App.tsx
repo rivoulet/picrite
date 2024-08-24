@@ -1,14 +1,15 @@
 import "./App.less";
 
 import { useState } from "react";
-import { LevelSelect } from "./screens/level-select/LevelSelect";
-import { PlayScreen } from "./screens/play/Play";
 import { SwitchTransition } from "react-transition-group";
-import { Slide } from "./components/transitions/Slide";
-import { SlideDir } from "./components/transitions/SlideDir";
-import { AppState, EditState } from "./AppState";
-import { EditScreen } from "./screens/edit/Edit";
-import { ShowTitlesContext } from "./components/ui/show-titles/ShowTitles";
+
+import { AppState, EditState } from "src/AppState";
+import { Slide } from "src/components/transitions/Slide";
+import { SlideDir } from "src/components/transitions/SlideDir";
+import { ShowTitlesContext } from "src/components/ui/show-titles/ShowTitles";
+import { EditScreen } from "src/screens/edit/Edit";
+import { LevelSelect } from "src/screens/level-select/LevelSelect";
+import { PlayScreen } from "src/screens/play/Play";
 
 export function App() {
     const [state, setState] = useState<AppState>({ level: null });
@@ -59,11 +60,11 @@ export function App() {
 
     return (
         <ShowTitlesContext.Provider value={true}>
-            <SwitchTransition>
-                <Slide key={screen.key!} dir={SlideDir.Down}>
-                    {screen}
-                </Slide>
-            </SwitchTransition>
+                <SwitchTransition>
+                    <Slide key={screen.key!} dir={SlideDir.Down}>
+                        {screen}
+                    </Slide>
+                </SwitchTransition>
         </ShowTitlesContext.Provider>
     );
 }

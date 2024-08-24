@@ -1,7 +1,7 @@
 export function drawLine(
     [x0, y0]: [number, number],
     [x1, y1]: [number, number],
-    draw: (x: number, y: number) => void
+    draw: (x: number, y: number) => void,
 ) {
     const xDiff = x1 - x0;
     const yDiff = y1 - y0;

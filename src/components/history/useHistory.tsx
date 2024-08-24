@@ -1,5 +1,7 @@
 import { KeyboardEvent, useCallback, useState } from "react";
-import { CellValue } from "../../CellValue";
+
+import { CellValue } from "src/CellValue";
+
 import { History, HistoryActions } from "./History";
 
 // TODO: Make configurable
@@ -13,7 +15,7 @@ interface Change<V extends CellValue> {
 
 export function useHistory<V extends CellValue>(
     cells: V[],
-    setCell: (i: number, value: V) => void
+    setCell: (i: number, value: V) => void,
 ): History & HistoryActions<V> {
     const [history, setHistory] = useState({
         changes: [] as Change<V>[],
@@ -61,7 +63,7 @@ export function useHistory<V extends CellValue>(
                         changes: [
                             ...history.changes.slice(
                                 Math.max(endIndex - (MAX_LENGTH - 1), 0),
-                                endIndex
+                                endIndex,
                             ),
                             change,
                         ],
@@ -69,7 +71,7 @@ export function useHistory<V extends CellValue>(
                     };
                 });
             },
-            [cells, setCell]
+            [cells, setCell],
         ),
     };
 }

@@ -1,9 +1,10 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+
 import { ScrollShadows } from "./ScrollShadows";
 
 export function useScrollShadows(
     ref: RefObject<HTMLElement>,
-    className: string = ""
+    className: string = "",
 ) {
     const [, setCurUpdate] = useState(0);
 

@@ -1,4 +1,4 @@
-import { LevelCells, LevelInfo, LevelSize } from "../Level";
+import { LevelCells, LevelInfo, LevelSize } from "src/Level";
 
 const base64Chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";

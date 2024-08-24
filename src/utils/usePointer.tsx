@@ -1,16 +1,16 @@
 import {
-    RefObject,
-    TouchEvent as ReactTouchEvent,
-    useCallback,
-    useRef,
     MouseEvent,
+    TouchEvent as ReactTouchEvent,
+    RefObject,
+    useCallback,
     useEffect,
+    useRef,
 } from "react";
 
 export function useMousePointer(
     onPointerDown: (offsetX: number, offsetY: number) => void,
     onPointerDrag: (offsetX: number, offsetY: number) => void,
-    ref: RefObject<HTMLElement>
+    ref: RefObject<HTMLElement>,
 ) {
     const onMouseDown = (e: MouseEvent) => {
         if (!ref.current) return;
@@ -33,7 +33,7 @@ export function useMousePointer(
 export function useTouchPointer(
     onPointerDown: (offsetX: number, offsetY: number) => void,
     onPointerDrag: (offsetX: number, offsetY: number) => void,
-    ref: RefObject<HTMLElement>
+    ref: RefObject<HTMLElement>,
 ) {
     const touchesRef = useRef<number[]>([]);
 

@@ -1,12 +1,13 @@
+import "./ButtonGrid.less";
+
+import { HTMLAttributes, ReactElement } from "react";
+
 import {
     BaseButtonProps,
     Button,
     IconButtonProps,
     RawButtonProps,
-} from "../button/Button";
-import "./ButtonGrid.less";
-
-import { HTMLAttributes, ReactElement } from "react";
+} from "src/components/ui/button/Button";
 
 export interface BaseButtonGridButtonProps extends BaseButtonProps {
     row?: number | [number, number];
