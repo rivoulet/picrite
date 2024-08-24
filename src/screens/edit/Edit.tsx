@@ -26,13 +26,14 @@ import { equalArrays } from "../../utils";
 
 export interface EditScreenProps {
     level: LevelCells;
+    savedCells?: boolean[] | undefined;
     saveLevel: Dispatch<boolean[]>;
     close: () => void;
     className?: string | undefined;
 }
 
 export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
-    ({ level, saveLevel, close, className }, ref) => {
+    ({ level, savedCells = level.cells, saveLevel, close, className }, ref) => {
         // NOTE: level is assumed not to change
 
         const [cells, setCells] = useState(() => level.cells.slice());
@@ -55,8 +56,8 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
         }, [level, cells]);
 
         const isUnchanged = useMemo(
-            () => equalArrays(level.cells, cells),
-            [level, cells]
+            () => equalArrays(savedCells, cells),
+            [savedCells, cells]
         );
 
         const setCellRaw = useCallback(

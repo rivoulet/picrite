@@ -19,6 +19,7 @@ export function App() {
                 <EditScreen
                     key="edit"
                     level={state.level}
+                    savedCells={state.savedCells}
                     saveLevel={(cells) => {
                         setState((state_) => {
                             const state = state_ as EditState;
@@ -27,6 +28,7 @@ export function App() {
                             return {
                                 ...state,
                                 level,
+                                savedCells: cells,
                             };
                         });
                     }}

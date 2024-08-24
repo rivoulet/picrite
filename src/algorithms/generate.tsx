@@ -2,11 +2,15 @@ import { LevelCells, LevelNumbers } from "../Level";
 import { levelNumbers } from "./numbers";
 import { levelIsSolvable } from "./solve";
 
+export function generateBlankCells(width: number, height: number): boolean[] {
+    return new Array<boolean>(width * height).fill(false);
+}
+
 export function generateBlankLevel(width: number, height: number): LevelCells {
     return {
         width,
         height,
-        cells: new Array<boolean>(width * height).fill(false),
+        cells: generateBlankCells(width, height),
     };
 }
 

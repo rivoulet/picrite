@@ -12,6 +12,7 @@ export interface PlayState {
 export interface EditState {
     isEditing: true;
     level: LevelCells;
+    savedCells: boolean[];
     saveLevel: (cells: boolean[]) => void;
 }
 
