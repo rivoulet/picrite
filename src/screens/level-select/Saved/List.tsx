@@ -67,7 +67,6 @@ function Item({
             setState({
                 isEditing: true,
                 level,
-                savedCells: level.cells,
             });
         };
 

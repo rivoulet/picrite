@@ -1,6 +1,6 @@
 import "./App.less";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SwitchTransition } from "react-transition-group";
 
 import { AppState } from "src/AppState";
@@ -49,13 +49,11 @@ export function App() {
                 <EditScreen
                     key="edit"
                     level={state.level}
-                    savedCells={state.savedCells}
                     saveLevel={(cells) => {
                         const level = { ...state.level, cells };
                         setState({
                             ...state,
                             level,
-                            savedCells: cells,
                         });
                     }}
                     close={() => setState({ level: null })}

@@ -62,7 +62,6 @@ export function Create({ setState, back, className = "" }: CreateProps) {
                 <Button
                     onClick={() => {
                         const trimmedName = name.trim();
-                        const blankCells = generateBlankCells(width, height);
                         const level = {
                             id: uuidv4(),
                             name: trimmedName ? trimmedName : "Unnamed",
@@ -72,12 +71,11 @@ export function Create({ setState, back, className = "" }: CreateProps) {
                             height,
                             cells: isRandomized
                                 ? generateLevel(width, height).cells
-                                : blankCells,
+                                : generateBlankCells(width, height),
                         };
                         setState({
                             isEditing: true,
                             level,
-                            savedCells: blankCells,
                         });
                     }}
                 >

@@ -28,14 +28,13 @@ import { useInput } from "./Input";
 
 export interface EditScreenProps {
     level: SavedLevelInfo & LevelCells;
-    savedCells?: boolean[] | undefined;
     saveLevel: Dispatch<boolean[]>;
     close: () => void;
     className?: string | undefined;
 }
 
 export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
-    ({ level, savedCells = level.cells, saveLevel, close, className }, ref) => {
+    ({ level, saveLevel, close, className }, ref) => {
         // NOTE: level is assumed not to change
 
         const [cells, setCells] = useState(() => level.cells.slice());
@@ -47,6 +46,13 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
         const { setLevel: setSavedLevel } = useContext(LevelStoreContext)!;
 
         const gridTableRef = useRef<HTMLTableElement>(null);
+
+        const isBlank = useMemo(() => {
+            for (const cell of cells) {
+                if (cell) return false;
+            }
+            return true;
+        }, [cells]);
 
         const isSolvable = useMemo(() => {
             const level_ = {
@@ -60,8 +66,8 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
         }, [level, cells]);
 
         const isUnchanged = useMemo(
-            () => equalArrays(savedCells, cells),
-            [savedCells, cells],
+            () => equalArrays(level.cells, cells),
+            [level, cells],
         );
 
         const setCellRaw = useCallback(
@@ -141,14 +147,10 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                         icon="fas fa-save"
                         title="Save"
                         onClick={save}
-                        disabled={!isSolvable || isUnchanged}
-                        className="edit-screen__controls__save"
+                        disabled={isBlank || !isSolvable || isUnchanged}
                     >
-                        {isSolvable ? null : (
-                            <span className="edit-screen__controls__save__not-solvable">
-                                Not solvable
-                            </span>
-                        )}
+                        {(isBlank || !isSolvable) &&
+                            (isBlank ? "Blank" : "Not solvable")}
                     </Button>
                     <Button
                         icon="fas fa-xmark"
