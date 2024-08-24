@@ -129,15 +129,12 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                     <ZoomButtons scale={scale} setScale={setScale} />
                     <HistoryButtons history={history} />
                     <Button
+                        icon="fas fa-save"
                         title="Save"
-                        onClick={useCallback(
-                            () => saveLevel(cells),
-                            [cells, saveLevel]
-                        )}
+                        onClick={() => saveLevel(cells)}
                         disabled={!isSolvable || isUnchanged}
                         className="edit-screen__controls__save"
                     >
-                        <i className="fas fa-save" />
                         {isSolvable ? null : (
                             <span className="edit-screen__controls__save__not-solvable">
                                 Not solvable
@@ -145,8 +142,9 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                         )}
                     </Button>
                     <Button
+                        icon="fas fa-xmark"
                         title="Close"
-                        onClick={useCallback(() => {
+                        onClick={() => {
                             if (
                                 isUnchanged ||
                                 confirm(
@@ -155,10 +153,8 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                             ) {
                                 close();
                             }
-                        }, [isUnchanged, close])}
-                    >
-                        <i className="fas fa-xmark" />
-                    </Button>
+                        }}
+                    />
                 </div>
             </div>
         );

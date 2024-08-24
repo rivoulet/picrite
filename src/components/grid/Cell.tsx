@@ -8,7 +8,7 @@ export interface CellProps {
     value: CellValue;
 }
 
-export function Cell({ value }: CellProps) {
+export const Cell = memo(({ value }: CellProps) => {
     const hasMarkRef = useRef(true);
     const hasVisibleMark = !!value; // true or not CellMark.Empty
     if (hasVisibleMark) {
@@ -38,6 +38,4 @@ export function Cell({ value }: CellProps) {
             )}
         </td>
     );
-}
-
-export const CellMemo = memo(Cell);
+});

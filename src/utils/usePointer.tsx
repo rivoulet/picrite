@@ -12,25 +12,17 @@ export function useMousePointer(
     onPointerDrag: (offsetX: number, offsetY: number) => void,
     ref: RefObject<HTMLElement>
 ) {
-    const onMouseDown = useCallback(
-        (e: MouseEvent) => {
-            if (!ref.current) return;
-            const rect = ref.current.getBoundingClientRect();
-            onPointerDown(e.clientX - rect.left, e.clientY - rect.top);
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [onPointerDown]
-    );
+    const onMouseDown = (e: MouseEvent) => {
+        if (!ref.current) return;
+        const rect = ref.current.getBoundingClientRect();
+        onPointerDown(e.clientX - rect.left, e.clientY - rect.top);
+    };
 
-    const onMouseMove = useCallback(
-        (e: MouseEvent) => {
-            if (!ref.current || !e.buttons) return;
-            const rect = ref.current.getBoundingClientRect();
-            onPointerDrag(e.clientX - rect.left, e.clientY - rect.top);
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [onPointerDrag]
-    );
+    const onMouseMove = (e: MouseEvent) => {
+        if (!ref.current || !e.buttons) return;
+        const rect = ref.current.getBoundingClientRect();
+        onPointerDrag(e.clientX - rect.left, e.clientY - rect.top);
+    };
 
     return {
         onMouseDown,
@@ -45,57 +37,43 @@ export function useTouchPointer(
 ) {
     const touchesRef = useRef<number[]>([]);
 
-    const onTouchStart = useCallback(
-        (e: ReactTouchEvent) => {
-            let touch0;
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                const touch = e.changedTouches[i];
-                switch (touchesRef.current.indexOf(touch.identifier)) {
-                    case -1: {
-                        if (touchesRef.current.length === 0) {
-                            touch0 = touch;
-                        }
-                        touchesRef.current.push(touch.identifier);
-                        break;
-                    }
-                    case 0: {
+    const onTouchStart = (e: ReactTouchEvent) => {
+        let touch0;
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            const touch = e.changedTouches[i];
+            switch (touchesRef.current.indexOf(touch.identifier)) {
+                case -1: {
+                    if (touchesRef.current.length === 0) {
                         touch0 = touch;
-                        break;
                     }
-                    default:
-                        break;
+                    touchesRef.current.push(touch.identifier);
+                    break;
                 }
-            }
-            if (!touch0 || !ref.current) return;
-            const rect = ref.current.getBoundingClientRect();
-            onPointerDown(
-                touch0.clientX - rect.left,
-                touch0.clientY - rect.top
-            );
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [onPointerDown]
-    );
-
-    const onTouchMove = useCallback(
-        (e: ReactTouchEvent) => {
-            let touch0;
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                const touch = e.changedTouches[i];
-                if (touchesRef.current.indexOf(touch.identifier) === 0) {
+                case 0: {
                     touch0 = touch;
+                    break;
                 }
+                default:
+                    break;
             }
-            if (!touch0 || !ref.current) return;
-            const rect = ref.current.getBoundingClientRect();
-            onPointerDrag(
-                touch0.clientX - rect.left,
-                touch0.clientY - rect.top
-            );
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [onPointerDrag]
-    );
+        }
+        if (!touch0 || !ref.current) return;
+        const rect = ref.current.getBoundingClientRect();
+        onPointerDown(touch0.clientX - rect.left, touch0.clientY - rect.top);
+    };
+
+    const onTouchMove = (e: ReactTouchEvent) => {
+        let touch0;
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            const touch = e.changedTouches[i];
+            if (touchesRef.current.indexOf(touch.identifier) === 0) {
+                touch0 = touch;
+            }
+        }
+        if (!touch0 || !ref.current) return;
+        const rect = ref.current.getBoundingClientRect();
+        onPointerDrag(touch0.clientX - rect.left, touch0.clientY - rect.top);
+    };
 
     const onTouchEnd = useCallback((e: TouchEvent) => {
         if (

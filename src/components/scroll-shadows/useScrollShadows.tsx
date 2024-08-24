@@ -1,5 +1,5 @@
 import { RefObject, useCallback, useEffect, useRef, useState } from "react";
-import { ScrollShadowsMemo } from "./ScrollShadows";
+import { ScrollShadows } from "./ScrollShadows";
 
 export function useScrollShadows(
     ref: RefObject<HTMLElement>,
@@ -42,7 +42,7 @@ export function useScrollShadows(
 
     return {
         shadows: (
-            <ScrollShadowsMemo
+            <ScrollShadows
                 top={directionsRef.current.top}
                 bottom={directionsRef.current.bottom}
                 left={directionsRef.current.left}

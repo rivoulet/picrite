@@ -1,5 +1,5 @@
-import { useCallback } from "react";
-import { ButtonGroup, ButtonGroupButton } from "../ui/button-group/ButtonGroup";
+import { ButtonGroup } from "../ui/button-group/ButtonGroup";
+import { Button } from "../ui/button/Button";
 import { History } from "./History";
 
 export interface HistoryButtonsProps {
@@ -11,24 +11,18 @@ export function HistoryButtons({
 }: HistoryButtonsProps) {
     return (
         <ButtonGroup>
-            <ButtonGroupButton
+            <Button
+                icon="fas fa-rotate-left"
                 title="Undo"
                 disabled={!hasUndo}
-                onClick={useCallback(() => {
-                    undo();
-                }, [undo])}
-            >
-                <i className="fas fa-rotate-left" />
-            </ButtonGroupButton>
-            <ButtonGroupButton
+                onClick={undo}
+            />
+            <Button
+                icon="fas fa-rotate-right"
                 title="Redo"
                 disabled={!hasRedo}
-                onClick={useCallback(() => {
-                    redo();
-                }, [redo])}
-            >
-                <i className="fas fa-rotate-right" />
-            </ButtonGroupButton>
+                onClick={redo}
+            />
         </ButtonGroup>
     );
 }

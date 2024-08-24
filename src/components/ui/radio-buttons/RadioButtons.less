@@ -1,7 +1,9 @@
-@import "../button/Button.less";
+@import "../../../style.less";
+@import "../../../utils.less";
 
 .radio-buttons {
-    .button-outer();
+    .no-user-select();
+    border-radius: @button-border-radius;
     height: @button-height;
     position: relative;
     display: inline-flex;

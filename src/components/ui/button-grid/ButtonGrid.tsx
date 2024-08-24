@@ -1,30 +1,36 @@
-import { ShowTitlesContext } from "../show-titles/ShowTitles";
+import {
+    BaseButtonProps,
+    Button,
+    IconButtonProps,
+    RawButtonProps,
+} from "../button/Button";
 import "./ButtonGrid.less";
 
-import {
-    ButtonHTMLAttributes,
-    HTMLAttributes,
-    ReactElement,
-    useContext,
-} from "react";
+import { HTMLAttributes, ReactElement } from "react";
 
-interface ButtonGridButtonProps
-    extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface BaseButtonGridButtonProps extends BaseButtonProps {
     row?: number | [number, number];
     col?: number | [number, number];
-    isDestructive?: boolean;
 }
+
+export interface RawButtonGridButtonProps
+    extends RawButtonProps,
+        BaseButtonGridButtonProps {}
+
+export interface IconButtonGridButtonProps
+    extends IconButtonProps,
+        BaseButtonGridButtonProps {}
+
+export type ButtonGridButtonProps =
+    | RawButtonGridButtonProps
+    | IconButtonGridButtonProps;
 
 export function ButtonGridButton({
     row,
     col,
-    isDestructive = false,
     children,
-    className = "",
     ...props
 }: ButtonGridButtonProps) {
-    const shouldShowTitles = useContext(ShowTitlesContext);
-
     return (
         <div
             className="button-grid__button__container"
@@ -41,19 +47,7 @@ export function ButtonGridButton({
                     : undefined,
             }}
         >
-            <button
-                className={
-                    className +
-                    " button-grid__button " +
-                    (isDestructive ? "button-grid__button--destructive" : "")
-                }
-                {...props}
-            >
-                {children}
-                {shouldShowTitles && props.title ? (
-                    <div className="button__title">{props.title}</div>
-                ) : undefined}
-            </button>
+            <Button {...props}>{children}</Button>
         </div>
     );
 }

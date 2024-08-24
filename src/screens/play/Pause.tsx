@@ -1,6 +1,5 @@
 import "./Pause.less";
 
-import { useCallback } from "react";
 import { Button } from "../../components/ui/button/Button";
 
 export interface PauseScreenProps {
@@ -20,7 +19,9 @@ export function PauseScreen({
         <div className={className + " pause-screen"}>
             <div className="pause-screen__controls">
                 <Button
-                    onClick={useCallback(() => {
+                    icon="fas fa-trash"
+                    title={null}
+                    onClick={() => {
                         if (
                             !confirm(
                                 "Do you want to clear the board? Your progress will be lost."
@@ -29,14 +30,15 @@ export function PauseScreen({
                             return;
                         clear();
                         resume();
-                    }, [clear, resume])}
+                    }}
                 >
-                    <i className="pause-screen__controls__icon fas fa-trash" />
                     Clear
                 </Button>
                 <Button
+                    icon="fas fa-xmark"
+                    title={null}
                     isDestructive={true}
-                    onClick={useCallback(() => {
+                    onClick={() => {
                         if (
                             !confirm(
                                 "Do you want to quit? Your progress will be lost."
@@ -44,18 +46,16 @@ export function PauseScreen({
                         )
                             return;
                         quit();
-                    }, [quit])}
+                    }}
                 >
-                    <i className="pause-screen__controls__icon fas fa-xmark" />
                     Quit
                 </Button>
                 <Button
+                    icon="fas fa-play"
+                    title={null}
                     className="pause-screen__controls__resume"
-                    onClick={useCallback(() => {
-                        resume();
-                    }, [resume])}
+                    onClick={resume}
                 >
-                    <i className="pause-screen__controls__icon fas fa-play" />
                     Resume
                 </Button>
                 <div className="pause-screen__info">

@@ -1,7 +1,9 @@
-@import "../button/Button.less";
+@import "../../../style.less";
+@import "../../../utils.less";
 
 .button-group {
-    .button-outer();
+    .no-user-select();
+    border-radius: @button-border-radius;
     height: @button-height;
     display: inline-flex;
     overflow: hidden;
@@ -14,17 +16,10 @@
         width: @button-group-separator-width;
         .theme-color(background-color, button-group-separator-color);
     }
-    
-    &__button {
-        .button-inner();
-        flex: auto;
 
-        &--destructive {
-            .button-inner(
-                button-destructive-color,
-                button-destructive-bg-color,
-                button-destructive-hover-bg-color
-            );
-        }
+    & > .button {
+        flex: auto;
+        border-radius: unset;
+        height: unset;
     }
 }

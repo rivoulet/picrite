@@ -3,7 +3,7 @@ import "./Slide.less";
 import { cloneElement, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 import { TransitionProps } from "./Props";
-import { useRefs } from "../../utils/useRefs";
+import { useMemoRefs } from "../../utils/useRefs";
 
 export interface CustomTransitionProps extends TransitionProps {
     classNames: string;
@@ -39,7 +39,7 @@ export function Custom({
             {...props}
         >
             {cloneElement(children, {
-                ref: useRefs(children.ref, ref),
+                ref: useMemoRefs(children.ref, ref),
             })}
         </CSSTransition>
     );

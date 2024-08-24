@@ -2,7 +2,7 @@ import "./Play.less";
 
 import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
 import { CellMark } from "../../CellValue";
-import { PlayGridMemo } from "../../components/play-grid/PlayGrid";
+import { PlayGrid } from "../../components/play-grid/PlayGrid";
 import { LevelCells, LevelSize, LevelNumbers } from "../../Level";
 import { useInput } from "./Input";
 import { levelIsSolved } from "../../algorithms/utils";
@@ -69,7 +69,11 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
             [level.width]
         );
 
-        const { setCell: setMark, ...history } = useHistory(marks, setMarkRaw);
+        const {
+            setCell: setMark,
+            clear: clearHistory,
+            ...history
+        } = useHistory(marks, setMarkRaw);
 
         const { setSelection, onKeyDown: inputOnKeyDown } = useInput(
             marks,
@@ -99,7 +103,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                                 "em; }"}
                         </style>
                         <Time seconds={elapsed} className="play-screen__time" />
-                        <PlayGridMemo
+                        <PlayGrid
                             level={level}
                             marks={marks}
                             selection={selection}
@@ -110,9 +114,8 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                             <RadioButtons
                                 selected={+isCrossing}
                                 setSelected={(selected) =>
-                                    setIsCrossing(selected > 0)
+                                    setIsCrossing(!!selected)
                                 }
-                                name="mark-cross"
                                 hasKeyboardControls={false}
                                 className={
                                     "play-screen__controls__mark-cross " +
@@ -136,27 +139,21 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                             <ZoomButtons scale={scale} setScale={setScale} />
                             <HistoryButtons history={history} />
                             <Button
+                                icon="fas fa-pause"
                                 title="Pause"
-                                onClick={useCallback(() => {
-                                    setIsPaused(true);
-                                }, [])}
-                            >
-                                <i className="fas fa-pause" />
-                            </Button>
+                                onClick={() => setIsPaused(true)}
+                            />
                         </div>
                     </div>
                 </ModalTarget>
                 <Modal in={isPaused}>
                     <PauseScreen
-                        clear={useCallback(() => {
+                        clear={() => {
                             setMarks(clearMarks(level));
-                            history.clear();
-                            setIsPaused(false);
-                        }, [level, history])}
+                            clearHistory();
+                        }}
                         quit={quit}
-                        resume={useCallback(() => {
-                            setIsPaused(false);
-                        }, [])}
+                        resume={() => setIsPaused(false)}
                         className="play-screen__modal__inner"
                     />
                 </Modal>

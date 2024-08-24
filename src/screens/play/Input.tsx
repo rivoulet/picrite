@@ -169,25 +169,21 @@ export function useInput(
         [selection, level.width, marks, setMark]
     );
 
-    const onKeyDown = useCallback(
-        (e: ReactKeyboardEvent) => {
-            switch (e.key) {
-                case "x":
-                case "Shift": {
-                    setIsCrossing(true);
-                    break;
-                }
-
-                case "e":
-                case "Escape": {
-                    setSelection(null);
-                    break;
-                }
+    const onKeyDown = (e: ReactKeyboardEvent) => {
+        switch (e.key) {
+            case "x":
+            case "Shift": {
+                setIsCrossing(true);
+                break;
             }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selection, setSelection]
-    );
+
+            case "e":
+            case "Escape": {
+                setSelection(null);
+                break;
+            }
+        }
+    };
 
     const onKeyUp = useCallback((e: KeyboardEvent) => {
         switch (e.key) {

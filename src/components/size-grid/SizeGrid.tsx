@@ -1,6 +1,6 @@
 import "./SizeGrid.less";
 
-import { Dispatch, ReactElement, useCallback, useRef } from "react";
+import { Dispatch, ReactElement, useRef } from "react";
 import { clamp } from "../../utils";
 import { useMousePointer, useTouchPointer } from "../../utils/usePointer";
 
@@ -70,21 +70,18 @@ export function SizeGrid({
         rows[y] = <tr key={y}>{...row}</tr>;
     }
 
-    const onPointer = useCallback(
-        (x: number, y: number) => {
-            if (!tableRef.current) return;
-            const [width, height] = offsetPosToCellPos(
-                x,
-                y,
-                maxWidth,
-                maxHeight,
-                tableRef.current
-            );
-            setWidth(width * scale);
-            setHeight(height * scale);
-        },
-        [maxWidth, setWidth, maxHeight, setHeight, scale]
-    );
+    const onPointer = (x: number, y: number) => {
+        if (!tableRef.current) return;
+        const [width, height] = offsetPosToCellPos(
+            x,
+            y,
+            maxWidth,
+            maxHeight,
+            tableRef.current
+        );
+        setWidth(width * scale);
+        setHeight(height * scale);
+    };
 
     const { onMouseDown, onMouseMove } = useMousePointer(
         onPointer,

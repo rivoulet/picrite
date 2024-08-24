@@ -12,7 +12,7 @@ import {
 } from "react";
 import { clamp, equal2 } from "../../utils";
 import { CellValue } from "../../CellValue";
-import { CellMemo } from "./Cell";
+import { Cell } from "./Cell";
 import {
     Selection,
     SelectionOrNull,
@@ -46,7 +46,7 @@ export function useRows(width: number, height: number, cells: CellValue[]) {
         for (let y = 0; y < height; y++) {
             const row = new Array<ReactElement>(width);
             for (let x = 0; x < width; x++) {
-                row[x] = <CellMemo key={x} value={cells[y * width + x]} />;
+                row[x] = <Cell key={x} value={cells[y * width + x]} />;
             }
             rows[y] = <tr key={y}>{...row}</tr>;
         }
@@ -136,14 +136,14 @@ export function useSelection(
 
     return {
         selectionElement,
-        onScroll: useCallback((e: HTMLElement) => {
+        onScroll: (e: HTMLElement) => {
             if (selectionElementRef.current) {
                 selectionElementRef.current.style.top =
                     posRef.current.top - e.scrollTop + "px";
                 selectionElementRef.current.style.left =
                     posRef.current.left - e.scrollLeft + "px";
             }
-        }, []),
+        },
     };
 }
 
@@ -154,103 +154,89 @@ export function useSelectionInput(
     setSelection: Dispatch<SetSelectionAction>,
     tableRef: RefObject<HTMLElement>
 ) {
-    const moveSelection = useCallback(
-        (dx: number, dy: number) => {
-            if (!selection) {
-                setSelection({
-                    selection: [0, 0],
-                    kind: SelectionUpdateKind.NavMove,
-                });
-                return;
-            }
-            const newSelection: Selection = [
-                clamp(selection[0] + dx, 0, width - 1),
-                clamp(selection[1] + dy, 0, height - 1),
-            ];
-            if (!equal2(newSelection, selection)) {
-                setSelection({
-                    selection: newSelection,
-                    kind: SelectionUpdateKind.NavMove,
-                });
-            }
-        },
-        [width, height, selection, setSelection]
-    );
-
-    const onKeyDown = useCallback(
-        (e: ReactKeyboardEvent) => {
-            switch (e.key) {
-                case "ArrowUp": {
-                    moveSelection(0, -1);
-                    e.preventDefault();
-                    break;
-                }
-                case "ArrowDown": {
-                    moveSelection(0, 1);
-                    e.preventDefault();
-                    break;
-                }
-                case "ArrowLeft": {
-                    moveSelection(-1, 0);
-                    e.preventDefault();
-                    break;
-                }
-                case "ArrowRight": {
-                    moveSelection(1, 0);
-                    e.preventDefault();
-                    break;
-                }
-            }
+    const moveSelection = (dx: number, dy: number) => {
+        if (!selection) {
+            setSelection({
+                selection: [0, 0],
+                kind: SelectionUpdateKind.NavMove,
+            });
             return;
-        },
-        [moveSelection]
-    );
-
-    const onPointerDown = useCallback(
-        (x: number, y: number) => {
-            const newSelection = offsetPosToCellPos(
-                x,
-                y,
-                width,
-                height,
-                tableRef.current!
-            );
-            setSelection((selection) => {
-                return {
-                    selection:
-                        !selection || !equal2(newSelection, selection)
-                            ? newSelection
-                            : selection,
-                    kind: SelectionUpdateKind.DragStart,
-                };
+        }
+        const newSelection: Selection = [
+            clamp(selection[0] + dx, 0, width - 1),
+            clamp(selection[1] + dy, 0, height - 1),
+        ];
+        if (!equal2(newSelection, selection)) {
+            setSelection({
+                selection: newSelection,
+                kind: SelectionUpdateKind.NavMove,
             });
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [width, height, setSelection]
-    );
+        }
+    };
 
-    const onPointerDrag = useCallback(
-        (x: number, y: number) => {
-            const newSelection = offsetPosToCellPos(
-                x,
-                y,
-                width,
-                height,
-                tableRef.current!
-            );
-            setSelection((selection) => {
-                return {
-                    selection:
-                        !selection || !equal2(newSelection, selection)
-                            ? newSelection
-                            : selection,
-                    kind: SelectionUpdateKind.DragMove,
-                };
-            });
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [width, height, setSelection]
-    );
+    const onKeyDown = (e: ReactKeyboardEvent) => {
+        switch (e.key) {
+            case "ArrowUp": {
+                moveSelection(0, -1);
+                e.preventDefault();
+                break;
+            }
+            case "ArrowDown": {
+                moveSelection(0, 1);
+                e.preventDefault();
+                break;
+            }
+            case "ArrowLeft": {
+                moveSelection(-1, 0);
+                e.preventDefault();
+                break;
+            }
+            case "ArrowRight": {
+                moveSelection(1, 0);
+                e.preventDefault();
+                break;
+            }
+        }
+        return;
+    };
+
+    const onPointerDown = (x: number, y: number) => {
+        const newSelection = offsetPosToCellPos(
+            x,
+            y,
+            width,
+            height,
+            tableRef.current!
+        );
+        setSelection((selection) => {
+            return {
+                selection:
+                    !selection || !equal2(newSelection, selection)
+                        ? newSelection
+                        : selection,
+                kind: SelectionUpdateKind.DragStart,
+            };
+        });
+    };
+
+    const onPointerDrag = (x: number, y: number) => {
+        const newSelection = offsetPosToCellPos(
+            x,
+            y,
+            width,
+            height,
+            tableRef.current!
+        );
+        setSelection((selection) => {
+            return {
+                selection:
+                    !selection || !equal2(newSelection, selection)
+                        ? newSelection
+                        : selection,
+                kind: SelectionUpdateKind.DragMove,
+            };
+        });
+    };
 
     return {
         onKeyDown,
@@ -273,27 +259,23 @@ export function useOuterInput(
     setSelection: Dispatch<SetSelectionAction>,
     tableRef: RefObject<HTMLTableElement>
 ) {
-    const onKeyDown = useCallback(
-        (e: ReactKeyboardEvent) => {
-            if (e.key !== " ") return;
-            e.preventDefault();
-            if (e.repeat) return;
-            if (selection) {
-                setSelection({
-                    selection,
-                    kind: SelectionUpdateKind.NavStart,
-                });
-            } else {
-                setSelection({
-                    selection: [0, 0],
-                    kind: SelectionUpdateKind.Focus,
-                });
-                tableRef.current?.focus();
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selection, setSelection]
-    );
+    const onKeyDown = (e: ReactKeyboardEvent) => {
+        if (e.key !== " ") return;
+        e.preventDefault();
+        if (e.repeat) return;
+        if (selection) {
+            setSelection({
+                selection,
+                kind: SelectionUpdateKind.NavStart,
+            });
+        } else {
+            setSelection({
+                selection: [0, 0],
+                kind: SelectionUpdateKind.Focus,
+            });
+            tableRef.current?.focus();
+        }
+    };
 
     const onKeyUp = useCallback(
         (e: KeyboardEvent) => {
@@ -315,15 +297,11 @@ export function useOuterInput(
         return () => window.removeEventListener("keyup", onKeyUp);
     }, [onKeyUp]);
 
-    const onBlur = useCallback(
-        (e: FocusEvent) => {
-            if (e.relatedTarget !== tableRef.current) {
-                setSelection(null);
-            }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [setSelection]
-    );
+    const onBlur = (e: FocusEvent) => {
+        if (e.relatedTarget !== tableRef.current) {
+            setSelection(null);
+        }
+    };
 
     return { onKeyDown, onBlur };
 }

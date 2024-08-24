@@ -135,19 +135,15 @@ export function useInput(
         [selection, level.width, cells, setCell]
     );
 
-    const onKeyDown = useCallback(
-        (e: ReactKeyboardEvent) => {
-            switch (e.key) {
-                case "e":
-                case "Escape": {
-                    setSelection(null);
-                    break;
-                }
+    const onKeyDown = (e: ReactKeyboardEvent) => {
+        switch (e.key) {
+            case "e":
+            case "Escape": {
+                setSelection(null);
+                break;
             }
-        },
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [selection, setSelection]
-    );
+        }
+    };
 
     return {
         setSelection,

@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { Button } from "../../components/ui/button/Button";
 import "./Win.less";
 import { Time } from "../../components/time/Time";
@@ -14,10 +13,7 @@ export function WinScreen({ elapsed, quit, className }: WinScreenProps) {
         <div className={className + " win-screen"}>
             <div className="win-screen__message">You won!</div>
             <Time seconds={elapsed} className="win-screen__time" />
-            <Button
-                title="Quit"
-                onClick={useCallback(() => quit(elapsed), [quit, elapsed])}
-            >
+            <Button title="Quit" onClick={() => quit(elapsed)}>
                 Quit
             </Button>
         </div>

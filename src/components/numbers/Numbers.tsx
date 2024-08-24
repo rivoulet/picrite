@@ -4,7 +4,7 @@ import { memo, Ref } from "react";
 import { LevelSize, LevelNumbers } from "../../Level";
 import { CellMark } from "../../CellValue";
 import { cellValuesByLine } from "../../algorithms/utils";
-import { LineMemo } from "./Line";
+import { Line } from "./Line";
 
 export interface NumbersProps {
     isVertical: boolean;
@@ -21,7 +21,7 @@ export interface NumbersPropsWithMarks extends NumbersProps {
     marks: CellMark[];
 }
 
-export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
+export const Numbers = memo((props: NumbersProps | NumbersPropsWithMarks) => {
     const { isVertical, className = "", tabIndex, onScroll, innerRef } = props;
 
     const marksByLine_ =
@@ -32,7 +32,7 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
         props.isVertical ? props.level.vNumbers : props.level.hNumbers
     ).map((numbers, i) => {
         return (
-            <LineMemo
+            <Line
                 key={i}
                 numbers={numbers}
                 marks={marksByLine_ ? marksByLine_[i] : undefined}
@@ -60,6 +60,4 @@ export function Numbers(props: NumbersProps | NumbersPropsWithMarks) {
             {numberLines}
         </ol>
     );
-}
-
-export const NumbersMemo = memo(Numbers);
+});

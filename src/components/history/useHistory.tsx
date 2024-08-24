@@ -1,9 +1,15 @@
 import { KeyboardEvent, useCallback, useState } from "react";
 import { CellValue } from "../../CellValue";
-import { Change, History, HistoryActions } from "./History";
+import { History, HistoryActions } from "./History";
 
 // TODO: Make configurable
 const MAX_LENGTH = 128;
+
+interface Change<V extends CellValue> {
+    i: number;
+    prev: V;
+    next: V;
+}
 
 export function useHistory<V extends CellValue>(
     cells: V[],
@@ -13,22 +19,6 @@ export function useHistory<V extends CellValue>(
         changes: [] as Change<V>[],
         pos: 0,
     });
-
-    const add = useCallback((change: Change<V>) => {
-        setHistory((history) => {
-            const endIndex = history.changes.length - history.pos;
-            return {
-                changes: [
-                    ...history.changes.slice(
-                        Math.max(endIndex - (MAX_LENGTH - 1), 0),
-                        endIndex
-                    ),
-                    change,
-                ],
-                pos: 0,
-            };
-        });
-    }, []);
 
     return {
         hasUndo: history.pos < history.changes.length,
@@ -59,37 +49,47 @@ export function useHistory<V extends CellValue>(
         }, []),
         setCell: useCallback(
             (i: number, value: V) => {
-                add({
+                const change = {
                     i,
                     prev: cells[i],
                     next: value,
-                });
+                };
                 setCell(i, value);
+                setHistory((history) => {
+                    const endIndex = history.changes.length - history.pos;
+                    return {
+                        changes: [
+                            ...history.changes.slice(
+                                Math.max(endIndex - (MAX_LENGTH - 1), 0),
+                                endIndex
+                            ),
+                            change,
+                        ],
+                        pos: 0,
+                    };
+                });
             },
-            [cells, setCell, add]
+            [cells, setCell]
         ),
     };
 }
 
-export function useHistoryInput({ hasUndo, undo, hasRedo, redo }: History) {
-    const onKeyDown = useCallback(
-        (e: KeyboardEvent) => {
-            switch (e.key) {
-                case "z": {
-                    if (!(e.metaKey || e.ctrlKey)) break;
-                    if (e.shiftKey) {
-                        if (hasRedo) {
-                            redo();
-                        }
-                    } else if (hasUndo) {
-                        undo();
+export function useHistoryInput(history: History) {
+    const onKeyDown = (e: KeyboardEvent) => {
+        switch (e.key) {
+            case "z": {
+                if (!(e.metaKey || e.ctrlKey)) break;
+                if (e.shiftKey) {
+                    if (history.hasRedo) {
+                        history.redo();
                     }
-                    break;
+                } else if (history.hasUndo) {
+                    history.undo();
                 }
+                break;
             }
-        },
-        [hasRedo, hasUndo, redo, undo]
-    );
+        }
+    };
 
     return { onKeyDown };
 }

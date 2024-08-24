@@ -1,5 +1,6 @@
-import { Dispatch, SetStateAction, useCallback } from "react";
-import { ButtonGroup, ButtonGroupButton } from "../ui/button-group/ButtonGroup";
+import { Dispatch, SetStateAction } from "react";
+import { ButtonGroup } from "../ui/button-group/ButtonGroup";
+import { Button } from "../ui/button/Button";
 
 export interface ZoomButtonsProps {
     scale: number;
@@ -9,26 +10,20 @@ export interface ZoomButtonsProps {
 export function ZoomButtons({ scale, setScale }: ZoomButtonsProps) {
     return (
         <ButtonGroup>
-            <ButtonGroupButton
+            <Button
+                icon="fas fa-plus"
                 title="Zoom in"
                 disabled={scale >= 1.5 * 1.5 * 1.5}
-                onClick={useCallback(
-                    () => setScale((scale) => Math.min(scale * 1.5, 4)),
-                    [setScale]
-                )}
-            >
-                <i className="fas fa-plus" />
-            </ButtonGroupButton>
-            <ButtonGroupButton
+                onClick={() => setScale((scale) => Math.min(scale * 1.5, 4))}
+            />
+            <Button
+                icon="fas fa-minus"
                 title="Zoom out"
                 disabled={scale <= 1 / (1.5 * 1.5 * 1.5)}
-                onClick={useCallback(
-                    () => setScale((scale) => Math.max(scale / 1.5, 1 / 4)),
-                    [setScale]
-                )}
-            >
-                <i className="fas fa-minus" />
-            </ButtonGroupButton>
+                onClick={() =>
+                    setScale((scale) => Math.max(scale / 1.5, 1 / 4))
+                }
+            />
         </ButtonGroup>
     );
 }
