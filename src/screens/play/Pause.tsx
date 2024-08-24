@@ -1,8 +1,10 @@
 import "./Pause.less";
 
+import { LevelInfo } from "src/Level";
 import { Button } from "src/components/ui/button/Button";
 
 export interface PauseScreenProps {
+    level: LevelInfo;
     hasClear: boolean;
     clear: () => void;
     quit: () => void;
@@ -11,6 +13,7 @@ export interface PauseScreenProps {
 }
 
 export function PauseScreen({
+    level,
     hasClear,
     clear,
     quit,
@@ -19,6 +22,7 @@ export function PauseScreen({
 }: PauseScreenProps) {
     return (
         <div className={className + " pause-screen"}>
+            <div className="pause-screen__level-name">{level.name}</div>
             <div className="pause-screen__controls">
                 <Button
                     icon="fas fa-trash"

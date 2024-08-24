@@ -189,6 +189,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                 </ModalTarget>
                 <Modal in={isPaused}>
                     <PauseScreen
+                        level={level}
                         hasClear={!marksAreClear}
                         clear={() => {
                             setMarks(clearMarks(level));
