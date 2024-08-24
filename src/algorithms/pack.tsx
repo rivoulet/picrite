@@ -40,7 +40,7 @@ export function unpackLevel(packed: string): [LevelInfo & LevelSize, string] {
     const nameLength =
         (base64Chars.indexOf(packed[i++]) << 6) |
         base64Chars.indexOf(packed[i++]);
-    const name = packed.slice(i, (i += nameLength));
+    const name = atob(packed.slice(i, (i += nameLength)));
     const width = base64Chars.indexOf(packed[i++]);
     const height = base64Chars.indexOf(packed[i++]);
     return [{ name, width, height }, packed.slice(i)];
@@ -48,9 +48,9 @@ export function unpackLevel(packed: string): [LevelInfo & LevelSize, string] {
 
 export function packLevel(level: LevelInfo & LevelCells): string {
     let out = "";
-    out +=
-        base64Chars[level.name.length >> 6] +
-        base64Chars[level.name.length & 63];
+    const name = btoa(level.name);
+    out += base64Chars[name.length >> 6] + base64Chars[name.length & 63];
+    out += name;
     out += base64Chars[level.width] + base64Chars[level.height];
     out += packLevelCells(level.cells);
     return out;
