@@ -3,6 +3,7 @@ import "./Pause.less";
 import { Button } from "../../components/ui/button/Button";
 
 export interface PauseScreenProps {
+    hasClear: boolean;
     clear: () => void;
     quit: () => void;
     resume: () => void;
@@ -10,6 +11,7 @@ export interface PauseScreenProps {
 }
 
 export function PauseScreen({
+    hasClear,
     clear,
     quit,
     resume,
@@ -31,6 +33,7 @@ export function PauseScreen({
                         clear();
                         resume();
                     }}
+                    disabled={!hasClear}
                 >
                     Clear
                 </Button>

@@ -20,6 +20,7 @@ import { Time } from "../../components/time/Time";
 import { useTimer } from "../../utils/useTimer";
 import { WinScreen } from "./Win";
 import { Modal, ModalTarget } from "../../components/modal/Modal";
+import { equalArrays } from "../../utils";
 
 function clearMarks(level: LevelSize) {
     return new Array<CellMark>(level.width * level.height).fill(CellMark.Empty);
@@ -36,6 +37,11 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
         // NOTE: level is assumed not to change
 
         const [marks, setMarks] = useState(() => clearMarks(level));
+
+        const marksAreClear = useMemo(
+            () => equalArrays(marks, clearMarks(level)),
+            [marks, level]
+        );
 
         const hasWonRef = useRef(false);
         const prevHasWon = hasWonRef.current;
@@ -148,6 +154,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                 </ModalTarget>
                 <Modal in={isPaused}>
                     <PauseScreen
+                        hasClear={!marksAreClear}
                         clear={() => {
                             setMarks(clearMarks(level));
                             clearHistory();
