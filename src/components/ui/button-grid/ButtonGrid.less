@@ -1,0 +1,26 @@
+@import "../button/Button.less";
+
+.button-grid {
+    .button-outer();
+    display: inline-grid;
+    overflow: hidden;
+
+    &__button__container {
+        height: @button-height;
+        .theme-color(outline, button-grid-border);
+    }
+
+    &__button {
+        .button-inner();
+        width: 100%;
+        height: 100%;
+
+        &--destructive {
+            .button-inner(
+                button-destructive-color,
+                button-destructive-bg-color,
+                button-destructive-hover-bg-color
+            );
+        }
+    }
+}

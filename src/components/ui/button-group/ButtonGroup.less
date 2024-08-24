@@ -2,20 +2,29 @@
 
 .button-group {
     .button-outer();
+    height: @button-height;
     display: inline-flex;
     overflow: hidden;
     .theme-color(background-color, button-bg-color);
-}
 
-.button-group__separator {
-    flex: none;
-    margin: @button-group-separator-margin 0;
-    height: (@button-height - 2 * @button-group-separator-margin);
-    width: @button-group-separator-width;
-    .theme-color(background-color, button-group-separator-color);
-}
+    &__separator {
+        flex: none;
+        margin: @button-group-separator-margin 0;
+        height: (@button-height - 2 * @button-group-separator-margin);
+        width: @button-group-separator-width;
+        .theme-color(background-color, button-group-separator-color);
+    }
+    
+    &__button {
+        .button-inner();
+        flex: auto;
 
-.button-group__button {
-    .button-inner();
-    flex: auto;
+        &--destructive {
+            .button-inner(
+                button-destructive-color,
+                button-destructive-bg-color,
+                button-destructive-hover-bg-color
+            );
+        }
+    }
 }

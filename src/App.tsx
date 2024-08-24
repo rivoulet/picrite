@@ -8,6 +8,7 @@ import { Slide } from "./components/transitions/Slide";
 import { SlideDir } from "./components/transitions/SlideDir";
 import { AppState, EditState } from "./AppState";
 import { EditScreen } from "./screens/edit/Edit";
+import { ShowTitlesContext } from "./components/ui/show-titles/ShowTitles";
 
 export function App() {
     const [state, setState] = useState<AppState>({ level: null });
@@ -41,7 +42,7 @@ export function App() {
                 <PlayScreen
                     key="play"
                     level={state.level}
-                    quit={(_winTime) => setState({ level: null })}
+                    quit={() => setState({ level: null })}
                     className="screen"
                 />
             );
@@ -57,10 +58,12 @@ export function App() {
     }
 
     return (
-        <SwitchTransition>
-            <Slide key={screen.key!} dir={SlideDir.Down}>
-                {screen}
-            </Slide>
-        </SwitchTransition>
+        <ShowTitlesContext.Provider value={true}>
+            <SwitchTransition>
+                <Slide key={screen.key!} dir={SlideDir.Down}>
+                    {screen}
+                </Slide>
+            </SwitchTransition>
+        </ShowTitlesContext.Provider>
     );
 }

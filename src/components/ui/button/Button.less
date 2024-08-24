@@ -3,47 +3,62 @@
 
 .button-outer() {
     .no-user-select();
-    height: @button-height;
     border-radius: @button-border-radius;
 }
 
-.button-inner() {
-    padding: 0 (0.5 * @button-height);
-    transition: background-color 0.1s linear;
-    .theme-color(color, button-color);
-    .theme-color(background-color, button-bg-color);
+.button-inner-colors(@color, @bg-color, @hover-bg-color) {
+    .theme-color(color, @color);
+    .theme-color(background-color, @bg-color);
 
     &:disabled {
         .theme-color(color, button-disabled-color);
     }
 
     &:not(:disabled) {
-        cursor: pointer;
         &:hover,
         &:focus {
-            .theme-color(background-color, button-hover-bg-color);
+            .theme-color(background-color, @hover-bg-color);
+        }
+    }
+}
+
+.button-inner(
+    @color: button-color,
+    @bg-color: button-bg-color,
+    @hover-bg-color: button-hover-bg-color
+) {
+    .button-inner-colors(@color, @bg-color, @hover-bg-color);
+
+    padding: 0 (0.5 * @button-height);
+    transition: background-color 0.1s linear;
+
+    &:not(:disabled) {
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
             outline: none;
         }
+    }
+
+    &__title {
+        display: block;
+        font-size: 0.6em;
+        opacity: 0.8;
+        margin-top: -0.2em;
     }
 }
 
 .button {
     .button-outer();
     .button-inner();
-}
+    height: @button-height;
 
-.button--destructive {
-    .theme-color(color, button-destructive-color);
-    .theme-color(background-color, button-destructive-bg-color);
-
-    &:disabled {
-        .theme-color(color, button-destructive-disabled-color);
-    }
-
-    &:not(:disabled) {
-        &:hover,
-        &:focus {
-            .theme-color(background-color, button-destructive-hover-bg-color);
-        }
+    &--destructive {
+        .button-inner-colors(
+            button-destructive-color,
+            button-destructive-bg-color,
+            button-destructive-hover-bg-color
+        );
     }
 }

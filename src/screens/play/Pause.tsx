@@ -20,7 +20,6 @@ export function PauseScreen({
         <div className={className + " pause-screen"}>
             <div className="pause-screen__controls">
                 <Button
-                    title="Clear"
                     onClick={useCallback(() => {
                         if (
                             !confirm(
@@ -36,7 +35,6 @@ export function PauseScreen({
                     Clear
                 </Button>
                 <Button
-                    title="Quit"
                     isDestructive={true}
                     onClick={useCallback(() => {
                         if (
@@ -52,7 +50,6 @@ export function PauseScreen({
                     Quit
                 </Button>
                 <Button
-                    title="Resume"
                     className="pause-screen__controls__resume"
                     onClick={useCallback(() => {
                         resume();

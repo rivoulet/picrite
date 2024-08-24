@@ -116,7 +116,7 @@ export function SizeGridWithSize({ className, ...props }: SizeGridProps) {
         <div className={className + " size-grid-with-size"}>
             <SizeGrid {...props} />
             <div className="size-grid-with-size__size">
-                {props.width} x {props.height}
+                {props.width} &times; {props.height}
             </div>
         </div>
     );

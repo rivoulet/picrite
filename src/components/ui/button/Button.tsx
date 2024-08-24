@@ -1,18 +1,20 @@
+import { ShowTitlesContext } from "../show-titles/ShowTitles";
 import "./Button.less";
 
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes, useContext } from "react";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    children: ReactNode;
     isDestructive?: boolean;
 }
 
 export function Button({
-    children,
     isDestructive = false,
+    children,
     className = "",
     ...props
 }: ButtonProps) {
+    const shouldShowTitles = useContext(ShowTitlesContext);
+
     return (
         <button
             className={
@@ -23,6 +25,9 @@ export function Button({
             {...props}
         >
             {children}
+            {shouldShowTitles && props.title ? (
+                <div className="button__title">{props.title}</div>
+            ) : undefined}
         </button>
     );
 }
