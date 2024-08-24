@@ -3,7 +3,8 @@ import "./App.less";
 import { useState } from "react";
 import { SwitchTransition } from "react-transition-group";
 
-import { AppState, EditState } from "src/AppState";
+import { AppState } from "src/AppState";
+import { LevelStoreContextProvider } from "src/components/level-store/LevelStore";
 import { Slide } from "src/components/transitions/Slide";
 import { SlideDir } from "src/components/transitions/SlideDir";
 import { ShowTitlesContext } from "src/components/ui/show-titles/ShowTitles";
@@ -23,15 +24,11 @@ export function App() {
                     level={state.level}
                     savedCells={state.savedCells}
                     saveLevel={(cells) => {
-                        setState((state_) => {
-                            const state = state_ as EditState;
-                            const level = { ...state.level, cells };
-                            state.saveLevel(cells);
-                            return {
-                                ...state,
-                                level,
-                                savedCells: cells,
-                            };
+                        const level = { ...state.level, cells };
+                        setState({
+                            ...state,
+                            level,
+                            savedCells: cells,
                         });
                     }}
                     close={() => setState({ level: null })}
@@ -60,11 +57,13 @@ export function App() {
 
     return (
         <ShowTitlesContext.Provider value={true}>
+            <LevelStoreContextProvider>
                 <SwitchTransition>
                     <Slide key={screen.key!} dir={SlideDir.Down}>
                         {screen}
                     </Slide>
                 </SwitchTransition>
+            </LevelStoreContextProvider>
         </ShowTitlesContext.Provider>
     );
 }

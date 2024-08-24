@@ -1,4 +1,4 @@
-import { LevelCells, LevelInfo, LevelSize } from "src/Level";
+import { LevelCells, LevelSize, SavedLevelInfo, SolvedState } from "src/Level";
 
 const base64Chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -34,23 +34,51 @@ export function packLevelCells(in_: boolean[]) {
     return out;
 }
 
-export function unpackLevel(packed: string): [LevelInfo & LevelSize, string] {
-    console.log(packed);
+export function unpackLevel(
+    packed: string,
+    id: string,
+    hasPlayInfo: boolean,
+): [SavedLevelInfo & LevelSize, string] {
     let i = 0;
     const nameLength =
         (base64Chars.indexOf(packed[i++]) << 6) |
         base64Chars.indexOf(packed[i++]);
     const name = atob(packed.slice(i, (i += nameLength)));
+    let solved: SolvedState;
+    let record: number | null = null;
+    if (hasPlayInfo) {
+        solved = base64Chars.indexOf(packed[i++]);
+        const recordStringLength = base64Chars.indexOf(packed[i++]);
+        if (recordStringLength) {
+            const recordString = packed.slice(i, (i += recordStringLength));
+            record = parseFloat(recordString);
+        }
+    } else {
+        solved = SolvedState.Unsolved;
+    }
     const width = base64Chars.indexOf(packed[i++]);
     const height = base64Chars.indexOf(packed[i++]);
-    return [{ name, width, height }, packed.slice(i)];
+    return [{ id, name, solved, record, width, height }, packed.slice(i)];
 }
 
-export function packLevel(level: LevelInfo & LevelCells): string {
+export function packLevel(
+    level: SavedLevelInfo & LevelCells,
+    hasPlayInfo: boolean,
+): string {
     let out = "";
     const name = btoa(level.name);
     out += base64Chars[name.length >> 6] + base64Chars[name.length & 63];
     out += name;
+    if (hasPlayInfo) {
+        out += base64Chars[level.solved];
+        if (level.record === null) {
+            out += base64Chars[0];
+        } else {
+            const recordString = level.record.toString();
+            out += base64Chars[recordString.length];
+            out += recordString;
+        }
+    }
     out += base64Chars[level.width] + base64Chars[level.height];
     out += packLevelCells(level.cells);
     return out;

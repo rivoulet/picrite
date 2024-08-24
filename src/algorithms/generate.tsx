@@ -6,15 +6,6 @@ import { levelIsSolvable } from "./solve";
 export function generateBlankCells(width: number, height: number): boolean[] {
     return new Array<boolean>(width * height).fill(false);
 }
-
-export function generateBlankLevel(width: number, height: number): LevelCells {
-    return {
-        width,
-        height,
-        cells: generateBlankCells(width, height),
-    };
-}
-
 export function generateLevel(
     width: number,
     height: number,

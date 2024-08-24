@@ -3,10 +3,19 @@
 .level-select-screen {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: stretch;
+    align-items: stretch;
 
-    & > * {
-        margin: 0.5em;
+    &__card {
+        flex: auto;
+        border-radius: @button-border-radius;
+        margin: 1em;
+        margin-bottom: 0;
+        .theme-color(background-color, level-select-card-bg-color);
+    }
+
+    &__type {
+        flex: none;
+        margin: 1em;
     }
 }

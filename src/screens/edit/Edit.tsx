@@ -4,19 +4,22 @@ import {
     Dispatch,
     forwardRef,
     useCallback,
+    useContext,
     useMemo,
     useRef,
     useState,
 } from "react";
 
-import { LevelCells } from "src/Level";
+import { LevelCells, SavedLevelInfo } from "src/Level";
 import { levelNumbers } from "src/algorithms/numbers";
+import { packLevel } from "src/algorithms/pack";
 import { levelIsSolvable } from "src/algorithms/solve";
 import { SelectableGridWithInput } from "src/components/grid/Grid";
 import { SelectionOrNull } from "src/components/grid/Selection";
 import { useOuterInput } from "src/components/grid/hooks";
 import { HistoryButtons } from "src/components/history/HistoryButtons";
 import { useHistory, useHistoryInput } from "src/components/history/useHistory";
+import { LevelStoreContext } from "src/components/level-store/LevelStore";
 import { Button } from "src/components/ui/button/Button";
 import { ZoomButtons } from "src/components/zoom-buttons/ZoomButtons";
 import { equalArrays } from "src/utils";
@@ -24,7 +27,7 @@ import { equalArrays } from "src/utils";
 import { useInput } from "./Input";
 
 export interface EditScreenProps {
-    level: LevelCells;
+    level: SavedLevelInfo & LevelCells;
     savedCells?: boolean[] | undefined;
     saveLevel: Dispatch<boolean[]>;
     close: () => void;
@@ -40,6 +43,8 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
         const [selection, setSelectionRaw] = useState<SelectionOrNull>(null);
 
         const [scale, setScale] = useState(1);
+
+        const { setLevel: setSavedLevel } = useContext(LevelStoreContext)!;
 
         const gridTableRef = useRef<HTMLTableElement>(null);
 
@@ -130,7 +135,13 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                     <Button
                         icon="fas fa-save"
                         title="Save"
-                        onClick={() => saveLevel(cells)}
+                        onClick={() => {
+                            setSavedLevel(
+                                level.id,
+                                packLevel({ ...level, cells }, true),
+                            );
+                            saveLevel(cells);
+                        }}
                         disabled={!isSolvable || isUnchanged}
                         className="edit-screen__controls__save"
                     >

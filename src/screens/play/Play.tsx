@@ -1,13 +1,28 @@
 import "./Play.less";
 
-import { forwardRef, useCallback, useMemo, useRef, useState } from "react";
+import {
+    forwardRef,
+    useCallback,
+    useContext,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 
 import { CellMark } from "src/CellValue";
-import { LevelCells, LevelNumbers, LevelSize } from "src/Level";
+import {
+    LevelCells,
+    LevelInfo,
+    LevelNumbers,
+    LevelSize,
+    SolvedState,
+} from "src/Level";
+import { packLevel } from "src/algorithms/pack";
 import { levelIsSolved } from "src/algorithms/utils";
 import { SelectionOrNull } from "src/components/grid/Selection";
 import { HistoryButtons } from "src/components/history/HistoryButtons";
 import { useHistory, useHistoryInput } from "src/components/history/useHistory";
+import { LevelStoreContext } from "src/components/level-store/LevelStore";
 import { Modal, ModalTarget } from "src/components/modal/Modal";
 import { PlayGrid } from "src/components/play-grid/PlayGrid";
 import { Time } from "src/components/time/Time";
@@ -26,8 +41,8 @@ function clearMarks(level: LevelSize) {
 }
 
 export interface PlayScreenProps {
-    level: LevelCells & LevelNumbers;
-    quit: (winTime?: number) => void;
+    level: LevelInfo & LevelCells & LevelNumbers;
+    quit: () => void;
     className?: string | undefined;
 }
 
@@ -56,6 +71,27 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
 
         const [isPaused, setIsPaused] = useState(false);
         const elapsed = useTimer(isPaused || hasWon);
+
+        const { setLevel: setSavedLevel } = useContext(LevelStoreContext)!;
+        if (level.id !== null && hasWon && !prevHasWon) {
+            setSavedLevel(
+                level.id,
+                packLevel(
+                    {
+                        ...level,
+                        solved:
+                            level.solved === SolvedState.Unsolved
+                                ? SolvedState.Solved
+                                : level.solved,
+                        record:
+                            level.record === null || elapsed < level.record
+                                ? elapsed
+                                : level.record,
+                    },
+                    true,
+                ),
+            );
+        }
 
         const setMarkRaw = useCallback(
             (i: number, mark: CellMark) => {
