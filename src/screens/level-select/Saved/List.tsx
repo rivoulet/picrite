@@ -5,13 +5,14 @@ import { Dispatch, SetStateAction, useContext, useMemo, useState } from "react";
 import { AppState } from "src/AppState";
 import { SolvedState } from "src/Level";
 import { levelNumbers } from "src/algorithms/numbers";
-import { unpackLevel, unpackLevelCells } from "src/algorithms/pack";
+import { packLevel, unpackLevel, unpackLevelCells } from "src/algorithms/pack";
 import { LevelStoreContext } from "src/components/level-store/LevelStore";
 import { Time } from "src/components/time/Time";
 import {
     ButtonGrid,
     ButtonGridButton,
 } from "src/components/ui/button-grid/ButtonGrid";
+import { shareURL } from "src/utils/shareURL";
 
 interface ItemProps {
     setState: Dispatch<SetStateAction<AppState>>;
@@ -32,6 +33,10 @@ function Item({
         () => unpackLevel(packedLevel, id, true),
         [id, packedLevel],
     );
+    const [hasCopied, setHasCopied] = useState(false);
+    if (hasCopied && !isActive) {
+        setHasCopied(false);
+    }
 
     const { setLevel: setSavedLevel } = useContext(LevelStoreContext)!;
 
@@ -76,7 +81,7 @@ function Item({
                 {name}
                 <ButtonGrid
                     rows={2}
-                    cols={2}
+                    cols={3}
                     className="saved-level-list__item--actions__buttons"
                 >
                     <ButtonGridButton
@@ -96,6 +101,33 @@ function Item({
                         onClick={delete_}
                     />
                     <ButtonGridButton
+                        icon={hasCopied ? "fas fa-check" : "fas fa-share"}
+                        title={hasCopied ? "Copied!" : "Share"}
+                        onClick={() => {
+                            const url =
+                                location.protocol +
+                                "//" +
+                                location.host +
+                                location.pathname +
+                                "?id=" +
+                                id +
+                                "&data=" +
+                                encodeURIComponent(
+                                    packLevel(levelInfo, cells, false),
+                                );
+                            (async () => {
+                                const { success, usedClipboard } =
+                                    await shareURL(url);
+                                if (success && usedClipboard) {
+                                    setHasCopied(true);
+                                    setTimeout(() => setHasCopied(false), 1000);
+                                }
+                            })();
+                        }}
+                    />
+                    <ButtonGridButton
+                        row={[1, 3]}
+                        col={3}
                         icon="fas fa-xmark"
                         title="Cancel"
                         onClick={() => setIsActive(false)}

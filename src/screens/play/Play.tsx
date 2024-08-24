@@ -88,6 +88,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                                 ? elapsed
                                 : level.record,
                     },
+                    level.cells,
                     true,
                 ),
             );

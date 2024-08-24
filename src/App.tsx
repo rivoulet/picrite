@@ -1,6 +1,6 @@
 import "./App.less";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SwitchTransition } from "react-transition-group";
 
 import { AppState } from "src/AppState";
@@ -12,8 +12,35 @@ import { EditScreen } from "src/screens/edit/Edit";
 import { LevelSelect } from "src/screens/level-select/LevelSelect";
 import { PlayScreen } from "src/screens/play/Play";
 
+import { levelNumbers } from "./algorithms/numbers";
+import { unpackLevel, unpackLevelCells } from "./algorithms/pack";
+
 export function App() {
-    const [state, setState] = useState<AppState>({ level: null });
+    const [state, setState] = useState<AppState>(() => {
+        const url = new URL(location.href);
+        const id = url.searchParams.get("id");
+        const data = url.searchParams.get("data");
+        if (id && data) {
+            const [levelInfo, packedCells] = unpackLevel(
+                decodeURIComponent(data),
+                id,
+                false,
+            );
+            const cells = unpackLevelCells(packedCells, levelInfo);
+            const level = {
+                ...levelInfo,
+                cells,
+            };
+            return {
+                isEditing: false,
+                level: {
+                    ...level,
+                    ...levelNumbers(level),
+                },
+            };
+        }
+        return { level: null };
+    });
 
     let screen;
     if (state.level) {

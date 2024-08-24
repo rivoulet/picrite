@@ -61,10 +61,11 @@ export function Create({ setState, back, className = "" }: CreateProps) {
                 <Button onClick={back}>Back</Button>
                 <Button
                     onClick={() => {
+                        const trimmedName = name.trim();
                         const blankCells = generateBlankCells(width, height);
                         const level = {
                             id: uuidv4(),
-                            name,
+                            name: trimmedName ? trimmedName : "Unnamed",
                             solved: SolvedState.Own,
                             record: null,
                             width,

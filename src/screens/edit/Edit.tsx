@@ -12,7 +12,7 @@ import {
 
 import { LevelCells, SavedLevelInfo } from "src/Level";
 import { levelNumbers } from "src/algorithms/numbers";
-import { packLevel } from "src/algorithms/pack";
+import { packLevel, unpackLevel, unpackLevelCells } from "src/algorithms/pack";
 import { levelIsSolvable } from "src/algorithms/solve";
 import { SelectableGridWithInput } from "src/components/grid/Grid";
 import { SelectionOrNull } from "src/components/grid/Selection";
@@ -99,6 +99,11 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
             gridTableRef,
         );
 
+        const save = () => {
+            setSavedLevel(level.id, packLevel(level, cells, true));
+            saveLevel(cells);
+        };
+
         return (
             <div
                 className={className + " edit-screen"}
@@ -135,13 +140,7 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                     <Button
                         icon="fas fa-save"
                         title="Save"
-                        onClick={() => {
-                            setSavedLevel(
-                                level.id,
-                                packLevel({ ...level, cells }, true),
-                            );
-                            saveLevel(cells);
-                        }}
+                        onClick={save}
                         disabled={!isSolvable || isUnchanged}
                         className="edit-screen__controls__save"
                     >

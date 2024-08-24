@@ -1,4 +1,4 @@
-import { LevelCells, LevelSize, SavedLevelInfo, SolvedState } from "src/Level";
+import { LevelSize, SavedLevelInfo, SolvedState } from "src/Level";
 
 const base64Chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
@@ -13,7 +13,7 @@ export function unpackLevelCells(in_: string, { width, height }: LevelSize) {
         let v = base64Chars.indexOf(in_[inI]);
         for (let i = 0; i < 6; i++) {
             if (outI < out.length) {
-                out[outI++] = (v & 0x20) != 0;
+                out[outI++] = (v & 32) !== 0;
             }
             v <<= 1;
         }
@@ -62,7 +62,8 @@ export function unpackLevel(
 }
 
 export function packLevel(
-    level: SavedLevelInfo & LevelCells,
+    level: SavedLevelInfo & LevelSize,
+    cells: string | boolean[],
     hasPlayInfo: boolean,
 ): string {
     let out = "";
@@ -80,6 +81,6 @@ export function packLevel(
         }
     }
     out += base64Chars[level.width] + base64Chars[level.height];
-    out += packLevelCells(level.cells);
+    out += typeof cells === "string" ? cells : packLevelCells(cells);
     return out;
 }

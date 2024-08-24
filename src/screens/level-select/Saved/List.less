@@ -70,19 +70,24 @@
 
         &--actions {
             &__buttons {
-                flex: auto;
+                flex: 1 0 auto;
+
                 && {
                     border-radius: unset;
                 }
 
                 & > .button-grid__button__container {
                     height: unset;
+
+                    & > .button {
+                        padding: .25em 0;
+                    }
                 }
             }
         }
 
         &__name {
-            flex: none;
+            flex: 0 1 auto;
             padding: 0.5em;
             overflow: hidden;
             text-overflow: ellipsis;
