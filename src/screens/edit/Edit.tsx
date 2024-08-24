@@ -12,7 +12,7 @@ import {
 
 import { LevelCells, SavedLevelInfo } from "src/Level";
 import { levelNumbers } from "src/algorithms/numbers";
-import { packLevel, unpackLevel, unpackLevelCells } from "src/algorithms/pack";
+import { packLevel } from "src/algorithms/pack";
 import { levelIsSolvable } from "src/algorithms/solve";
 import { SelectableGridWithInput } from "src/components/grid/Grid";
 import { SelectionOrNull } from "src/components/grid/Selection";

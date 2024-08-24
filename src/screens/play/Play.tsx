@@ -203,6 +203,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                 </Modal>
                 <Modal in={hasWon}>
                     <WinScreen
+                        level={level}
                         elapsed={elapsed}
                         quit={quit}
                         className="play-screen__modal__inner"
