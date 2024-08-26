@@ -18,7 +18,7 @@ export const Saved = forwardRef<HTMLDivElement, CardProps>(
                 {isCreating ? (
                     <Create
                         setState={setState}
-                        back={() => setIsCreating(false)}
+                        cancel={() => setIsCreating(false)}
                         className="level-select-screen__saved__create"
                     />
                 ) : (

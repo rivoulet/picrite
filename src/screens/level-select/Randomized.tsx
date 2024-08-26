@@ -31,6 +31,7 @@ export const Randomized = forwardRef<HTMLDivElement, CardProps>(
                 <IconButton
                     icon="fas fa-play"
                     title="Play"
+                    alwaysShowTitle={true}
                     onClick={() =>
                         setState({
                             kind: StateKind.Play,

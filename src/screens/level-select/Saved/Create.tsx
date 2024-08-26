@@ -8,16 +8,16 @@ import { SolvedState } from "src/Level";
 import { generateBlankCells, generateLevel } from "src/algorithms/generate";
 import { SizeGridWithSize } from "src/components/size-grid/SizeGrid";
 import { ButtonGroup } from "src/components/ui/button-group/ButtonGroup";
-import { Button } from "src/components/ui/button/Button";
+import { IconButton } from "src/components/ui/button/Button";
 import { RadioButtons } from "src/components/ui/radio-buttons/RadioButtons";
 
 export interface CreateProps {
     setState: Dispatch<SetStateAction<AppState>>;
-    back: () => void;
+    cancel: () => void;
     className?: string | undefined;
 }
 
-export function Create({ setState, back, className = "" }: CreateProps) {
+export function Create({ setState, cancel, className = "" }: CreateProps) {
     const [width, setWidth] = useState(10);
     const [height, setHeight] = useState(10);
     const [isRandomized, setIsRandomized] = useState(false);
@@ -58,8 +58,16 @@ export function Create({ setState, back, className = "" }: CreateProps) {
                 </div>
             </div>
             <ButtonGroup className="level-create__buttons">
-                <Button onClick={back}>Back</Button>
-                <Button
+                <IconButton
+                    icon="fas fa-xmark"
+                    title="Cancel"
+                    alwaysShowTitle={true}
+                    onClick={cancel}
+                />
+                <IconButton
+                    icon="fas fa-pencil"
+                    title="Create"
+                    alwaysShowTitle={true}
                     onClick={() => {
                         const trimmedName = name.trim();
                         const level = {
@@ -78,9 +86,7 @@ export function Create({ setState, back, className = "" }: CreateProps) {
                             level,
                         });
                     }}
-                >
-                    Create
-                </Button>
+                />
             </ButtonGroup>
         </div>
     );
