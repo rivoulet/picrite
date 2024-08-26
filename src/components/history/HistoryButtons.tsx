@@ -1,5 +1,5 @@
 import { ButtonGroup } from "src/components/ui/button-group/ButtonGroup";
-import { Button } from "src/components/ui/button/Button";
+import { IconButton } from "src/components/ui/button/Button";
 
 import { History } from "./History";
 
@@ -12,13 +12,13 @@ export function HistoryButtons({
 }: HistoryButtonsProps) {
     return (
         <ButtonGroup>
-            <Button
+            <IconButton
                 icon="fas fa-rotate-left"
                 title="Undo"
                 disabled={!hasUndo}
                 onClick={undo}
             />
-            <Button
+            <IconButton
                 icon="fas fa-rotate-right"
                 title="Redo"
                 disabled={!hasRedo}

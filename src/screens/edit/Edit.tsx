@@ -20,7 +20,7 @@ import { useOuterInput } from "src/components/grid/hooks";
 import { HistoryButtons } from "src/components/history/HistoryButtons";
 import { useHistory, useHistoryInput } from "src/components/history/useHistory";
 import { LevelStoreContext } from "src/components/level-store/LevelStore";
-import { Button } from "src/components/ui/button/Button";
+import { IconButton } from "src/components/ui/button/Button";
 import { ZoomButtons } from "src/components/zoom-buttons/ZoomButtons";
 import { equalArrays } from "src/utils";
 
@@ -105,6 +105,9 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
             gridTableRef,
         );
 
+        const canSave = !isBlank && isSolvable && !isUnchanged;
+        const saveLabel =
+            (isBlank || !isSolvable) && (isBlank ? "Blank" : "Not solvable");
         const save = () => {
             setSavedLevel(level.id, packLevel(level, cells, true));
             saveLevel(cells);
@@ -143,16 +146,16 @@ export const EditScreen = forwardRef<HTMLDivElement, EditScreenProps>(
                 <div className="edit-screen__controls">
                     <ZoomButtons scale={scale} setScale={setScale} />
                     <HistoryButtons history={history} />
-                    <Button
+                    <IconButton
                         icon="fas fa-save"
                         title="Save"
+                        appendLabelToTitle={true}
                         onClick={save}
-                        disabled={isBlank || !isSolvable || isUnchanged}
+                        disabled={!canSave}
                     >
-                        {(isBlank || !isSolvable) &&
-                            (isBlank ? "Blank" : "Not solvable")}
-                    </Button>
-                    <Button
+                        {saveLabel}
+                    </IconButton>
+                    <IconButton
                         icon="fas fa-xmark"
                         title="Close"
                         onClick={() => {

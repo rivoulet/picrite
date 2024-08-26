@@ -1,18 +1,33 @@
 import { LevelCells, LevelInfo, LevelNumbers, SavedLevelInfo } from "src/Level";
 
+export const enum StateKind {
+    LevelSelect,
+    Play,
+    Edit,
+    SharedInfo,
+}
+
 export interface LevelSelectState {
-    level: null;
+    kind: StateKind.LevelSelect;
 }
 
 export interface PlayState {
-    isEditing: false;
+    kind: StateKind.Play;
     level: LevelInfo & LevelCells & LevelNumbers;
 }
 
 export interface EditState {
-    isEditing: true;
+    kind: StateKind.Edit;
     level: SavedLevelInfo & LevelCells;
-    savedCells: boolean[];
 }
 
-export type AppState = LevelSelectState | PlayState | EditState;
+export interface SharedInfoState {
+    kind: StateKind.SharedInfo;
+    level: SavedLevelInfo & LevelCells;
+}
+
+export type AppState =
+    | LevelSelectState
+    | PlayState
+    | EditState
+    | SharedInfoState;

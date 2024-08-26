@@ -3,7 +3,7 @@ import "./Create.less";
 import { Dispatch, SetStateAction, useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { AppState } from "src/AppState";
+import { AppState, StateKind } from "src/AppState";
 import { SolvedState } from "src/Level";
 import { generateBlankCells, generateLevel } from "src/algorithms/generate";
 import { SizeGridWithSize } from "src/components/size-grid/SizeGrid";
@@ -52,7 +52,7 @@ export function Create({ setState, back, className = "" }: CreateProps) {
                             (newSelected) => setIsRandomized(!!newSelected),
                             [],
                         )}
-                        name={"blank-randomized"}
+                        name="blank-randomized"
                         buttons={["Blank", "Randomized"]}
                     />
                 </div>
@@ -74,7 +74,7 @@ export function Create({ setState, back, className = "" }: CreateProps) {
                                 : generateBlankCells(width, height),
                         };
                         setState({
-                            isEditing: true,
+                            kind: StateKind.Edit,
                             level,
                         });
                     }}

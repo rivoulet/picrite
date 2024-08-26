@@ -17,11 +17,7 @@ export function WinScreen({ level, elapsed, quit, className }: WinScreenProps) {
             <div className="win-screen__level-name">{level.name}</div>
             <div className="win-screen__message">You won!</div>
             <Time seconds={elapsed} className="win-screen__time" />
-            <Button
-                title="Quit"
-                className="win-screen__quit"
-                onClick={() => quit(elapsed)}
-            >
+            <Button className="win-screen__quit" onClick={() => quit(elapsed)}>
                 Quit
             </Button>
         </div>

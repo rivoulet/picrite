@@ -4,35 +4,17 @@ import { ButtonHTMLAttributes, useContext } from "react";
 
 import { ShowTitlesContext } from "src/components/ui/show-titles/ShowTitles";
 
-export interface BaseButtonProps
-    extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, "title"> {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     isDestructive?: boolean;
-}
-
-export interface RawButtonProps extends BaseButtonProps {
-    icon?: never;
     title?: string | undefined;
 }
 
-export interface IconButtonProps extends BaseButtonProps {
-    icon: string;
-    title: string | null;
-}
-
-export type ButtonProps = RawButtonProps | IconButtonProps;
-
 export function Button({
     isDestructive = false,
-    icon,
-    title,
     className = "",
     children,
     ...props
 }: ButtonProps) {
-    const hasIcon = typeof icon !== "undefined";
-    const shouldShowTitle =
-        useContext(ShowTitlesContext) && hasIcon && title !== null;
-
     return (
         <button
             className={
@@ -40,20 +22,51 @@ export function Button({
                 " button " +
                 (isDestructive ? "button--destructive" : "")
             }
-            title={title ?? undefined}
             {...props}
         >
-            {hasIcon && (
-                <i
-                    className={
-                        icon +
-                        " button__icon " +
-                        (children ? " button__icon--children" : "")
-                    }
-                />
-            )}
+            {children}
+        </button>
+    );
+}
+
+export interface IconButtonProps extends ButtonProps {
+    icon: string;
+    alwaysShowTitle?: boolean;
+    title: string | undefined;
+}
+
+export interface AppendLabelToTitleIconButtonProps extends IconButtonProps {
+    appendLabelToTitle: true;
+    children: string;
+}
+
+export function IconButton({
+    icon,
+    alwaysShowTitle = false,
+    title,
+    children,
+    ...props
+}: IconButtonProps | AppendLabelToTitleIconButtonProps) {
+    const shouldShowTitle = useContext(ShowTitlesContext) || alwaysShowTitle;
+
+    return (
+        <Button
+            title={
+                "appendLabelToTitle" in props && children
+                    ? (title ? title + " " : "") + "(" + children + ")"
+                    : title
+            }
+            {...props}
+        >
+            <i
+                className={
+                    icon +
+                    " button__icon " +
+                    (children ? " button__icon--has-label" : "")
+                }
+            />
             {children}
             {shouldShowTitle && <div className="button__title">{title}</div>}
-        </button>
+        </Button>
     );
 }

@@ -1,36 +1,19 @@
 import "./ButtonGrid.less";
 
-import { HTMLAttributes, ReactElement } from "react";
+import { FunctionComponentElement, HTMLAttributes, ReactElement } from "react";
 
-import {
-    BaseButtonProps,
-    Button,
-    IconButtonProps,
-    RawButtonProps,
-} from "src/components/ui/button/Button";
+import { ButtonProps } from "src/components/ui/button/Button";
 
-export interface BaseButtonGridButtonProps extends BaseButtonProps {
+export interface ButtonGridButtonProps {
     row?: number | [number, number];
     col?: number | [number, number];
+    children: FunctionComponentElement<ButtonProps>;
 }
-
-export interface RawButtonGridButtonProps
-    extends RawButtonProps,
-        BaseButtonGridButtonProps {}
-
-export interface IconButtonGridButtonProps
-    extends IconButtonProps,
-        BaseButtonGridButtonProps {}
-
-export type ButtonGridButtonProps =
-    | RawButtonGridButtonProps
-    | IconButtonGridButtonProps;
 
 export function ButtonGridButton({
     row,
     col,
     children,
-    ...props
 }: ButtonGridButtonProps) {
     return (
         <div
@@ -48,7 +31,7 @@ export function ButtonGridButton({
                     : undefined,
             }}
         >
-            <Button {...props}>{children}</Button>
+            {children}
         </div>
     );
 }

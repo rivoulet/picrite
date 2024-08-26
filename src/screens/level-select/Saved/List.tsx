@@ -2,7 +2,7 @@ import "./List.less";
 
 import { Dispatch, SetStateAction, useContext, useMemo, useState } from "react";
 
-import { AppState } from "src/AppState";
+import { AppState, StateKind } from "src/AppState";
 import { SolvedState } from "src/Level";
 import { levelNumbers } from "src/algorithms/numbers";
 import { packLevel, unpackLevel, unpackLevelCells } from "src/algorithms/pack";
@@ -12,6 +12,7 @@ import {
     ButtonGrid,
     ButtonGridButton,
 } from "src/components/ui/button-grid/ButtonGrid";
+import { IconButton } from "src/components/ui/button/Button";
 import { shareURL } from "src/utils/shareURL";
 
 interface ItemProps {
@@ -51,7 +52,7 @@ function Item({
                 cells: unpackLevelCells(cells, levelInfo),
             };
             setState({
-                isEditing: false,
+                kind: StateKind.Play,
                 level: {
                     ...level,
                     ...levelNumbers(level),
@@ -65,7 +66,7 @@ function Item({
                 cells: unpackLevelCells(cells, levelInfo),
             };
             setState({
-                isEditing: true,
+                kind: StateKind.Edit,
                 level,
             });
         };
@@ -83,54 +84,65 @@ function Item({
                     cols={3}
                     className="saved-level-list__item--actions__buttons"
                 >
-                    <ButtonGridButton
-                        icon="fas fa-play"
-                        title="Play"
-                        onClick={play}
-                    />
-                    <ButtonGridButton
-                        icon="fas fa-pencil"
-                        title="Edit"
-                        onClick={edit}
-                    />
-                    <ButtonGridButton
-                        isDestructive={true}
-                        icon="fas fa-trash"
-                        title="Delete"
-                        onClick={delete_}
-                    />
-                    <ButtonGridButton
-                        icon={hasCopied ? "fas fa-check" : "fas fa-share"}
-                        title={hasCopied ? "Copied!" : "Share"}
-                        onClick={() => {
-                            const url =
-                                location.protocol +
-                                "//" +
-                                location.host +
-                                location.pathname +
-                                "?id=" +
-                                id +
-                                "&data=" +
-                                encodeURIComponent(
-                                    packLevel(levelInfo, cells, false),
-                                );
-                            (async () => {
-                                const { success, usedClipboard } =
-                                    await shareURL(url);
-                                if (success && usedClipboard) {
-                                    setHasCopied(true);
-                                    setTimeout(() => setHasCopied(false), 1000);
-                                }
-                            })();
-                        }}
-                    />
-                    <ButtonGridButton
-                        row={[1, 3]}
-                        col={3}
-                        icon="fas fa-xmark"
-                        title="Cancel"
-                        onClick={() => setIsActive(false)}
-                    />
+                    <ButtonGridButton>
+                        <IconButton
+                            icon="fas fa-play"
+                            title="Play"
+                            onClick={play}
+                        />
+                    </ButtonGridButton>
+                    <ButtonGridButton>
+                        <IconButton
+                            icon="fas fa-pencil"
+                            title="Edit"
+                            onClick={edit}
+                        />
+                    </ButtonGridButton>
+                    <ButtonGridButton>
+                        <IconButton
+                            isDestructive={true}
+                            icon="fas fa-trash"
+                            title="Delete"
+                            onClick={delete_}
+                        />
+                    </ButtonGridButton>
+                    <ButtonGridButton>
+                        <IconButton
+                            icon={hasCopied ? "fas fa-check" : "fas fa-share"}
+                            title={hasCopied ? "Copied!" : "Share"}
+                            onClick={() => {
+                                const url =
+                                    location.protocol +
+                                    "//" +
+                                    location.host +
+                                    location.pathname +
+                                    "?id=" +
+                                    id +
+                                    "&data=" +
+                                    encodeURIComponent(
+                                        packLevel(levelInfo, cells, false),
+                                    );
+                                (async () => {
+                                    const { success, usedClipboard } =
+                                        await shareURL(url);
+                                    if (success && usedClipboard) {
+                                        setHasCopied(true);
+                                        setTimeout(
+                                            () => setHasCopied(false),
+                                            1000,
+                                        );
+                                    }
+                                })();
+                            }}
+                        />
+                    </ButtonGridButton>
+                    <ButtonGridButton row={[1, 3]} col={3}>
+                        <IconButton
+                            icon="fas fa-xmark"
+                            title="Cancel"
+                            onClick={() => setIsActive(false)}
+                        />
+                    </ButtonGridButton>
                 </ButtonGrid>
             </div>
         );

@@ -26,7 +26,7 @@ import { LevelStoreContext } from "src/components/level-store/LevelStore";
 import { Modal, ModalTarget } from "src/components/modal/Modal";
 import { PlayGrid } from "src/components/play-grid/PlayGrid";
 import { Time } from "src/components/time/Time";
-import { Button } from "src/components/ui/button/Button";
+import { IconButton } from "src/components/ui/button/Button";
 import { RadioButtons } from "src/components/ui/radio-buttons/RadioButtons";
 import { ZoomButtons } from "src/components/zoom-buttons/ZoomButtons";
 import { equalArrays } from "src/utils";
@@ -180,7 +180,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                             />
                             <ZoomButtons scale={scale} setScale={setScale} />
                             <HistoryButtons history={history} />
-                            <Button
+                            <IconButton
                                 icon="fas fa-pause"
                                 title="Pause"
                                 onClick={() => setIsPaused(true)}

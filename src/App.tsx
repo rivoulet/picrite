@@ -3,48 +3,55 @@ import "./App.less";
 import { useState } from "react";
 import { SwitchTransition } from "react-transition-group";
 
-import { AppState } from "src/AppState";
+import { AppState, StateKind } from "src/AppState";
 import { LevelStoreContextProvider } from "src/components/level-store/LevelStore";
 import { Slide } from "src/components/transitions/Slide";
 import { SlideDir } from "src/components/transitions/SlideDir";
 import { ShowTitlesContext } from "src/components/ui/show-titles/ShowTitles";
 import { EditScreen } from "src/screens/edit/Edit";
-import { LevelSelect } from "src/screens/level-select/LevelSelect";
+import { LevelSelectScreen } from "src/screens/level-select/LevelSelect";
 import { PlayScreen } from "src/screens/play/Play";
-
-import { levelNumbers } from "./algorithms/numbers";
-import { unpackLevel, unpackLevelCells } from "./algorithms/pack";
+import { SharedInfoScreen } from "src/screens/shared-info/SharedInfo";
+import { sharedLevel } from "src/sharedLevel";
 
 export function App() {
     const [state, setState] = useState<AppState>(() => {
-        const url = new URL(location.href);
-        const id = url.searchParams.get("id");
-        const data = url.searchParams.get("data");
-        if (id && data) {
-            const [levelInfo, packedCells] = unpackLevel(
-                decodeURIComponent(data),
-                id,
-                false,
-            );
-            const cells = unpackLevelCells(packedCells, levelInfo);
-            const level = {
-                ...levelInfo,
-                cells,
-            };
-            return {
-                isEditing: false,
-                level: {
-                    ...level,
-                    ...levelNumbers(level),
-                },
-            };
-        }
-        return { level: null };
+        return sharedLevel
+            ? {
+                  kind: StateKind.SharedInfo,
+                  level: sharedLevel,
+              }
+            : {
+                  kind: StateKind.LevelSelect,
+              };
     });
 
     let screen;
-    if (state.level) {
-        if (state.isEditing) {
+    switch (state.kind) {
+        case StateKind.LevelSelect: {
+            screen = (
+                <LevelSelectScreen
+                    key="level-select"
+                    setState={setState}
+                    className="screen"
+                />
+            );
+            break;
+        }
+
+        case StateKind.Play: {
+            screen = (
+                <PlayScreen
+                    key="play"
+                    level={state.level}
+                    quit={() => setState({ kind: StateKind.LevelSelect })}
+                    className="screen"
+                />
+            );
+            break;
+        }
+
+        case StateKind.Edit: {
             screen = (
                 <EditScreen
                     key="edit"
@@ -56,28 +63,24 @@ export function App() {
                             level,
                         });
                     }}
-                    close={() => setState({ level: null })}
+                    close={() => setState({ kind: StateKind.LevelSelect })}
                     className="screen"
                 />
             );
-        } else {
-            screen = (
-                <PlayScreen
-                    key="play"
-                    level={state.level}
-                    quit={() => setState({ level: null })}
-                    className="screen"
-                />
-            );
+            break;
         }
-    } else {
-        screen = (
-            <LevelSelect
-                key="level-select"
-                setState={setState}
-                className="screen"
-            />
-        );
+
+        case StateKind.SharedInfo: {
+            screen = (
+                <SharedInfoScreen
+                    key="shared-info"
+                    level={state.level}
+                    setState={setState}
+                    className="screen"
+                />
+            );
+            break;
+        }
     }
 
     return (

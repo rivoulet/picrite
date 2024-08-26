@@ -5,12 +5,11 @@
     .no-user-select();
     border-radius: @button-border-radius;
     height: @button-height;
-    display: inline-flex;
+    display: inline-grid;
     overflow: hidden;
     .theme-color(background-color, button-bg-color);
 
     &__separator {
-        flex: none;
         margin: @button-group-separator-margin 0;
         height: (@button-height - 2 * @button-group-separator-margin);
         width: @button-group-separator-width;
@@ -18,7 +17,6 @@
     }
 
     & > .button {
-        flex: auto;
         border-radius: unset;
         height: unset;
     }

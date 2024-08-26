@@ -1,7 +1,7 @@
 import "./Pause.less";
 
 import { LevelInfo } from "src/Level";
-import { Button } from "src/components/ui/button/Button";
+import { IconButton } from "src/components/ui/button/Button";
 
 export interface PauseScreenProps {
     level: LevelInfo;
@@ -24,9 +24,10 @@ export function PauseScreen({
         <div className={className + " pause-screen"}>
             <div className="pause-screen__level-name">{level.name}</div>
             <div className="pause-screen__controls">
-                <Button
+                <IconButton
                     icon="fas fa-trash"
-                    title={null}
+                    title="Clear"
+                    alwaysShowTitle={true}
                     onClick={() => {
                         if (
                             !confirm(
@@ -38,12 +39,11 @@ export function PauseScreen({
                         resume();
                     }}
                     disabled={!hasClear}
-                >
-                    Clear
-                </Button>
-                <Button
+                />
+                <IconButton
                     icon="fas fa-xmark"
-                    title={null}
+                    title="Quit"
+                    alwaysShowTitle={true}
                     isDestructive={true}
                     onClick={() => {
                         if (
@@ -54,17 +54,14 @@ export function PauseScreen({
                             return;
                         quit();
                     }}
-                >
-                    Quit
-                </Button>
-                <Button
+                />
+                <IconButton
                     icon="fas fa-play"
-                    title={null}
+                    title="Resume"
+                    alwaysShowTitle={true}
                     className="pause-screen__controls__resume"
                     onClick={resume}
-                >
-                    Resume
-                </Button>
+                />
                 <div className="pause-screen__info">
                     Picrite v{__APP_VERSION__}
                 </div>

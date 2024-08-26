@@ -2,9 +2,10 @@ import "./Randomized.less";
 
 import { forwardRef, useState } from "react";
 
+import { StateKind } from "src/AppState";
 import { generateLevel } from "src/algorithms/generate";
 import { SizeGridWithSize } from "src/components/size-grid/SizeGrid";
-import { Button } from "src/components/ui/button/Button";
+import { IconButton } from "src/components/ui/button/Button";
 
 import { CardProps } from "./Card";
 
@@ -27,10 +28,12 @@ export const Randomized = forwardRef<HTMLDivElement, CardProps>(
                     setHeight={setHeight}
                     scale={5}
                 />
-                <Button
+                <IconButton
+                    icon="fas fa-play"
+                    title="Play"
                     onClick={() =>
                         setState({
-                            isEditing: false,
+                            kind: StateKind.Play,
                             level: {
                                 id: null,
                                 name: "Randomized level",
@@ -38,9 +41,7 @@ export const Randomized = forwardRef<HTMLDivElement, CardProps>(
                             },
                         })
                     }
-                >
-                    Play
-                </Button>
+                />
             </div>
         );
     },
