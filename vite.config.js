@@ -8,6 +8,7 @@ export default defineConfig({
     define: {
         __APP_VERSION__: JSON.stringify(process.env.npm_package_version),
     },
+    base: "/picrite/",
     resolve: {
         alias: {
             "src": path.resolve(__dirname, "src"),
