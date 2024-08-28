@@ -1,6 +1,6 @@
 import "./SizeGrid.less";
 
-import { Dispatch, ReactElement, useRef } from "react";
+import { Dispatch, KeyboardEvent, ReactElement, useRef } from "react";
 
 import { clamp } from "src/utils";
 import { useMousePointer, useTouchPointer } from "src/utils/usePointer";
@@ -95,6 +95,37 @@ export function SizeGrid({
         tableRef,
     );
 
+    const moveSelection = (dx: number, dy: number) => {
+        setWidth(clamp(width + dx, 1, maxWidth) * scale);
+        setHeight(clamp(height + dy, 1, maxWidth) * scale);
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+        switch (e.key) {
+            case "ArrowUp": {
+                moveSelection(0, -1);
+                e.preventDefault();
+                break;
+            }
+            case "ArrowDown": {
+                moveSelection(0, 1);
+                e.preventDefault();
+                break;
+            }
+            case "ArrowLeft": {
+                moveSelection(-1, 0);
+                e.preventDefault();
+                break;
+            }
+            case "ArrowRight": {
+                moveSelection(1, 0);
+                e.preventDefault();
+                break;
+            }
+        }
+        return;
+    };
+
     return (
         <table
             className={className + " size-grid"}
@@ -102,6 +133,8 @@ export function SizeGrid({
             onMouseMove={onMouseMove}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
+            onKeyDown={onKeyDown}
+            tabIndex={0}
             ref={tableRef}
         >
             <tbody>{...rows}</tbody>
