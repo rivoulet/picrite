@@ -77,13 +77,13 @@
 @button-hover-bg-color-dark: #606060;
 
 @button-destructive-color-light: #ff0000;
-@button-destructive-color-dark: #ff8080;
+@button-destructive-color-dark: #ffb0b0;
 @button-destructive-disabled-color-light: #ff0000;
 @button-destructive-disabled-color-dark: #ff8080;
-@button-destructive-bg-color-light: mix(#e0e0e0, red, 90%);
-@button-destructive-bg-color-dark: mix(#808080, red, 90%);
-@button-destructive-hover-bg-color-light: mix(#c0c0c0, red, 90%);
-@button-destructive-hover-bg-color-dark: mix(#606060, red, 90%);
+@button-destructive-bg-color-light: mix(#e0e0e0, red, 85%);
+@button-destructive-bg-color-dark: mix(#808080, red, 80%);
+@button-destructive-hover-bg-color-light: mix(#c0c0c0, red, 85%);
+@button-destructive-hover-bg-color-dark: mix(#606060, red, 80%);
 
 @button-group-separator-margin: 0.2em;
 @button-group-separator-width: 0.05em;
@@ -135,9 +135,6 @@
 
 // Level select screen
 
-@level-select-card-bg-color-light: #f0f0f0;
-@level-select-card-bg-color-dark: #909090;
-
 @saved-level-list-item-color-light: @button-color-light;
 @saved-level-list-item-color-dark: @button-color-dark;
 @saved-level-list-item-bg-color-light: @button-bg-color-light;
@@ -155,6 +152,11 @@
 
 @level-create-name-bg-color-light: #c0c0c0;
 @level-create-name-bg-color-dark: #404040;
+
+// General
+
+@card-bg-color-light: #f0f0f0;
+@card-bg-color-dark: #909090;
 
 .theme-color-html(@var, @name) {
     @{var}: ~"@{@{name}-light}";
