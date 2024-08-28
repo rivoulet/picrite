@@ -1,0 +1,55 @@
+@import "../../../style.less";
+
+.toggle {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+
+    &__input {
+        position: fixed;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    &__visible {
+        &__track {
+            width: @toggle-width;
+            height: @toggle-height;
+            border-radius: (@toggle-height * 0.5);
+            background-color: @toggle-bg-color;
+            transition: background-color 0.1s ease-out;
+
+            .toggle:hover > .toggle__visible > &,
+            .toggle__input:focus + .toggle__visible > & {
+                background-color: @toggle-hover-bg-color;
+            }
+
+            .toggle__input:checked + .toggle__visible > & {
+                background-color: @toggle-checked-bg-color;
+            }
+
+            .toggle:hover > .toggle__input:checked + .toggle__visible > &,
+            .toggle__input:checked:focus + .toggle__visible > & {
+                background-color: @toggle-checked-hover-bg-color;
+            }
+        }
+
+        &__thumb {
+            @size: (@toggle-height - 2 * @toggle-thumb-margin);
+
+            position: absolute;
+            top: @toggle-thumb-margin;
+            left: @toggle-thumb-margin;
+            width: @size;
+            height: @size;
+            border-radius: (@size * 0.5);
+            background-color: white;
+            transition: left 0.1s ease-in-out;
+
+            .toggle__input:checked + .toggle__visible > & {
+                left: (@toggle-width - @toggle-thumb-margin - @size);
+            }
+        }
+    }
+}
