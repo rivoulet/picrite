@@ -25,6 +25,7 @@ import { useHistory, useHistoryInput } from "src/components/history/useHistory";
 import { LevelStoreContext } from "src/components/level-store/LevelStore";
 import { Modal, ModalTarget } from "src/components/modal/Modal";
 import { PlayGrid } from "src/components/play-grid/PlayGrid";
+import { SettingsStoreContext } from "src/components/settings-store/SettingsStore";
 import { Time } from "src/components/time/Time";
 import { IconButton } from "src/components/ui/button/Button";
 import { RadioButtons } from "src/components/ui/radio-buttons/RadioButtons";
@@ -94,6 +95,8 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
             );
         }
 
+        const { settings } = useContext(SettingsStoreContext)!;
+
         const setMarkRaw = useCallback(
             (i: number, mark: CellMark) => {
                 setSelectionRaw((selection) =>
@@ -144,7 +147,12 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                                 scale +
                                 "em; }"}
                         </style>
-                        <Time seconds={elapsed} className="play-screen__time" />
+                        {settings.showPlayTimer && (
+                            <Time
+                                seconds={elapsed}
+                                className="play-screen__time"
+                            />
+                        )}
                         <PlayGrid
                             level={level}
                             marks={marks}

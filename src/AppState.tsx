@@ -5,6 +5,7 @@ export const enum StateKind {
     Play,
     Edit,
     SharedInfo,
+    Settings,
 }
 
 export interface LevelSelectState {
@@ -26,8 +27,13 @@ export interface SharedInfoState {
     level: SavedLevelInfo & LevelCells;
 }
 
+export interface SettingsState {
+    kind: StateKind.Settings;
+}
+
 export type AppState =
     | LevelSelectState
     | PlayState
     | EditState
-    | SharedInfoState;
+    | SharedInfoState
+    | SettingsState;

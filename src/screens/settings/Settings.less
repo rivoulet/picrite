@@ -1,31 +1,30 @@
 @import "../../style.less";
 
-.level-select-screen {
+.settings-screen {
     display: flex;
     flex-direction: column;
     justify-content: stretch;
     align-items: stretch;
 
-    &__card {
+    &__settings {
+        display: grid;
+        grid-template-columns: min-content 1fr;
+        align-content: start;
+        gap: 0.5em;
         flex: auto;
         border-radius: @button-border-radius;
         margin: 1em;
+        padding: 1em;
         margin-bottom: 0;
         .theme-color(background-color, card-bg-color);
     }
 
-    &__bottom {
+    &__close {
         flex: none;
-        display: flex;
         margin: 1em;
+    }
 
-        &__type {
-            flex: auto;
-            margin-right: 1em;
-        }
-
-        &__settings {
-            flex: none;
-        }
+    &__setting {
+        margin: 0.5em;
     }
 }

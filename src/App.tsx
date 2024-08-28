@@ -7,12 +7,17 @@ import { AppState, StateKind } from "src/AppState";
 import { LevelStoreContextProvider } from "src/components/level-store/LevelStore";
 import { Slide } from "src/components/transitions/Slide";
 import { SlideDir } from "src/components/transitions/SlideDir";
-import { ShowTitlesContext } from "src/components/ui/show-titles/ShowTitles";
 import { EditScreen } from "src/screens/edit/Edit";
 import { LevelSelectScreen } from "src/screens/level-select/LevelSelect";
 import { PlayScreen } from "src/screens/play/Play";
 import { SharedInfoScreen } from "src/screens/shared-info/SharedInfo";
 import { sharedLevel } from "src/sharedLevel";
+
+import {
+    ApplySettingContexts,
+    SettingsStoreContextProvider,
+} from "./components/settings-store/SettingsStore";
+import { SettingsScreen } from "./screens/settings/Settings";
 
 export function App() {
     const [state, setState] = useState<AppState>(() => {
@@ -81,17 +86,30 @@ export function App() {
             );
             break;
         }
+
+        case StateKind.Settings: {
+            screen = (
+                <SettingsScreen
+                    key="settings"
+                    setState={setState}
+                    className="screen"
+                />
+            );
+            break;
+        }
     }
 
     return (
-        <ShowTitlesContext.Provider value={true}>
-            <LevelStoreContextProvider>
-                <SwitchTransition>
-                    <Slide key={screen.key!} dir={SlideDir.Down}>
-                        {screen}
-                    </Slide>
-                </SwitchTransition>
-            </LevelStoreContextProvider>
-        </ShowTitlesContext.Provider>
+        <SettingsStoreContextProvider>
+            <ApplySettingContexts>
+                <LevelStoreContextProvider>
+                    <SwitchTransition>
+                        <Slide key={screen.key!} dir={SlideDir.Down}>
+                            {screen}
+                        </Slide>
+                    </SwitchTransition>
+                </LevelStoreContextProvider>
+            </ApplySettingContexts>
+        </SettingsStoreContextProvider>
     );
 }

@@ -8,9 +8,10 @@ import {
     useState,
 } from "react";
 
-import { AppState } from "src/AppState";
+import { AppState, StateKind } from "src/AppState";
 import { Slide } from "src/components/transitions/Slide";
 import { SlideDir } from "src/components/transitions/SlideDir";
+import { IconButton } from "src/components/ui/button/Button";
 import { RadioButtons } from "src/components/ui/radio-buttons/RadioButtons";
 
 import { Randomized } from "./Randomized";
@@ -39,6 +40,11 @@ export const LevelSelectScreen = forwardRef<
         <Saved setState={setState} className="level-select-screen__card" />,
     ];
 
+    const openSettings = () =>
+        setState({
+            kind: StateKind.Settings,
+        });
+
     return (
         <div className={className + " level-select-screen"} ref={ref}>
             {...cards.map((card, i) => (
@@ -64,24 +70,32 @@ export const LevelSelectScreen = forwardRef<
                     {card}
                 </Slide>
             ))}
-            <RadioButtons
-                selected={selection.index}
-                setSelected={(newSelected) =>
-                    setSelection((prevSelection) => {
-                        return newSelected === prevSelection.index
-                            ? prevSelection
-                            : {
-                                  index: newSelected,
-                                  wasIncreased:
-                                      newSelected > prevSelection.index,
-                                  isShown: false,
-                              };
-                    })
-                }
-                name="level-type"
-                buttons={["Randomized", "Saved"]}
-                className="level-select-screen__type"
-            />
+            <div className="level-select-screen__bottom">
+                <RadioButtons
+                    selected={selection.index}
+                    setSelected={(newSelected) =>
+                        setSelection((prevSelection) => {
+                            return newSelected === prevSelection.index
+                                ? prevSelection
+                                : {
+                                      index: newSelected,
+                                      wasIncreased:
+                                          newSelected > prevSelection.index,
+                                      isShown: false,
+                                  };
+                        })
+                    }
+                    name="level-type"
+                    buttons={["Randomized", "Saved"]}
+                    className="level-select-screen__bottom__type"
+                />
+                <IconButton
+                    icon="fas fa-cog"
+                    title="Settings"
+                    className="level-select-screen__bottom__settings"
+                    onClick={openSettings}
+                />
+            </div>
         </div>
     );
 });
