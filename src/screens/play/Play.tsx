@@ -190,6 +190,7 @@ export const PlayScreen = forwardRef<HTMLDivElement, PlayScreenProps>(
                 </ModalTarget>
                 <Modal in={isPaused}>
                     <PauseScreen
+                        elapsed={elapsed}
                         level={level}
                         hasClear={!marksAreClear}
                         clear={() => {

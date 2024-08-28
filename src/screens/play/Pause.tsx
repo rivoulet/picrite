@@ -1,9 +1,13 @@
 import "./Pause.less";
 
+import { useRef } from "react";
+
 import { LevelInfo } from "src/Level";
+import { Time } from "src/components/time/Time";
 import { IconButton } from "src/components/ui/button/Button";
 
 export interface PauseScreenProps {
+    elapsed: number;
     level: LevelInfo;
     hasClear: boolean;
     clear: () => void;
@@ -13,6 +17,7 @@ export interface PauseScreenProps {
 }
 
 export function PauseScreen({
+    elapsed,
     level,
     hasClear,
     clear,
@@ -20,9 +25,13 @@ export function PauseScreen({
     resume,
     className,
 }: PauseScreenProps) {
+    // Prevent from updating during fade-out transition
+    const elapsedRef = useRef(elapsed);
+
     return (
         <div className={className + " pause-screen"}>
             <div className="pause-screen__level-name">{level.name}</div>
+            <Time seconds={elapsedRef.current} className="pause-screen__time" />
             <div className="pause-screen__controls">
                 <IconButton
                     icon="fas fa-trash"
